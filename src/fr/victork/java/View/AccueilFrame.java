@@ -80,18 +80,24 @@ public class AccueilFrame extends MainFrame {
         panBtnEditOrDelete.add(btnEditOrDelete);
 
         listSociete.addActionListener(e -> {
+                    System.out.println("1 : groupeSelectionne : " + groupeSelectionne + ", societeSlectionne : " + societeSelectionne);
                     switch (groupeSelectionne) {
                         case Client:
                             societeSelectionne = (Societe) listSociete.getSelectedItem();
-
                             break;
                         case Prospect:
                             societeSelectionne = (Societe) listSociete.getSelectedItem();
                             break;
                     }
+                    System.out.println("2 : groupeSelectionne : " + groupeSelectionne + ", societeSlectionne : " + societeSelectionne);
+
+
                     if (enumCRUD != null) {
                         switch (enumCRUD) {
                             case DELETE:
+                                System.out.println("3 : groupeSelectionne : " + groupeSelectionne + ", " +
+                                        "societeSlectionne : " + societeSelectionne);
+
                                 this.btnEditOrDelete.setText("Supprimer : " + societeSelectionne.getRaisonSociale());
                                 break;
                             case UPDATE:
@@ -116,6 +122,9 @@ public class AccueilFrame extends MainFrame {
 
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+    private void styliserListe() {
+
+    }
 
     private void creerPanelBoutonsCRUD() {
         panBtnsCrud = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -171,21 +180,25 @@ public class AccueilFrame extends MainFrame {
                     if (CollectionClients.getCollection().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
+                        return;
                     }
                     for (Client collectionItem : CollectionClients.getCollection()
                     ) {
                         listSociete.addItem(collectionItem);
                     }
+                    listSociete.setSelectedIndex(1);
                     break;
                 case Prospect:
                     if (CollectionProspects.getCollection().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
+                        return;
                     }
                     for (Prospect collectionItem : CollectionProspects.getCollection()
                     ) {
                         listSociete.addItem(collectionItem);
                     }
+                    listSociete.setSelectedIndex(1);
                     break;
             }
         } catch (Exception e) {

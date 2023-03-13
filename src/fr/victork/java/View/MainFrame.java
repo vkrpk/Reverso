@@ -22,7 +22,6 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 750);
         setMaximumSize(new Dimension(1920, 1080));
-        //windowPositionLowerRight();
         setDefaultLookAndFeelDecorated(true);
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -37,10 +36,6 @@ public class MainFrame extends JFrame {
         contentPane.add(panSouth, BorderLayout.SOUTH);
         contentPane.revalidate();
         panCentral.repaint();
-
-        JPanel emptyPanel = new JPanel();
-        contentPane.add(emptyPanel, BorderLayout.EAST);
-        emptyPanel.requestFocusInWindow();
 
         if (this.getClass().getSimpleName().equals("AccueilFrame")) {
             panNorth.setVisible(false);

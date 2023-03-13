@@ -103,13 +103,6 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
-        table.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    System.out.println(societeSelectionne.getRaisonSociale());
-                }
-            }
-        });
         btnSupprimer = createButton("Supprimer");
         btnEditer = createButton("Modifier");
         btnCreer = createButton("Créer");

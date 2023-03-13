@@ -111,7 +111,7 @@ public abstract class Societe implements Tools {
     }
 
     public void setTelephone(String telephone) throws ExceptionEntity {
-        if (checkRegexDigitsMiniLength(telephone, 10)) {
+        if (telephone != null && telephone.length() >= 10) {
             this.telephone = telephone;
         } else {
             throw new ExceptionEntity("Le numéro de téléphone n'est pas valide");
@@ -126,7 +126,7 @@ public abstract class Societe implements Tools {
         if (ControlString.controlString(adresseMail) && adresseMail.matches(".+@.+")) {
             this.adresseMail = adresseMail;
         } else {
-            throw new ExceptionEntity("L'adresse mail n'est pas valide");
+            throw new ExceptionEntity("L'adresse mail n'est pas valide, elle doit être au format *@*.");
         }
     }
 
