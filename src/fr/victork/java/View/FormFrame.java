@@ -6,69 +6,90 @@ import fr.victork.java.Tools.FormatterDate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.DateTimeException;
 
 public class FormFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    private JPanel subpanel, panForm, panVtnValiderFormulaire, panButtonGroup;
+    private JPanel subpanel, panFormulaire, panValiderFormulaire,
+            panRadioButtonGroup;
     private EnumInstanceDeSociete enumInstanceDeSociete;
     private EnumCRUD enumCRUD;
     private JTextField inputIdentifiant, inputRaisonSociale, inputNumeroDeRue,
-            inputNomDeRue, inputCodePostal, inputVille,
-            inputTelephone, inputAdresseMail, inputCommentaire, inputChiffreAffaires, inputNombreEmployes,
-            inputDateProspection;
-    private JLabel labelIdentifiant, labelRaisonSociale, labelNumeroDeRue, labelNomDeRue, labelCodePostal, labelVille,
-            labelTelephone, labelAdresseMail, labelCommentaire, labelChiffreAffaires, labelNombreEmployes,
-            labelDateProspection, labelProspectInteresse;
-    private Societe societeSelectionne;
-    private JButton btnValiderFormulaire;
-    private Societe objetSelectionne;
-    private JRadioButton prospectInteresseOui, prospectInteresseNon;
-    private ButtonGroup buttonGroup;
-    private String textProspectInteresse;
+            inputNomDeRue, inputCodePostal, inputVille, inputTelephone,
+            inputAdresseMail, inputCommentaire, inputChiffreAffaires,
+            inputNombreEmployes, inputDateProspection;
+    private JLabel labelIdentifiant, labelRaisonSociale, labelNumeroDeRue,
+            labelNomDeRue, labelCodePostal, labelVille, labelTelephone,
+            labelAdresseMail, labelCommentaire, labelChiffreAffaires,
+            labelNombreEmployes, labelDateProspection, labelProspectInteresse;
+    private JButton btnValider;
+    private Societe societeSelection;
+    private JRadioButton btnInterestingProspectYes, btnInterestingProspectNo;
+    private ButtonGroup buttonGroupInterestingProspect;
+    private String interestingProspectString;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public FormFrame(EnumInstanceDeSociete enumInstanceDeSociete, EnumCRUD enumCRUD,
-                     int largeurFenetre, int hauteurFenetre, int positionX, int positionY, boolean pleinEcran) {
+    public FormFrame(EnumInstanceDeSociete enumInstanceDeSociete,
+                     EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
+                     int positionX, int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
-        initFrameConstructeurs();
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         this.enumCRUD = enumCRUD;
+        setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
+                pleinEcran);
         initLabels();
-        setupButtonGroup();
+        setupInterestingProspectButtongroup();
         setupInputs();
-        ajouterBtnValider();
-        remplirPanel();
-        setSize(largeurFenetre, hauteurFenetre);
-        setLocation(positionX, positionY);
-        super.estEnPleinEcran = pleinEcran;
-        if (super.estEnPleinEcran) {
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
-        }
-        setVisible(true);
+        setupBtnValider();
+        affichageFormulaire();
+        addListenerToBtnValider();
     }
 
-    public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
-                     int positionX, int positionY, boolean pleinEcran)
-            throws ExceptionEntity {
+    public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre,
+                     int hauteurFenetre, int positionX, int positionY,
+                     boolean pleinEcran) throws ExceptionEntity {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
-        initFrameConstructeurs();
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
         } else if (societe instanceof Prospect) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
         }
         this.enumCRUD = enumCRUD;
-        this.objetSelectionne = societe;
+        this.societeSelection = societe;
+        setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
+                pleinEcran);
         initLabels();
-        setupButtonGroup();
+        setupInterestingProspectButtongroup();
         setupInputs();
-        ajouterBtnValider();
-        remplirPanel();
+        setupBtnValider();
+        affichageFormulaire();
+        addListenerToBtnValider();
+    }
+
+    //--------------------- STATIC METHODS -------------------------------------
+    //--------------------- INSTANCE METHODS -----------------------------------
+    private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
+                          int positionY, boolean pleinEcran) {
+        switch (enumCRUD) {
+            case UPDATE:
+                setTitle("Modifier le " +
+                        societeSelection.getClass().getSimpleName()
+                                .toLowerCase() + " " +
+                        societeSelection.getRaisonSociale());
+                break;
+            case DELETE:
+                setTitle("Supprimer le " +
+                        societeSelection.getClass().getSimpleName()
+                                .toLowerCase() + " " +
+                        societeSelection.getRaisonSociale());
+                break;
+            case CREATE:
+                setTitle("Créer un " + enumInstanceDeSociete.name());
+                break;
+        }
+        super.panCentral.setLayout(new FlowLayout(FlowLayout.LEFT));
         setSize(largeurFenetre, hauteurFenetre);
         setLocation(positionX, positionY);
         super.estEnPleinEcran = pleinEcran;
@@ -78,13 +99,38 @@ public class FormFrame extends MainFrame {
         setVisible(true);
     }
 
-    private void initFrameConstructeurs() {
-        setTitle("Form frame");
-        super.panCentral.setLayout(new FlowLayout(FlowLayout.LEFT));
+    private void addListenerToBtnValider() {
+        btnValider.addActionListener(e -> {
+            try {
+                switch (enumCRUD) {
+                    case CREATE:
+                        create();
+                        break;
+                    case UPDATE:
+                        update();
+                        break;
+                    case DELETE:
+                        delete();
+                        break;
+                }
+            } catch (DateTimeException dte) {
+                JOptionPane.showMessageDialog(this,
+                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException nft) {
+                JOptionPane.showMessageDialog(this,
+                        "La chaîne ne peut pas être convertit en nombre",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                System.exit(1);
+            }
+        });
     }
 
-    //--------------------- STATIC METHODS -------------------------------------
-    //--------------------- INSTANCE METHODS -----------------------------------
     private void setupInputs() {
         switch (enumCRUD) {
             case CREATE:
@@ -100,51 +146,57 @@ public class FormFrame extends MainFrame {
                 this.inputChiffreAffaires = createJTextField(null, 25);
                 this.inputNombreEmployes = createJTextField(null, 25);
                 this.inputDateProspection = createJTextField(null, 25);
-                this.textProspectInteresse = "Oui";
-                this.prospectInteresseOui.setSelected(true);
+                this.interestingProspectString = "Oui";
+                this.btnInterestingProspectYes.setSelected(true);
                 break;
             case DELETE:
             case UPDATE:
-                this.inputIdentifiant = createJTextField(String.valueOf(this.objetSelectionne.getIdentifiant()),
+                this.inputIdentifiant = createJTextField(
+                        String.valueOf(this.societeSelection.getIdentifiant()),
                         25);
-                this.inputRaisonSociale = createJTextField(String.valueOf(this.objetSelectionne.getRaisonSociale()),
+                this.inputRaisonSociale = createJTextField(String.valueOf(
+                        this.societeSelection.getRaisonSociale()), 25);
+                this.inputNumeroDeRue = createJTextField(
+                        String.valueOf(this.societeSelection.getNumeroDeRue()),
                         25);
-                this.inputNumeroDeRue = createJTextField(String.valueOf(this.objetSelectionne.getNumeroDeRue()),
+                this.inputNomDeRue = createJTextField(
+                        String.valueOf(this.societeSelection.getNomDeRue()),
                         25);
-                this.inputNomDeRue = createJTextField(String.valueOf(this.objetSelectionne.getNomDeRue()),
+                this.inputCodePostal = createJTextField(
+                        String.valueOf(this.societeSelection.getCodePostal()),
                         25);
-                this.inputCodePostal = createJTextField(String.valueOf(this.objetSelectionne.getCodePostal()),
+                this.inputVille = createJTextField(
+                        String.valueOf(this.societeSelection.getVille()), 25);
+                this.inputTelephone = createJTextField(
+                        String.valueOf(this.societeSelection.getTelephone()),
                         25);
-                this.inputVille = createJTextField(String.valueOf(this.objetSelectionne.getVille()),
+                this.inputAdresseMail = createJTextField(
+                        String.valueOf(this.societeSelection.getAdresseMail()),
                         25);
-                this.inputTelephone = createJTextField(String.valueOf(this.objetSelectionne.getTelephone()),
-                        25);
-                this.inputAdresseMail = createJTextField(String.valueOf(this.objetSelectionne.getAdresseMail()),
-                        25);
-                this.inputCommentaire = createJTextField(String.valueOf(this.objetSelectionne.getCommentaires()),
+                this.inputCommentaire = createJTextField(
+                        String.valueOf(this.societeSelection.getCommentaires()),
                         25);
                 this.inputIdentifiant.setEditable(false);
                 switch (enumInstanceDeSociete) {
                     case Client:
-                        Client client = (Client) this.objetSelectionne;
-                        this.inputChiffreAffaires =
-                                createJTextField(String.valueOf(client.getChiffreAffaires()),
-                                        25);
-                        this.inputNombreEmployes = createJTextField(String.valueOf(client.getNombreEmployes()),
+                        Client client = (Client) this.societeSelection;
+                        this.inputChiffreAffaires = createJTextField(
+                                String.valueOf(client.getChiffreAffaires()),
                                 25);
+                        this.inputNombreEmployes = createJTextField(
+                                String.valueOf(client.getNombreEmployes()), 25);
                         break;
                     case Prospect:
-                        Prospect prospect = (Prospect) this.objetSelectionne;
-                        this.inputDateProspection =
-                                createJTextField(FormatterDate
-                                                .convertiEtFormatDateEnChaine(prospect.getDateProsprection()),
-                                        25);
+                        Prospect prospect = (Prospect) this.societeSelection;
+                        this.inputDateProspection = createJTextField(
+                                FormatterDate.convertiEtFormatDateEnChaine(
+                                        prospect.getDateProsprection()), 25);
                         if (prospect.getProspectInteresse().equals("Oui")) {
-                            prospectInteresseOui.setSelected(true);
-                            textProspectInteresse = "Oui";
+                            btnInterestingProspectYes.setSelected(true);
+                            interestingProspectString = "Oui";
                         } else {
-                            prospectInteresseNon.setSelected(true);
-                            textProspectInteresse = "Non";
+                            btnInterestingProspectNo.setSelected(true);
+                            interestingProspectString = "Non";
                         }
                         break;
                 }
@@ -165,143 +217,122 @@ public class FormFrame extends MainFrame {
                     break;
                 case Prospect:
                     inputDateProspection.setEditable(false);
-                    prospectInteresseOui.setEnabled(false);
-                    prospectInteresseNon.setEnabled(false);
+                    btnInterestingProspectYes.setEnabled(false);
+                    btnInterestingProspectNo.setEnabled(false);
                     break;
             }
         }
     }
 
-    private void ajouterBtnValider() {
+    private void setupBtnValider() {
         switch (enumCRUD) {
             case CREATE:
-                this.btnValiderFormulaire = createButton("Créer un nouveau " + enumInstanceDeSociete.name());
+                this.btnValider = createButton(
+                        "Créer un nouveau " + enumInstanceDeSociete.name());
                 break;
             case UPDATE:
-                this.btnValiderFormulaire = createButton("Modifier ce " + enumInstanceDeSociete.name());
+                this.btnValider = createButton(
+                        "Modifier ce " + enumInstanceDeSociete.name());
                 break;
             case DELETE:
-                this.btnValiderFormulaire = createButton("Supprimer ce " + enumInstanceDeSociete.name());
+                this.btnValider = createButton(
+                        "Supprimer ce " + enumInstanceDeSociete.name());
                 break;
         }
-        btnValiderFormulaire.addActionListener(e -> {
-            try {
-                switch (enumCRUD) {
-                    case CREATE:
-                        create();
-                        break;
-                    case UPDATE:
-                        update();
-                        break;
-                    case DELETE:
-                        delete();
-                        break;
-                }
-            } catch (DateTimeException dte) {
-                JOptionPane.showMessageDialog(this,
-                        "La date doit être dans le format suivant : dd/MM/yyyy", "Erreur de saisie",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (NumberFormatException nft) {
-                JOptionPane.showMessageDialog(this,
-                        "La chaîne ne peut pas être convertit en nombre", "Erreur de saisie",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (ExceptionEntity ee) {
-                JOptionPane.showMessageDialog(this, ee.getMessage(), "Erreur de saisie",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                System.exit(1);
-            }
-        });
-        panVtnValiderFormulaire = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        panVtnValiderFormulaire.add(btnValiderFormulaire);
+
+        panValiderFormulaire =
+                new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        panValiderFormulaire.add(btnValider);
     }
 
     private void update() throws ExceptionEntity {
-        objetSelectionne.setRaisonSociale(inputRaisonSociale.getText());
-        objetSelectionne.setNumeroDeRue(inputNumeroDeRue.getText());
-        objetSelectionne.setNomDeRue(inputNomDeRue.getText());
-        objetSelectionne.setCodePostal(inputCodePostal.getText());
-        objetSelectionne.setVille(inputVille.getText());
-        objetSelectionne.setTelephone(inputTelephone.getText());
-        objetSelectionne.setAdresseMail(inputAdresseMail.getText());
-        objetSelectionne.setCommentaires(inputCommentaire.getText());
-        objetSelectionne.setAdresseMail(inputAdresseMail.getText());
-        objetSelectionne.setAdresseMail(inputAdresseMail.getText());
+        societeSelection.setRaisonSociale(inputRaisonSociale.getText());
+        societeSelection.setNumeroDeRue(inputNumeroDeRue.getText());
+        societeSelection.setNomDeRue(inputNomDeRue.getText());
+        societeSelection.setCodePostal(inputCodePostal.getText());
+        societeSelection.setVille(inputVille.getText());
+        societeSelection.setTelephone(inputTelephone.getText());
+        societeSelection.setAdresseMail(inputAdresseMail.getText());
+        societeSelection.setCommentaires(inputCommentaire.getText());
+        societeSelection.setAdresseMail(inputAdresseMail.getText());
+        societeSelection.setAdresseMail(inputAdresseMail.getText());
         switch (enumInstanceDeSociete) {
             case Client:
-                ((Client) objetSelectionne).setChiffreAffaires(Double.parseDouble(inputChiffreAffaires.getText()));
-                ((Client) objetSelectionne).setNombreEmployes(Integer.parseInt(inputNombreEmployes.getText()));
+                ((Client) societeSelection).setChiffreAffaires(
+                        Double.parseDouble(inputChiffreAffaires.getText()));
+                ((Client) societeSelection).setNombreEmployes(
+                        Integer.parseInt(inputNombreEmployes.getText()));
                 break;
             case Prospect:
-                ((Prospect) objetSelectionne).setDateProsprection(FormatterDate
-                        .convertiEtFormatDateEnLocalDate(inputDateProspection.getText()));
-                ((Prospect) objetSelectionne).setProspectInteresse(textProspectInteresse);
+                ((Prospect) societeSelection).setDateProsprection(
+                        FormatterDate.convertiEtFormatDateEnLocalDate(
+                                inputDateProspection.getText()));
+                ((Prospect) societeSelection).setProspectInteresse(
+                        interestingProspectString);
                 break;
         }
         this.dispose();
-        AffichageFrame affichageFrame = new AffichageFrame(enumInstanceDeSociete, super.largeur, super.hauteur,
-                super.x, super.y, super.estEnPleinEcran);
+        AffichageFrame affichageFrame =
+                new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
         affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
     }
-
 
     private void create() throws ExceptionEntity {
         switch (enumInstanceDeSociete) {
             case Client:
-                Client nouveauClient = new Client(
-                        inputRaisonSociale.getText(),
-                        inputNumeroDeRue.getText(),
-                        inputNomDeRue.getText(),
-                        inputCodePostal.getText(),
-                        inputVille.getText(),
-                        inputTelephone.getText(),
-                        inputAdresseMail.getText(),
+                Client nouveauClient = new Client(inputRaisonSociale.getText(),
+                        inputNumeroDeRue.getText(), inputNomDeRue.getText(),
+                        inputCodePostal.getText(), inputVille.getText(),
+                        inputTelephone.getText(), inputAdresseMail.getText(),
                         inputCommentaire.getText(),
                         Double.parseDouble(inputChiffreAffaires.getText()),
-                        Integer.parseInt(inputNombreEmployes.getText())
-                );
+                        Integer.parseInt(inputNombreEmployes.getText()));
                 CollectionClients.getCollection().add(nouveauClient);
                 break;
             case Prospect:
-                Prospect nouveauProspect = new Prospect(
-                        inputRaisonSociale.getText(),
-                        inputNumeroDeRue.getText(),
-                        inputNomDeRue.getText(),
-                        inputCodePostal.getText(),
-                        inputVille.getText(),
-                        inputTelephone.getText(),
-                        inputAdresseMail.getText(),
-                        inputCommentaire.getText(),
-                        FormatterDate.convertiEtFormatDateEnLocalDate(inputDateProspection.getText()),
-                        textProspectInteresse
-                );
+                Prospect nouveauProspect =
+                        new Prospect(inputRaisonSociale.getText(),
+                                inputNumeroDeRue.getText(),
+                                inputNomDeRue.getText(),
+                                inputCodePostal.getText(), inputVille.getText(),
+                                inputTelephone.getText(),
+                                inputAdresseMail.getText(),
+                                inputCommentaire.getText(),
+                                FormatterDate.convertiEtFormatDateEnLocalDate(
+                                        inputDateProspection.getText()),
+                                interestingProspectString);
                 CollectionProspects.getCollection().add(nouveauProspect);
                 break;
         }
 
         this.dispose();
-        AffichageFrame affichageFrame = new AffichageFrame(enumInstanceDeSociete, super.largeur, super.hauteur,
-                super.x, super.y, super.estEnPleinEcran);
+        AffichageFrame affichageFrame =
+                new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
         affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
     }
 
     private void delete() throws ExceptionEntity {
         int choix = JOptionPane.showConfirmDialog(super.panCentral,
-                "Supprimer : " + objetSelectionne.getRaisonSociale() + " ?",
+                "Supprimer : " + societeSelection.getRaisonSociale() + " ?",
                 "Confirmation", JOptionPane.YES_NO_OPTION);
         if (choix == JOptionPane.YES_OPTION) {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    CollectionClients.getCollection().remove(this.objetSelectionne);
+                    CollectionClients.getCollection()
+                            .remove(this.societeSelection);
                     break;
                 case Prospect:
-                    CollectionProspects.getCollection().remove(this.objetSelectionne);
+                    CollectionProspects.getCollection()
+                            .remove(this.societeSelection);
                     break;
             }
             this.dispose();
-            AffichageFrame affichageFrame = new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
+            AffichageFrame affichageFrame =
+                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                            super.hauteur, super.x, super.y,
+                            super.estEnPleinEcran);
             affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
         } else if (choix == JOptionPane.NO_OPTION) {
             JOptionPane.getRootFrame().dispose();
@@ -310,29 +341,23 @@ public class FormFrame extends MainFrame {
         }
     }
 
-    private void setupButtonGroup() {
-        buttonGroup = new ButtonGroup();
+    private void setupInterestingProspectButtongroup() {
+        buttonGroupInterestingProspect = new ButtonGroup();
 
-        prospectInteresseOui = new JRadioButton("Oui");
-        prospectInteresseNon = new JRadioButton("Non");
+        btnInterestingProspectYes = new JRadioButton("Oui");
+        btnInterestingProspectNo = new JRadioButton("Non");
 
-        buttonGroup.add(prospectInteresseOui);
-        buttonGroup.add(prospectInteresseNon);
-        panButtonGroup = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panButtonGroup.add(prospectInteresseOui);
-        panButtonGroup.add(prospectInteresseNon);
+        buttonGroupInterestingProspect.add(btnInterestingProspectYes);
+        buttonGroupInterestingProspect.add(btnInterestingProspectNo);
+        panRadioButtonGroup = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panRadioButtonGroup.add(btnInterestingProspectYes);
+        panRadioButtonGroup.add(btnInterestingProspectNo);
 
-        prospectInteresseOui.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textProspectInteresse = "Oui";
-            }
-        });
+        btnInterestingProspectYes.addActionListener(
+                e -> interestingProspectString = "Oui");
 
-        prospectInteresseNon.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textProspectInteresse = "Non";
-            }
-        });
+        btnInterestingProspectNo.addActionListener(
+                e -> interestingProspectString = "Non");
     }
 
     private void initLabels() {
@@ -351,8 +376,8 @@ public class FormFrame extends MainFrame {
         this.labelProspectInteresse = createLabel("Prospect intéressé");
     }
 
-    private void remplirPanel() {
-        panForm = new JPanel(new GridBagLayout());
+    private void affichageFormulaire() {
+        panFormulaire = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
@@ -363,87 +388,87 @@ public class FormFrame extends MainFrame {
         switch (enumCRUD) {
             case UPDATE:
             case DELETE:
-                panForm.add(labelIdentifiant, gbc);
+                panFormulaire.add(labelIdentifiant, gbc);
                 gbc.gridx++;
-                panForm.add(inputIdentifiant, gbc);
+                panFormulaire.add(inputIdentifiant, gbc);
                 gbc.gridx = 0;
                 gbc.gridy++;
                 break;
         }
 
 
-        panForm.add(labelRaisonSociale, gbc);
+        panFormulaire.add(labelRaisonSociale, gbc);
         gbc.gridx++;
-        panForm.add(inputRaisonSociale, gbc);
+        panFormulaire.add(inputRaisonSociale, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelNumeroDeRue, gbc);
+        panFormulaire.add(labelNumeroDeRue, gbc);
         gbc.gridx++;
-        panForm.add(inputNumeroDeRue, gbc);
+        panFormulaire.add(inputNumeroDeRue, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelNomDeRue, gbc);
+        panFormulaire.add(labelNomDeRue, gbc);
         gbc.gridx++;
-        panForm.add(inputNomDeRue, gbc);
+        panFormulaire.add(inputNomDeRue, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelCodePostal, gbc);
+        panFormulaire.add(labelCodePostal, gbc);
         gbc.gridx++;
-        panForm.add(inputCodePostal, gbc);
+        panFormulaire.add(inputCodePostal, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelVille, gbc);
+        panFormulaire.add(labelVille, gbc);
         gbc.gridx++;
-        panForm.add(inputVille, gbc);
+        panFormulaire.add(inputVille, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelTelephone, gbc);
+        panFormulaire.add(labelTelephone, gbc);
         gbc.gridx++;
-        panForm.add(inputTelephone, gbc);
+        panFormulaire.add(inputTelephone, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelAdresseMail, gbc);
+        panFormulaire.add(labelAdresseMail, gbc);
         gbc.gridx++;
-        panForm.add(inputAdresseMail, gbc);
+        panFormulaire.add(inputAdresseMail, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
-        panForm.add(labelCommentaire, gbc);
+        panFormulaire.add(labelCommentaire, gbc);
         gbc.gridx++;
-        panForm.add(inputCommentaire, gbc);
+        panFormulaire.add(inputCommentaire, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
 
         switch (this.enumInstanceDeSociete) {
             case Client:
-                panForm.add(labelChiffreAffaires, gbc);
+                panFormulaire.add(labelChiffreAffaires, gbc);
                 gbc.gridx++;
-                panForm.add(inputChiffreAffaires, gbc);
+                panFormulaire.add(inputChiffreAffaires, gbc);
                 gbc.gridx = 0;
                 gbc.gridy++;
 
-                panForm.add(labelNombreEmployes, gbc);
+                panFormulaire.add(labelNombreEmployes, gbc);
                 gbc.gridx++;
-                panForm.add(inputNombreEmployes, gbc);
+                panFormulaire.add(inputNombreEmployes, gbc);
                 gbc.gridx = 0;
                 gbc.gridy++;
                 break;
             case Prospect:
-                panForm.add(labelDateProspection, gbc);
+                panFormulaire.add(labelDateProspection, gbc);
                 gbc.gridx++;
-                panForm.add(inputDateProspection, gbc);
+                panFormulaire.add(inputDateProspection, gbc);
                 gbc.gridx = 0;
                 gbc.gridy++;
 
-                panForm.add(labelProspectInteresse, gbc);
+                panFormulaire.add(labelProspectInteresse, gbc);
                 gbc.gridx++;
-                panForm.add(panButtonGroup, gbc);
+                panFormulaire.add(panRadioButtonGroup, gbc);
                 gbc.gridx = 0;
                 gbc.gridy++;
                 break;
@@ -451,18 +476,18 @@ public class FormFrame extends MainFrame {
         gbc.gridx++;
 
         gbc.gridx = 0;
-        panForm.add(Box.createHorizontalGlue(), gbc);
+        panFormulaire.add(Box.createHorizontalGlue(), gbc);
 
         gbc.gridx++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
-        panForm.add(btnValiderFormulaire, gbc);
+        panFormulaire.add(btnValider, gbc);
 
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.LINE_END;
-        panForm.add(Box.createHorizontalGlue(), gbc);
+        panFormulaire.add(Box.createHorizontalGlue(), gbc);
 
-        JScrollPane scrollPane = new JScrollPane(panForm);
+        JScrollPane scrollPane = new JScrollPane(panFormulaire);
         super.panCentral.setLayout(new BorderLayout());
         super.panCentral.add(scrollPane, BorderLayout.CENTER);
     }

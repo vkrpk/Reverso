@@ -1,8 +1,6 @@
 package fr.victork.java.Entity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class CollectionClients {
     //--------------------- CONSTANTS ------------------------------------------
@@ -16,7 +14,8 @@ public class CollectionClients {
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
 
     public static ArrayList<Client> getCollection() {
-        // return CollectionClients.collection.sort(Comparator.comparing(Client::getRaisonSociale));
+        // return CollectionClients.collection.sort(Comparator.comparing
+        // (Client::getRaisonSociale));
         return collection;
     }
     //--------------------- GETTERS - SETTERS ----------------------------------

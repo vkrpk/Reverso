@@ -5,7 +5,8 @@ import fr.victork.java.Tools.ControlString;
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MainFrame extends JFrame {
     //--------------------- CONSTANTS ------------------------------------------
@@ -17,30 +18,17 @@ public class MainFrame extends JFrame {
     protected boolean estEnPleinEcran;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX, int positionY, boolean pleinEcran) {
-        this.estEnPleinEcran = pleinEcran;
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 750);
-        setMaximumSize(new Dimension(1920, 1080));
-        setDefaultLookAndFeelDecorated(true);
-        try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        } catch (UnsupportedLookAndFeelException e) {
-            throw new RuntimeException(e);
-        }
-        contentPane = (JPanel) getContentPane();
-        panCentral = new JPanel();
-        creerBarDeMenu();
-        contentPane.add(panNorth, BorderLayout.NORTH);
-        contentPane.add(panCentral, BorderLayout.CENTER);
-        contentPane.add(panSouth, BorderLayout.SOUTH);
-        contentPane.revalidate();
-        panCentral.repaint();
+    public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX,
+                     int positionY, boolean pleinEcran) {
+        setupGUIAllFrames(pleinEcran);
 
-        if (this.getClass().getSimpleName().equals("AccueilFrame")) {
-            panNorth.setVisible(false);
-        }
-
+        btnAccueil.addActionListener(e -> {
+            this.dispose();
+            new AccueilFrame(MainFrame.this.largeur, MainFrame.this.hauteur,
+                    MainFrame.this.x, MainFrame.this.y,
+                    MainFrame.this.estEnPleinEcran);
+        });
+        btnQuitter.addActionListener(e -> this.dispose());
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -54,14 +42,12 @@ public class MainFrame extends JFrame {
             }
         });
 
-        addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent e) {
-                if ((e.getNewState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
-                    estEnPleinEcran = true;
-                } else {
-                    estEnPleinEcran = false;
-                }
+        addWindowStateListener(e -> {
+            if ((e.getNewState() & JFrame.MAXIMIZED_BOTH) ==
+                    JFrame.MAXIMIZED_BOTH) {
+                estEnPleinEcran = true;
+            } else {
+                estEnPleinEcran = false;
             }
         });
     }
@@ -78,7 +64,7 @@ public class MainFrame extends JFrame {
 
     public JTextField createJTextField(String text, int columns) {
         JTextField jTextField;
-        if (ControlString.controlString(text)) {
+        if (ControlString.controlStringIsNotEmpty(text)) {
             jTextField = new JTextField(text, columns);
         } else {
             jTextField = new JTextField(columns);
@@ -95,19 +81,37 @@ public class MainFrame extends JFrame {
         return jLabel;
     }
 
-    protected void creerBarDeMenu() {
+    protected void setupGUIAllFrames(boolean pleinEcran) {
+        this.estEnPleinEcran = pleinEcran;
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(800, 750);
+        setMaximumSize(new Dimension(1920, 1080));
+        setDefaultLookAndFeelDecorated(true);
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            throw new RuntimeException(e);
+        }
+        contentPane = (JPanel) getContentPane();
+        panCentral = new JPanel();
+
         panNorth = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 15));
         panSouth = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         btnAccueil = createButton("Accueil");
         btnQuitter = createButton("Quitter");
-        btnAccueil.addActionListener(e -> {
-            this.dispose();
-            new AccueilFrame(MainFrame.this.largeur, MainFrame.this.hauteur, MainFrame.this.x, MainFrame.this.y,
-                    MainFrame.this.estEnPleinEcran);
-        });
-        btnQuitter.addActionListener(e -> this.dispose());
+
         panNorth.add(btnAccueil);
         panSouth.add(btnQuitter);
+
+        contentPane.add(panNorth, BorderLayout.NORTH);
+        contentPane.add(panCentral, BorderLayout.CENTER);
+        contentPane.add(panSouth, BorderLayout.SOUTH);
+        contentPane.revalidate();
+        panCentral.repaint();
+
+        if (this.getClass().getSimpleName().equals("AccueilFrame")) {
+            panNorth.setVisible(false);
+        }
     }
 
     protected void windowPositionLowerRight() {

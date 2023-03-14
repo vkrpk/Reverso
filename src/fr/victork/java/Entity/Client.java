@@ -11,10 +11,13 @@ public class Client extends Societe {
     private int nombreEmployes;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public Client(String raisonSociale, String numeroDeRue, String nomDeRue, String codePostal, String ville,
-                  String telephone, String adresseMail, String commentaires, Double chiffreAffaires,
-                  int nombreEmployes) throws ExceptionEntity {
-        super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville, telephone, adresseMail, commentaires);
+    public Client(String raisonSociale, String numeroDeRue, String nomDeRue,
+                  String codePostal, String ville, String telephone,
+                  String adresseMail, String commentaires,
+                  Double chiffreAffaires, int nombreEmployes)
+            throws ExceptionEntity {
+        super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
+                telephone, adresseMail, commentaires);
         compteurIdentifiant++;
         this.setChiffreAffaires(chiffreAffaires);
         this.setNombreEmployes(nombreEmployes);
@@ -32,11 +35,13 @@ public class Client extends Societe {
         return chiffreAffaires;
     }
 
-    public void setChiffreAffaires(Double chiffreAffaires) throws ExceptionEntity {
+    public void setChiffreAffaires(Double chiffreAffaires)
+            throws ExceptionEntity {
         if (chiffreAffaires >= 200) {
             this.chiffreAffaires = chiffreAffaires;
         } else {
-            throw new ExceptionEntity("Le chiffre d'affaires doit être supérieur à 200€.");
+            throw new ExceptionEntity(
+                    "Le chiffre d'affaires " + "doit être supérieur à 200€.");
         }
     }
 
@@ -48,7 +53,8 @@ public class Client extends Societe {
         if (nombreEmployes > 0) {
             this.nombreEmployes = nombreEmployes;
         } else {
-            throw new ExceptionEntity("Le nombre d'employés doit être supérieur à 0.");
+            throw new ExceptionEntity(
+                    "Le nombre d'employés doit" + " être supérieur à 0.");
         }
     }
 

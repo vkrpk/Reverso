@@ -10,13 +10,15 @@ public class ControlString {
     //--------------------- CONSTRUCTORS ---------------------------------------
 
     //--------------------- STATIC METHODS -------------------------------------
-    public static boolean controlString(String expression) {
+    public static boolean controlStringIsNotEmpty(String expression) {
         if (expression == null || expression.trim().isEmpty()) {
             return false;
         } else {
             return true;
         }
-    };
+    }
+
+    ;
     //--------------------- INSTANCE METHODS -----------------------------------
 
     //--------------------- ABSTRACT METHODS -----------------------------------

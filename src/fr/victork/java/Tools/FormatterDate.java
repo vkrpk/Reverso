@@ -7,18 +7,19 @@ public abstract class FormatterDate {
 
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
+    private static DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
     public static LocalDate convertiEtFormatDateEnLocalDate(String date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return LocalDate.parse(date, dateTimeFormatter);
+        return LocalDate.parse(date, FormatterDate.dateTimeFormatter);
     }
 
     public static String convertiEtFormatDateEnChaine(LocalDate date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return date.format(dateTimeFormatter);
+        return date.format(FormatterDate.dateTimeFormatter);
     }
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------

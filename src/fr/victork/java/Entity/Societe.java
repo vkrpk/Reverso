@@ -20,8 +20,10 @@ public abstract class Societe implements Tools {
     protected String commentaires;
     //--------------------- CONSTRUCTORS ---------------------------------------
 
-    public Societe(String raisonSociale, String numeroDeRue, String nomDeRue, String codePostal, String ville,
-                   String telephone, String adresseMail, String commentaires) throws ExceptionEntity {
+    public Societe(String raisonSociale, String numeroDeRue, String nomDeRue,
+                   String codePostal, String ville, String telephone,
+                   String adresseMail, String commentaires)
+            throws ExceptionEntity {
         this.setRaisonSociale(raisonSociale);
         this.setNumeroDeRue(numeroDeRue);
         this.setNomDeRue(nomDeRue);
@@ -51,10 +53,11 @@ public abstract class Societe implements Tools {
     }
 
     public void setRaisonSociale(String raisonSociale) throws ExceptionEntity {
-        if (ControlString.controlString(raisonSociale)) {
+        if (ControlString.controlStringIsNotEmpty(raisonSociale)) {
             this.raisonSociale = raisonSociale;
         } else {
-            throw new ExceptionEntity("La raison sociale doit être une chaîne de caractère non vide.");
+            throw new ExceptionEntity("La raison sociale doit être une chaîne" +
+                    " de caractère non vide.");
         }
     }
 
@@ -63,10 +66,11 @@ public abstract class Societe implements Tools {
     }
 
     public void setNumeroDeRue(String numeroDeRue) throws ExceptionEntity {
-        if (ControlString.controlString(numeroDeRue)) {
+        if (ControlString.controlStringIsNotEmpty(numeroDeRue)) {
             this.numeroDeRue = numeroDeRue;
         } else {
-            throw new ExceptionEntity("Le numéro de rue doit être une chaîne de caractère non vide.");
+            throw new ExceptionEntity("Le numéro de rue doit être une chaîne " +
+                    "de caractère non vide.");
         }
     }
 
@@ -75,10 +79,11 @@ public abstract class Societe implements Tools {
     }
 
     public void setNomDeRue(String nomDeRue) throws ExceptionEntity {
-        if (ControlString.controlString(nomDeRue)) {
+        if (ControlString.controlStringIsNotEmpty(nomDeRue)) {
             this.nomDeRue = nomDeRue;
         } else {
-            throw new ExceptionEntity("Le nom de rue doit être une chaîne de caractère non vide.");
+            throw new ExceptionEntity("Le nom de rue doit être une chaîne de " +
+                    "caractère non vide.");
         }
     }
 
@@ -99,10 +104,11 @@ public abstract class Societe implements Tools {
     }
 
     public void setVille(String ville) throws ExceptionEntity {
-        if (ControlString.controlString(nomDeRue)) {
+        if (ControlString.controlStringIsNotEmpty(nomDeRue)) {
             this.ville = ville;
         } else {
-            throw new ExceptionEntity("Le nom de rue doit être une chaîne de caractère non vide.");
+            throw new ExceptionEntity("Le nom de rue doit être une chaîne de " +
+                    "caractère non vide.");
         }
     }
 
@@ -114,7 +120,8 @@ public abstract class Societe implements Tools {
         if (telephone != null && telephone.length() >= 10) {
             this.telephone = telephone;
         } else {
-            throw new ExceptionEntity("Le numéro de téléphone n'est pas valide");
+            throw new ExceptionEntity(
+                    "Le numéro de téléphone n'est pas " + "valide");
         }
     }
 
@@ -123,10 +130,12 @@ public abstract class Societe implements Tools {
     }
 
     public void setAdresseMail(String adresseMail) throws ExceptionEntity {
-        if (ControlString.controlString(adresseMail) && adresseMail.matches(".+@.+")) {
+        if (ControlString.controlStringIsNotEmpty(adresseMail) &&
+                adresseMail.matches(".+@.+")) {
             this.adresseMail = adresseMail;
         } else {
-            throw new ExceptionEntity("L'adresse mail n'est pas valide, elle doit être au format *@*.");
+            throw new ExceptionEntity("L'adresse mail n'est pas valide, elle " +
+                    "doit être au format *@*.");
         }
     }
 
@@ -138,9 +147,21 @@ public abstract class Societe implements Tools {
         if (commentaires != null) {
             this.commentaires = commentaires;
         } else {
-            throw new ExceptionEntity("Les commentaires doivent être une chaîne de caractère non null.");
+            throw new ExceptionEntity("Les commentaires doivent être une " +
+                    "chaîne de caractère non null.");
         }
     }
 
     //--------------------- TO STRING METHOD------------------------------------
+
+    @Override
+    public String toString() {
+        return "Societe{" + "identifiant=" + identifiant + ", raisonSociale='" +
+                raisonSociale + '\'' + ", numeroDeRue='" + numeroDeRue + '\'' +
+                ", nomDeRue='" + nomDeRue + '\'' + ", codePostal='" +
+                codePostal + '\'' + ", ville='" + ville + '\'' +
+                ", telephone='" + telephone + '\'' + ", adresseMail='" +
+                adresseMail + '\'' + ", commentaires='" + commentaires + '\'' +
+                '}';
+    }
 }

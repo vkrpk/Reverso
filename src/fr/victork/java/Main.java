@@ -14,23 +14,29 @@ public class Main {
     }
 
     private static void initDatas() throws ExceptionEntity {
-        Client client1 = new Client("Victor", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", 1000.00, 15);
-        Client client3 = new Client("Jules", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", 1000.00, 15);
-        Client client2 = new Client("Charles", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", 1000.00, 15);
-        Client client4 = new Client("Pierre", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", 1000.00, 15);
-        Prospect prospect1 = new Prospect("Jean", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", LocalDate.now(), "Non");
-        Prospect prospect2 = new Prospect("Lisa", "3", "Rue de la paix",
-                "75000", "Paris", "0600000000", "client1@gmail.com",
-                "Ce client ", LocalDate.now(), "Oui");
+        Client client1 =
+                new Client("Victor", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        1000.00, 15);
+        Client client3 =
+                new Client("Jules", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        1000.00, 15);
+        Client client2 =
+                new Client("Charles", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        1000.00, 15);
+        Client client4 =
+                new Client("Pierre", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        1000.00, 15);
+        Prospect prospect1 =
+                new Prospect("Jean", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        LocalDate.now(), "Non");
+        Prospect prospect2 =
+                new Prospect("Lisa", "3", "Rue de la paix", "75000", "Paris",
+                        "0600000000", "client1@gmail.com", "Ce client ",
+                        LocalDate.now(), "Oui");
     }
 }
