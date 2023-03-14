@@ -1,3 +1,9 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * Cette classe a pour but sélectionner un type de société pour ensuite
+ * permettre à l'utilisateur de l'application de gérer les données
+ */
 package fr.victork.java.View;
 
 import fr.victork.java.Entity.*;
@@ -24,14 +30,23 @@ public class AccueilFrame extends MainFrame {
     private Color colorGreenCustom;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    /**
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est activé
+     */
     public AccueilFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-                        int positionY, boolean pleinEcran) {
+            int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         setupPanBtnsCRUDAndSetEnabledToFalse();
         styliserComboBoxSociete();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
 
+        // Mémorise le type de société à gérer et adapte l'affichage
         btnGererClient.addActionListener(e -> {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
             setupLabelBtnsCRUD();
@@ -39,6 +54,7 @@ public class AccueilFrame extends MainFrame {
             labelTypeSociete.setText(enumInstanceDeSociete.name());
         });
 
+        // Mémorise le type de société à gérer et adapte l'affichage
         btnGererProspect.addActionListener(e -> {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
             setupLabelBtnsCRUD();
@@ -46,7 +62,7 @@ public class AccueilFrame extends MainFrame {
             labelTypeSociete.setText(enumInstanceDeSociete.name());
         });
 
-
+        // Affiche liste des sociétés du type sélectionné
         btnAfficher.addActionListener(e -> {
             try {
                 this.dispose();
@@ -61,6 +77,7 @@ public class AccueilFrame extends MainFrame {
             }
         });
 
+        // Affiche le formulaire de création pour le type de société sélectionné
         btnCreer.addActionListener(e -> {
             this.dispose();
             new FormFrame(this.enumInstanceDeSociete, EnumCRUD.CREATE,
@@ -68,6 +85,8 @@ public class AccueilFrame extends MainFrame {
                     super.estEnPleinEcran);
         });
 
+        /* Affiche le formulaire de modification ou de suppression en
+        fonction de l'action choisi pour l'instance de Société sélectionnée */
         btnValiderSupprimerOuEditer.addActionListener(e -> {
             try {
                 this.dispose();
@@ -79,16 +98,21 @@ public class AccueilFrame extends MainFrame {
             }
         });
 
+        // Mémorise l'action "supprimer" et affiche la liste déroulante
         btnSupprimer.addActionListener(e -> {
             this.enumCRUD = EnumCRUD.DELETE;
             afficheComboBoxSociete();
         });
 
+        // Mémorise l'action "supprimer" et affiche la liste déroulante
         btnEditer.addActionListener(e -> {
             this.enumCRUD = EnumCRUD.UPDATE;
             afficheComboBoxSociete();
         });
 
+        /* Réinitialise la liste déroulante, rempli la liste déroulante,
+        mémorise le choix de la société sélectionnée et modifie le texte du
+        bouton en fonction de l'action du CRUD sélectionnée */
         comboBoxSociete.addActionListener(e -> {
             resetComboBoxSocieteAndFillTheList();
             societeSelection = (Societe) comboBoxSociete.getSelectedItem();
@@ -110,6 +134,11 @@ public class AccueilFrame extends MainFrame {
 
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+
+    /**
+     * Cette méthode instancie une classe JComboBox et lui applique un style
+     * particulier
+     */
     private void styliserComboBoxSociete() {
         this.comboBoxSociete = new JComboBox();
         comboBoxSociete.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -120,7 +149,11 @@ public class AccueilFrame extends MainFrame {
         comboBoxSociete.setVisible(false);
     }
 
-    private void setupPanBtnsCRUDAndSetEnabledToFalse() {
+    /**
+     * Cette méthode instancie les boutons du CRUD et les insèrent dans une
+     * ArrayList pour leur appliquer une stratégie de positionnement
+     */
+    void setupPanBtnsCRUDAndSetEnabledToFalse() {
         panBtnsCRUD = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnCreer = createButton("Créer");
         btnAfficher = createButton("Afficher");
@@ -142,6 +175,14 @@ public class AccueilFrame extends MainFrame {
         enabledBtnsCRUD(false);
     }
 
+    /**
+     * Cette méthode réinitialise le contenu de la liste déroulante
+     * Cette méthode vérifie en amont si une collection n'est pas vide pour ne
+     * pas instancier une liste vide
+     * Cette méthode ajoute toutes les sociétés du type sélectionnée à la
+     * liste déroulante
+     * Cette méthode imprime une erreur si une exception est attrapée
+     */
     private void resetComboBoxSocieteAndFillTheList() {
         try {
             comboBoxSociete.removeAllItems();
@@ -177,6 +218,11 @@ public class AccueilFrame extends MainFrame {
         }
     }
 
+    /**
+     * Cette méthode active ou désactive les boutons du CRUD
+     *
+     * @param isEnabled Boolean états des boutons
+     */
     private void enabledBtnsCRUD(boolean isEnabled) {
         btnAfficher.setEnabled(isEnabled);
         btnCreer.setEnabled(isEnabled);
@@ -184,6 +230,10 @@ public class AccueilFrame extends MainFrame {
         btnSupprimer.setEnabled(isEnabled);
     }
 
+    /**
+     * Cette méthode rend clickable les boutons du CRUD et modifie le texte des
+     * boutons en fonction du type de société sélectionnée
+     */
     private void setupLabelBtnsCRUD() {
         String nomDuGroupe = enumInstanceDeSociete.name().toLowerCase();
         btnCreer.setText("Créer un " + nomDuGroupe);
@@ -193,6 +243,13 @@ public class AccueilFrame extends MainFrame {
         enabledBtnsCRUD(true);
     }
 
+    /**
+     * Cette méthode rend visible la liste déroulante et le bouton "valider"
+     * Cette méthode change la couleur de fond en vert du bouton de l'action
+     * sélectionnée
+     * Cette méthode change le texte des boutons supprimer et modifier en
+     * ajoutant la raison sociale de la société sélectionnée
+     */
     private void afficheComboBoxSociete() {
         comboBoxSociete.setVisible(true);
         panBtnEditOrDelete.setVisible(true);
@@ -216,8 +273,18 @@ public class AccueilFrame extends MainFrame {
         }
     }
 
+    /**
+     * Cette méthode définit le positionnement et les dimensions de la fenêtre.
+     * Cette méthode définit la disposition de la fenêtre.
+     *
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est activé
+     */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+            int positionY, boolean pleinEcran) {
         setTitle("Accueil");
         colorGreenCustom = new Color(87, 150, 92);
         super.panCentral.setLayout(

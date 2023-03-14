@@ -1,3 +1,10 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * Cette classe a pour but d'afficher toute la collection d'un type de
+ * société sous la forme d'un tableau et de créer, supprimer ou éditer un
+ * élément de cette liste
+ */
 package fr.victork.java.View;
 
 import fr.victork.java.Entity.*;
@@ -26,10 +33,20 @@ public class AffichageFrame extends MainFrame {
     private JButton btnCreer, btnSupprimer, btnEditer;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    /**
+     * @param enumInstanceDeSociete Type de société
+     * @param largeurFenetre        int Largeur de la fenêtre
+     * @param hauteurFenetre        int Hauteur de la fenêtre
+     * @param positionX             int Position X sur l'écran
+     * @param positionY             int Position Y sur l'écran
+     * @param pleinEcran            Boolean True si le mode plein écran est
+     *                              activé
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-                          int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran)
-            throws ExceptionEntity {
+            int largeurFenetre, int hauteurFenetre, int positionX,
+            int positionY, boolean pleinEcran) throws ExceptionEntity {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
@@ -37,6 +54,9 @@ public class AffichageFrame extends MainFrame {
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         updateData();
 
+        /**
+         * Trie le tableau en ordre croissant par raison sociale
+         */
         table.setAutoCreateRowSorter(true);
         TableRowSorter<TableModel> sorter =
                 (TableRowSorter<TableModel>) table.getRowSorter();
@@ -44,6 +64,9 @@ public class AffichageFrame extends MainFrame {
                 new RowSorter.SortKey(1, SortOrder.ASCENDING)));
         table.setRowSorter(sorter);
 
+        /**
+         * Ajuste la taille des colonnes quand la fenêtre est redimensionnée
+         */
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -52,6 +75,10 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
+        /**
+         * Ajuste la taille des colonnes si la fenêtre passe en mode plein
+         * écran ou fenêtré
+         */
         addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
             @Override
             public void ancestorResized(HierarchyEvent e) {
@@ -60,6 +87,11 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
+        /**
+         * Au click sur une ligne du tableau, mémorise le numéro de la ligne,
+         * récupère l'identifiant de la ligne et boucle sur la collection
+         * pour obtenir l'instance de l'objet associée à l'identifiant
+         */
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = table.getSelectedRow();
@@ -89,9 +121,10 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
-
-        setVisible(true);
-
+        /**
+         * Ferme la fenêtre et affiche le formulaire d'édition pour la ligne
+         * sélectionnée
+         */
         btnEditer.addActionListener(e -> {
             try {
                 this.dispose();
@@ -102,6 +135,10 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
+        /**
+         * Ferme la fenêtre et affiche le formulaire de suppression pour la
+         * ligne sélectionnée
+         */
         btnSupprimer.addActionListener(e -> {
             try {
                 this.dispose();
@@ -112,18 +149,33 @@ public class AffichageFrame extends MainFrame {
             }
         });
 
+        /**
+         * Ferme la fenêtre et affiche le formulaire de création pour le type
+         * de société actuellement affiché
+         */
         btnCreer.addActionListener(e -> {
             this.dispose();
             new FormFrame(enumInstanceDeSociete, EnumCRUD.CREATE, super.largeur,
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
+        setVisible(true);
         setupPanBtnsCRUDAndSetEnabledToFalse();
     }
 
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+
+    /**
+     * Cette méthode définit le positionnement et les dimensions de la fenêtre.
+     *
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est activé
+     */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+            int positionY, boolean pleinEcran) {
         this.table = new JTable(this.data, this.columnNames);
         this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         this.table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -146,6 +198,10 @@ public class AffichageFrame extends MainFrame {
         }
     }
 
+    /**
+     * Cette méthode a pour but d'instancier les boutons du CRUD, de les
+     * disposer dans un panel et de les désactiver
+     */
     private void setupPanBtnsCRUDAndSetEnabledToFalse() {
         btnSupprimer = createButton("Supprimer");
         btnEditer = createButton("Modifier");
@@ -158,11 +214,24 @@ public class AffichageFrame extends MainFrame {
         etatsBoutons(false);
     }
 
+    /**
+     * Cette méthode a pour but d'activer ou désactiver les boutons "supprimer"
+     * et "éditer"
+     *
+     * @param etat Boolean état des boutons
+     */
     private void etatsBoutons(boolean etat) {
         btnEditer.setEnabled(etat);
         btnSupprimer.setEnabled(etat);
     }
 
+    /**
+     * Cette méthode a pour but de réinitialisé et de mettre à jour le modèle
+     * du tableau
+     *
+     * @param enumInstanceDeSociete Type de société
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     public void updateEnumInstanceDeSociete(
             EnumInstanceDeSociete enumInstanceDeSociete)
             throws ExceptionEntity {
@@ -178,6 +247,11 @@ public class AffichageFrame extends MainFrame {
         updateColumnWidths();
     }
 
+    /**
+     * Cette méthode applique une taille minimale à chaque colonne de 75
+     * pixels et répartie équitablement la taille des colonnes en fonction de
+     * la place disponible
+     */
     private void updateColumnWidths() {
         int tableWidth = AffichageFrame.this.panCentral.getWidth();
         TableColumnModel columnModel = table.getColumnModel();
@@ -191,6 +265,11 @@ public class AffichageFrame extends MainFrame {
         table.revalidate();
     }
 
+    /**
+     * Cette méthode a pour but de changer le nom des colonnes du tableau en
+     * fonction du type de société et de remplir le tableau avec tous les
+     * éléments de la collection
+     */
     private void updateData() {
         switch (enumInstanceDeSociete) {
             case Client:

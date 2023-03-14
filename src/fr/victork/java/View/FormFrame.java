@@ -1,3 +1,9 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * Cette classe a pour but d'administrer les méthodes Create, Update et
+ * Delete du CRUD et d'organiser l'affichage en fonction
+ */
 package fr.victork.java.View;
 
 import fr.victork.java.Entity.*;
@@ -31,9 +37,23 @@ public class FormFrame extends MainFrame {
     private String interestingProspectString;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    /**
+     * Ce constructeur ouvre une nouvelle fenêtre permettant de créer une
+     * nouvelle société de type @param enumInstanceDeSociete
+     *
+     * @param enumInstanceDeSociete Type de société
+     * @param enumCRUD              Action du CRUD
+     * @param largeurFenetre        int Largeur de la fenêtre
+     * @param hauteurFenetre        int Hauteur de la fenêtre
+     * @param positionX             int Position X sur l'écran
+     * @param positionY             int Position Y sur l'écran
+     * @param pleinEcran            Boolean True si le mode plein écran est
+     *                              activé
+     */
     public FormFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-                     EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
-                     int positionX, int positionY, boolean pleinEcran) {
+            EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
+            int positionX, int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         this.enumCRUD = enumCRUD;
@@ -47,9 +67,23 @@ public class FormFrame extends MainFrame {
         addListenerToBtnValider();
     }
 
+    /**
+     * Ce constructeur ouvre une nouvelle fenêtre permettant de modifier
+     * ou supprimer en fonction de la valeur de @param enumCRUD une instance
+     * de société @param societe
+     *
+     * @param societe        Instance de Société
+     * @param enumCRUD       Action du CRUD
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est activé
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre,
-                     int hauteurFenetre, int positionX, int positionY,
-                     boolean pleinEcran) throws ExceptionEntity {
+            int hauteurFenetre, int positionX, int positionY,
+            boolean pleinEcran) throws ExceptionEntity {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
@@ -70,8 +104,20 @@ public class FormFrame extends MainFrame {
 
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+
+    /**
+     * Cette méthode définit le positionnement et les dimensions de la fenêtre.
+     * Cette méthode modifie le titre de la fenêtre en fonction de l'action du
+     * CRUD
+     *
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est activé
+     */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+            int positionY, boolean pleinEcran) {
         switch (enumCRUD) {
             case UPDATE:
                 setTitle("Modifier le " +
@@ -99,6 +145,12 @@ public class FormFrame extends MainFrame {
         setVisible(true);
     }
 
+    /**
+     * Cette méthode récupère l'action du CRUD en cours et retourne la
+     * méthode qui lui est associée. Cette méthode ouvre une boîte de
+     * dialogue si le formulaire n'est pas correctement rempli ou ferme
+     * l'application si une erreur non répertoriée est attrapée
+     */
     private void addListenerToBtnValider() {
         btnValider.addActionListener(e -> {
             try {
@@ -131,6 +183,11 @@ public class FormFrame extends MainFrame {
         });
     }
 
+    /**
+     * Cette méthode instancie les champs du formulaire et les préremplis
+     * avec l'instance de société sélectionné si la méthode du CRUD en cours
+     * est "delete" ou "update"
+     */
     private void setupInputs() {
         switch (enumCRUD) {
             case CREATE:
@@ -224,6 +281,10 @@ public class FormFrame extends MainFrame {
         }
     }
 
+    /**
+     * Cette méthode change le label du bouton "valider" en fonction de l'action
+     * du CRUD en cours et le centre au milieu d'un panel
+     */
     private void setupBtnValider() {
         switch (enumCRUD) {
             case CREATE:
@@ -245,6 +306,12 @@ public class FormFrame extends MainFrame {
         panValiderFormulaire.add(btnValider);
     }
 
+    /**
+     * Récupère l'instance d'une société pour effectuer des modifications sur
+     * ses propriétés, redirige l'utilisateur sur la liste des sociétés
+     *
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     private void update() throws ExceptionEntity {
         societeSelection.setRaisonSociale(inputRaisonSociale.getText());
         societeSelection.setNumeroDeRue(inputNumeroDeRue.getText());
@@ -278,6 +345,12 @@ public class FormFrame extends MainFrame {
         affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
     }
 
+    /**
+     * Crée une nouvelle société depuis les champs du formulaire et l'ajoute à
+     * la collection, redirige l'utilisateur sur la liste des sociétés
+     *
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     private void create() throws ExceptionEntity {
         switch (enumInstanceDeSociete) {
             case Client:
@@ -313,6 +386,12 @@ public class FormFrame extends MainFrame {
         affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
     }
 
+    /**
+     * Ouvre une fenêtre de dialogue, supprimer l'entité sélectionnée en cas
+     * de confirmation et retourne l'utilisateur sur la liste des sociétés
+     *
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     private void delete() throws ExceptionEntity {
         int choix = JOptionPane.showConfirmDialog(super.panCentral,
                 "Supprimer : " + societeSelection.getRaisonSociale() + " ?",
@@ -341,6 +420,10 @@ public class FormFrame extends MainFrame {
         }
     }
 
+    /**
+     * Crée un nouveau panel pour le champ "Prospect intéressé" et mémorise
+     * la valeur du bouton radio sélectionné dans une variable
+     */
     private void setupInterestingProspectButtongroup() {
         buttonGroupInterestingProspect = new ButtonGroup();
 
@@ -360,6 +443,9 @@ public class FormFrame extends MainFrame {
                 e -> interestingProspectString = "Non");
     }
 
+    /**
+     * Cette méthode instancie les labels des champs avec le nom du champ
+     */
     private void initLabels() {
         this.labelIdentifiant = createLabel("Identifiant");
         this.labelRaisonSociale = createLabel("Raison sociale");
@@ -376,6 +462,10 @@ public class FormFrame extends MainFrame {
         this.labelProspectInteresse = createLabel("Prospect intéressé");
     }
 
+    /**
+     * Cette méthode crée une grille pour placer les labels et les champs qui
+     * leur sont associés de gauche à droite puis de haut en bas
+     */
     private void affichageFormulaire() {
         panFormulaire = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

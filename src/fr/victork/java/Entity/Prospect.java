@@ -1,3 +1,8 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * Cette classe représente un prospect
+ */
 package fr.victork.java.Entity;
 
 import fr.victork.java.Exception.ExceptionEntity;
@@ -13,6 +18,22 @@ public class Prospect extends Societe {
     private String prospectInteresse;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    /**
+     * Construit une nouvelle instance de Prospect
+     *
+     * @param raisonSociale     Raison sociale
+     * @param numeroDeRue       Numéro de la rue
+     * @param nomDeRue          Nom de la rue
+     * @param codePostal        Code postal
+     * @param ville             Ville
+     * @param telephone         Téléphone
+     * @param adresseMail       Adresse mail
+     * @param commentaires      Commentaires facultatifs
+     * @param dateProsprection  Date de prospection
+     * @param prospectInteresse Intéressement du prospect
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     public Prospect(String raisonSociale, String numeroDeRue, String nomDeRue,
                     String codePostal, String ville, String telephone,
                     String adresseMail, String commentaires,
@@ -24,7 +45,6 @@ public class Prospect extends Societe {
         this.setDateProsprection(dateProsprection);
         this.setProspectInteresse(prospectInteresse);
         super.setIdentifiant(compteurIdentifiant);
-        CollectionProspects.getCollection().add(this);
     }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
@@ -36,6 +56,11 @@ public class Prospect extends Societe {
         return dateProsprection;
     }
 
+    /**
+     * Affecte une date de prospection à un prospect
+     *
+     * @param dateProsprection La valeur doit être de type LocalDate
+     */
     public void setDateProsprection(LocalDate dateProsprection) {
         this.dateProsprection = dateProsprection;
     }
@@ -44,6 +69,12 @@ public class Prospect extends Societe {
         return prospectInteresse;
     }
 
+    /**
+     * Indique si le prospect est intéressé
+     *
+     * @param prospectInteresse La valeur doit être "Oui" ou "Non"
+     * @throws ExceptionEntity Remonte une exception en cas d'erreur
+     */
     public void setProspectInteresse(String prospectInteresse)
             throws ExceptionEntity {
         if (prospectInteresse == "Oui" || prospectInteresse == "Non") {
@@ -55,6 +86,10 @@ public class Prospect extends Societe {
     }
 
     //--------------------- TO STRING METHOD------------------------------------
+
+    /**
+     * @return Retourne la raison sociale du prospect
+     */
     public String toString() {
         return getRaisonSociale();
     }

@@ -1,3 +1,8 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * Cette classe représente la liste de tous les clients
+ */
 package fr.victork.java.Entity;
 
 import java.util.ArrayList;
@@ -13,9 +18,10 @@ public class CollectionClients {
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
 
+    /**
+     * @return Retourne la liste de tous les clients
+     */
     public static ArrayList<Client> getCollection() {
-        // return CollectionClients.collection.sort(Comparator.comparing
-        // (Client::getRaisonSociale));
         return collection;
     }
     //--------------------- GETTERS - SETTERS ----------------------------------
