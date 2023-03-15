@@ -13,6 +13,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Cette classe a pour but sélectionner un type de société pour ensuite
+ * permettre à l'utilisateur de l'application de gérer les données
+ */
 public class AccueilFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

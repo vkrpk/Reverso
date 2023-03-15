@@ -14,9 +14,12 @@ import fr.victork.java.View.AccueilFrame;
 
 import java.time.LocalDate;
 
+/**
+ * Cette classe est le point d'entrée de l'application
+ */
 public class Main {
     /**
-     * @param args
+     * @param args String[]
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public static void main(String[] args) throws ExceptionEntity {

@@ -15,6 +15,11 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+/**
+ * Cette classe représente le squelette de toutes les fenêtres de l'application
+ * Cette classe implémente des écouteurs d'évènements nécessaires à toutes
+ * les fenêtres de l'application
+ */
 public class MainFrame extends JFrame implements Tools {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

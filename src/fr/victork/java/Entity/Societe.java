@@ -63,7 +63,7 @@ public abstract class Societe implements Tools {
     /**
      * Affecte un identifiant à une société
      *
-     * @param identifiant
+     * @param identifiant Int auto incrémenté
      */
     public void setIdentifiant(int identifiant) {
         this.identifiant = identifiant;
@@ -234,7 +234,6 @@ public abstract class Societe implements Tools {
                 ", nomDeRue='" + nomDeRue + '\'' + ", codePostal='" +
                 codePostal + '\'' + ", ville='" + ville + '\'' +
                 ", telephone='" + telephone + '\'' + ", adresseMail='" +
-                adresseMail + '\'' + ", commentaires='" + commentaires + '\'' +
-                '}';
+                adresseMail + '\'' + ", commentaires='" + commentaires + '\'';
     }
 }

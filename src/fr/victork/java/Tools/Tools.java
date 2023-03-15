@@ -10,6 +10,11 @@ package fr.victork.java.Tools;
 import fr.victork.java.Exception.ExceptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Cette classe comprend une série de méthodes pour contrôler des valeurs
+ * reçues ou
+ * générer des chaînes de caractères comprenant uniquement des chiffres
+ */
 public interface Tools {
     /**
      * Vérifie si une chaîne de caractère est composée uniquement de chiffres

@@ -7,6 +7,10 @@
  */
 package fr.victork.java.Entity;
 
+/**
+ * Cette classe représente la liste des actions disponibles pour le stockage
+ * des données
+ */
 public enum EnumCRUD {
     CREATE, UPDATE, DELETE, READ
 }

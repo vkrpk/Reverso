@@ -20,6 +20,11 @@ import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
 import java.util.Collections;
 
+/**
+ * Cette classe a pour but d'afficher toute la collection d'un type de
+ * société sous la forme d'un tableau et de créer, supprimer ou éditer un
+ * élément de cette liste
+ */
 public class AffichageFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -42,11 +47,10 @@ public class AffichageFrame extends MainFrame {
      * @param positionY             int Position Y sur l'écran
      * @param pleinEcran            Boolean True si le mode plein écran est
      *                              activé
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
             int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) throws ExceptionEntity {
+            int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         updateData();

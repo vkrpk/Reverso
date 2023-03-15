@@ -14,6 +14,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.DateTimeException;
 
+/**
+ * Cette classe a pour but d'administrer les méthodes Create, Update et
+ * Delete du CRUD et d'organiser l'affichage en fonction
+ */
 public class FormFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -87,8 +91,10 @@ public class FormFrame extends MainFrame {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
+            System.out.println(((Client) societe).affichage());
         } else if (societe instanceof Prospect) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
+            System.out.println(((Prospect) societe).affichage());
         }
         this.enumCRUD = enumCRUD;
         this.societeSelection = societe;
@@ -171,8 +177,9 @@ public class FormFrame extends MainFrame {
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
             } catch (NumberFormatException nft) {
                 JOptionPane.showMessageDialog(this,
-                        "La chaîne ne peut pas être convertit en nombre",
-                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                        "La valeur saisie doit être uniquement composé de " +
+                                "chiffres", "Erreur de saisie",
+                        JOptionPane.ERROR_MESSAGE);
             } catch (ExceptionEntity ee) {
                 JOptionPane.showMessageDialog(this, ee.getMessage(),
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);

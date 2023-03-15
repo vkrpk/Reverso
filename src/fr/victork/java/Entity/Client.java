@@ -7,6 +7,9 @@ package fr.victork.java.Entity;
 
 import fr.victork.java.Exception.ExceptionEntity;
 
+/**
+ * Cette classe représente un client héritant de Société
+ */
 public class Client extends Societe {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -95,5 +98,16 @@ public class Client extends Societe {
      */
     public String toString() {
         return getRaisonSociale();
+    }
+
+    /**
+     * @return Retourne toutes les propriétés du client
+     */
+    public String affichage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append(", chiffreAffaires='" + chiffreAffaires + '\'' +
+                ", nombreEmployes='" + nombreEmployes + '\'' + '}');
+        return sb.toString();
     }
 }

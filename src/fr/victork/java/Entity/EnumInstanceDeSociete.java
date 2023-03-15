@@ -5,6 +5,9 @@
  */
 package fr.victork.java.Entity;
 
+/**
+ * Cette classe représente la liste des types de société
+ */
 public enum EnumInstanceDeSociete {
     Client, Prospect
 }
