@@ -56,6 +56,13 @@ public class AccueilFrame extends MainFrame {
             setupLabelBtnsCRUD();
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
+            if (CollectionClients.getCollection().isEmpty()) {
+                btnEditer.setEnabled(false);
+                btnSupprimer.setEnabled(false);
+                btnEditer.setForeground(Color.black);
+                btnSupprimer.setForeground(Color.black);
+                panBtnEditOrDelete.setVisible(false);
+            }
         });
 
         // Mémorise le type de société à gérer et adapte l'affichage
@@ -64,6 +71,13 @@ public class AccueilFrame extends MainFrame {
             setupLabelBtnsCRUD();
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
+            if (CollectionProspects.getCollection().isEmpty()) {
+                btnEditer.setEnabled(false);
+                btnSupprimer.setEnabled(false);
+                btnEditer.setForeground(Color.black);
+                btnSupprimer.setForeground(Color.black);
+                panBtnEditOrDelete.setVisible(false);
+            }
         });
 
         // Affiche liste des sociétés du type sélectionné
@@ -120,7 +134,7 @@ public class AccueilFrame extends MainFrame {
         comboBoxSociete.addActionListener(e -> {
             resetComboBoxSocieteAndFillTheList();
             societeSelection = (Societe) comboBoxSociete.getSelectedItem();
-            if (enumCRUD != null) {
+            if (enumCRUD != null && societeSelection != null) {
                 switch (enumCRUD) {
                     case DELETE:
                         this.btnValiderSupprimerOuEditer.setText(
@@ -195,13 +209,14 @@ public class AccueilFrame extends MainFrame {
                     if (CollectionClients.getCollection().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
+                        System.out.println("test");
                         return;
                     }
                     for (Client collectionItem :
                             CollectionClients.getCollection()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
-                    comboBoxSociete.setSelectedIndex(1);
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
                     if (CollectionProspects.getCollection().isEmpty()) {
@@ -213,7 +228,7 @@ public class AccueilFrame extends MainFrame {
                             CollectionProspects.getCollection()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
-                    comboBoxSociete.setSelectedIndex(1);
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
             }
         } catch (Exception e) {

@@ -80,7 +80,8 @@ public class Prospect extends Societe {
      */
     public void setProspectInteresse(String prospectInteresse)
             throws ExceptionEntity {
-        if ((prospectInteresse == "Oui" || prospectInteresse == "Non") &&
+        if ((prospectInteresse.equals("Oui") ||
+                prospectInteresse.equals("Non")) &&
                 Tools.controlStringIsNotEmpty(prospectInteresse)) {
             this.prospectInteresse = prospectInteresse;
         } else {

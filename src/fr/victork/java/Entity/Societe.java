@@ -9,6 +9,9 @@ import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.Tools;
 
 
+/**
+ * Cette classe est le modèle pour une société
+ */
 public abstract class Societe implements Tools {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

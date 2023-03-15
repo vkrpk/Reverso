@@ -5,13 +5,12 @@
  */
 package fr.victork.java;
 
-import fr.victork.java.Entity.Client;
-import fr.victork.java.Entity.CollectionClients;
-import fr.victork.java.Entity.CollectionProspects;
-import fr.victork.java.Entity.Prospect;
+import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.View.AccueilFrame;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 /**
@@ -22,7 +21,7 @@ public class Main {
      * @param args String[]
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public static void main(String[] args) throws ExceptionEntity {
+    public static void main(String[] args) throws ExceptionEntity, IOException {
         initDatas();
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
@@ -34,7 +33,7 @@ public class Main {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private static void initDatas() throws ExceptionEntity {
+    private static void initDatas() throws ExceptionEntity, IOException {
         Client client1 =
                 new Client("eric", "3", "Rue de la paix", "75000", "Paris",
                         "0600000000", "client1@gmail.com", "Ce client ",
@@ -59,11 +58,15 @@ public class Main {
                 new Prospect("Lisa", "3", "Rue de la paix", "75000", "Paris",
                         "0600000000", "prospect2@gmail.com", "Ce client ",
                         LocalDate.now(), "Oui");
-        CollectionClients.getCollection().add(client1);
+       /* CollectionClients.getCollection().add(client1);
         CollectionClients.getCollection().add(client2);
         CollectionClients.getCollection().add(client3);
         CollectionClients.getCollection().add(client4);
         CollectionProspects.getCollection().add(prospect2);
-        CollectionProspects.getCollection().add(prospect1);
+        CollectionProspects.getCollection().add(prospect1);*/
+
+        File file = new File("sauvegarde.txt");
+        WriteFile.litUnFichierEtRempliLesCollections(file);
+        /*        WriteFile.recupereCollectionEtLesInsereDansUnFichier(file);*/
     }
 }
