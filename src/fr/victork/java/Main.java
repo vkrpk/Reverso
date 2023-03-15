@@ -6,6 +6,8 @@
 package fr.victork.java;
 
 import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.CollectionClients;
+import fr.victork.java.Entity.CollectionProspects;
 import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.View.AccueilFrame;
@@ -54,5 +56,11 @@ public class Main {
                 new Prospect("Lisa", "3", "Rue de la paix", "75000", "Paris",
                         "0600000000", "prospect2@gmail.com", "Ce client ",
                         LocalDate.now(), "Oui");
+        CollectionClients.getCollection().add(client1);
+        CollectionClients.getCollection().add(client2);
+        CollectionClients.getCollection().add(client3);
+        CollectionClients.getCollection().add(client4);
+        CollectionProspects.getCollection().add(prospect2);
+        CollectionProspects.getCollection().add(prospect1);
     }
 }

@@ -48,11 +48,12 @@ public class AffichageFrame extends MainFrame {
             int largeurFenetre, int hauteurFenetre, int positionX,
             int positionY, boolean pleinEcran) throws ExceptionEntity {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
+        this.enumInstanceDeSociete = enumInstanceDeSociete;
+        updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
         setTitle("Liste des " + enumInstanceDeSociete.name());
-        this.enumInstanceDeSociete = enumInstanceDeSociete;
-        updateData();
+        setupPanBtnsCRUDAndSetEnabledToFalse();
 
         /**
          * Trie le tableau en ordre croissant par raison sociale
@@ -159,7 +160,6 @@ public class AffichageFrame extends MainFrame {
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
         setVisible(true);
-        setupPanBtnsCRUDAndSetEnabledToFalse();
     }
 
     //--------------------- STATIC METHODS -------------------------------------
