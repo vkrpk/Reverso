@@ -209,7 +209,6 @@ public class AccueilFrame extends MainFrame {
                     if (CollectionClients.getCollection().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
-                        System.out.println("test");
                         return;
                     }
                     for (Client collectionItem :

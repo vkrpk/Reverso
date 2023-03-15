@@ -36,11 +36,7 @@ public class WriteFile {
      *                          lors de l'exécution.
      */
     public static void main(String[] args) throws ExceptionEntity, IOException {
-        WriteFile.litUnFichierEtRempliLesCollections(
-                new File("sauvegarde.txt"));
-        for (Client client : CollectionClients.getCollection()) {
-            System.out.println(client.getRaisonSociale());
-        }
+       
     }
 
     /**
@@ -62,8 +58,6 @@ public class WriteFile {
                         String.valueOf(client.getChiffreAffaires()) + ";");
                 bufferedWriter.write(
                         String.valueOf(client.getNombreEmployes()) + ";");
-                bufferedWriter.write(
-                        String.valueOf(client.getIdentifiant()) + ";");
                 bufferedWriter.newLine();
             }
 
@@ -75,8 +69,6 @@ public class WriteFile {
                 bufferedWriter.write(FormatterDate.convertiEtFormatDateEnChaine(
                         prospect.getDateProsprection()) + ";");
                 bufferedWriter.write(prospect.getProspectInteresse() + ";");
-                bufferedWriter.write(
-                        String.valueOf(prospect.getIdentifiant()) + ";");
                 bufferedWriter.newLine();
             }
         } catch (IOException e) {
@@ -122,7 +114,6 @@ public class WriteFile {
                 new FileReader(file))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
                 String tab[] = line.split(";");
                 if (tab[0].equals("Client")) {
                     Client client =
@@ -133,7 +124,6 @@ public class WriteFile {
                     CollectionClients.getCollection().add(client);
                 }
                 if (tab[0].equals("Prospect")) {
-                    System.out.println(tab[10]);
                     Prospect prospect =
                             new Prospect(tab[1], tab[2], tab[3], tab[4], tab[5],
                                     tab[6], tab[7], tab[8],

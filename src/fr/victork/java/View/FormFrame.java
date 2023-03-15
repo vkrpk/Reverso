@@ -91,10 +91,8 @@ public class FormFrame extends MainFrame {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
-            System.out.println(((Client) societe).affichage());
         } else if (societe instanceof Prospect) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
-            System.out.println(((Prospect) societe).affichage());
         }
         this.enumCRUD = enumCRUD;
         this.societeSelection = societe;

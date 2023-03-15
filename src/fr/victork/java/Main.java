@@ -34,39 +34,7 @@ public class Main {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     private static void initDatas() throws ExceptionEntity, IOException {
-        Client client1 =
-                new Client("eric", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client1@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client3 =
-                new Client("Jules", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client3@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client2 =
-                new Client("Charles", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client2@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client4 =
-                new Client("Pierre", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client4@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Prospect prospect1 =
-                new Prospect("Jean", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "prospect1@gmail.com", "Ce client ",
-                        LocalDate.now(), "Non");
-        Prospect prospect2 =
-                new Prospect("Lisa", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "prospect2@gmail.com", "Ce client ",
-                        LocalDate.now(), "Oui");
-       /* CollectionClients.getCollection().add(client1);
-        CollectionClients.getCollection().add(client2);
-        CollectionClients.getCollection().add(client3);
-        CollectionClients.getCollection().add(client4);
-        CollectionProspects.getCollection().add(prospect2);
-        CollectionProspects.getCollection().add(prospect1);*/
-
-        File file = new File("sauvegarde.txt");
+        File file = new File("DonnesSocietes.txt");
         WriteFile.litUnFichierEtRempliLesCollections(file);
-        /*        WriteFile.recupereCollectionEtLesInsereDansUnFichier(file);*/
     }
 }
