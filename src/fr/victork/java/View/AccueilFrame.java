@@ -132,6 +132,7 @@ public class AccueilFrame extends MainFrame {
         mémorise le choix de la société sélectionnée et modifie le texte du
         bouton en fonction de l'action du CRUD sélectionnée */
         comboBoxSociete.addActionListener(e -> {
+            resetComboBoxSocieteAndFillTheList();
             societeSelection = (Societe) comboBoxSociete.getSelectedItem();
             if (enumCRUD != null && societeSelection != null) {
                 switch (enumCRUD) {
@@ -205,16 +206,28 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
+                    if (CollectionClients.getCollection().isEmpty()) {
+                        btnEditer.setEnabled(false);
+                        btnSupprimer.setEnabled(false);
+                        return;
+                    }
                     for (Client collectionItem :
                             CollectionClients.getCollection()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
+                    if (CollectionProspects.getCollection().isEmpty()) {
+                        btnEditer.setEnabled(false);
+                        btnSupprimer.setEnabled(false);
+                        return;
+                    }
                     for (Prospect collectionItem :
                             CollectionProspects.getCollection()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
             }
         } catch (Exception e) {

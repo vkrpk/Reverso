@@ -10,6 +10,7 @@ package fr.victork.java.View;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
+import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -49,8 +50,8 @@ public class AffichageFrame extends MainFrame {
      *                              activé
      */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-            int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int largeurFenetre, int hauteurFenetre, int positionX,
+                          int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         updateData();
@@ -179,7 +180,7 @@ public class AffichageFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) {
         this.table = new JTable(this.data, this.columnNames);
         this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         this.table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -293,7 +294,7 @@ public class AffichageFrame extends MainFrame {
                     this.data[i][4] = client.getVille();
                     this.data[i][5] = client.getTelephone();
                     this.data[i][6] = client.getAdresseMail();
-                    this.data[i][7] = client.getChiffreAffaires();
+                    this.data[i][7] = Tools.DECIMAL_FORMAT.format(client.getChiffreAffaires());
                     this.data[i][8] = client.getNombreEmployes();
                 }
                 break;

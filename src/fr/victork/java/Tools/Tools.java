@@ -10,6 +10,11 @@ package fr.victork.java.Tools;
 import fr.victork.java.Exception.ExceptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+
 /**
  * Cette classe comprend une série de méthodes pour contrôler des valeurs
  * reçues ou
@@ -96,4 +101,9 @@ public interface Tools {
             return true;
         }
     }
+
+    DecimalFormat DECIMAL_FORMAT =
+            new DecimalFormat("#.##",
+                    DecimalFormatSymbols.getInstance(
+                            new Locale("fr", "FR")));
 }

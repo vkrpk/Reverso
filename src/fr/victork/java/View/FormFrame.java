@@ -13,6 +13,9 @@ import fr.victork.java.Tools.FormatterDate;
 import javax.swing.*;
 import java.awt.*;
 import java.time.DateTimeException;
+import java.util.logging.Level;
+
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
 /**
  * Cette classe a pour but d'administrer les méthodes Create, Update et
@@ -56,8 +59,8 @@ public class FormFrame extends MainFrame {
      *                              activé
      */
     public FormFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-            EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
-            int positionX, int positionY, boolean pleinEcran) {
+                     EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
+                     int positionX, int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         this.enumCRUD = enumCRUD;
@@ -86,8 +89,8 @@ public class FormFrame extends MainFrame {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre,
-            int hauteurFenetre, int positionX, int positionY,
-            boolean pleinEcran) throws ExceptionEntity {
+                     int hauteurFenetre, int positionX, int positionY,
+                     boolean pleinEcran) throws ExceptionEntity {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
@@ -121,7 +124,7 @@ public class FormFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) {
         switch (enumCRUD) {
             case UPDATE:
                 setTitle("Modifier le " +
@@ -173,17 +176,21 @@ public class FormFrame extends MainFrame {
                 JOptionPane.showMessageDialog(this,
                         "La date doit être dans le format suivant : dd/MM/yyyy",
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, dte.getMessage());
             } catch (NumberFormatException nft) {
                 JOptionPane.showMessageDialog(this,
                         "La valeur saisie doit être uniquement composé de " +
                                 "chiffres", "Erreur de saisie",
                         JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, nft.getMessage());
             } catch (ExceptionEntity ee) {
                 JOptionPane.showMessageDialog(this, ee.getMessage(),
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
             } catch (Exception exception) {
                 exception.printStackTrace();
                 System.exit(1);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
             }
         });
     }

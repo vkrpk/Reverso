@@ -7,11 +7,15 @@ package fr.victork.java;
 
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
+import fr.victork.java.Log.FormatterLog;
 import fr.victork.java.View.AccueilFrame;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
 /**
  * Cette classe est le point d'entrée de l'application
@@ -22,7 +26,15 @@ public class Main {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public static void main(String[] args) throws ExceptionEntity, IOException {
+        FileHandler fh = new FileHandler("LogReverso.log", true);
+        LOGGER.setUseParentHandlers(false);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new FormatterLog());
+
+        LOGGER.log(Level.INFO, "Démarrage de l'application");
+
         initDatas();
+
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
         new AccueilFrame(800, 750, -1, -1, false);
