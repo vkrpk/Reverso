@@ -5,6 +5,7 @@
  */
 package fr.victork.java;
 
+import fr.victork.java.DAO.DatabaseConnection;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Log.FormatterLog;
@@ -40,6 +41,8 @@ public class Main {
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
             new AccueilFrame(800, 750, -1, -1, false);
+            //DatabaseConnection.getInstance();
+            new DatabaseConnection();
 
         } catch (Exception e) {
             e.printStackTrace();
