@@ -20,6 +20,9 @@ public class Client extends Societe {
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
+    public Client() {
+    }
+
     /**
      * Construit une nouvelle instance de Client
      *
@@ -36,9 +39,9 @@ public class Client extends Societe {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public Client(String raisonSociale, String numeroDeRue, String nomDeRue,
-            String codePostal, String ville, String telephone,
-            String adresseMail, String commentaires, Double chiffreAffaires,
-            int nombreEmployes) throws ExceptionEntity {
+                  String codePostal, String ville, String telephone,
+                  String adresseMail, String commentaires, Double chiffreAffaires,
+                  int nombreEmployes) throws ExceptionEntity {
         super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
                 telephone, adresseMail, commentaires);
         compteurIdentifiant++;

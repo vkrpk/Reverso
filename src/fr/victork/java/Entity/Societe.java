@@ -16,7 +16,7 @@ public abstract class Societe implements Tools {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    protected int identifiant;
+    protected Integer identifiant;
     protected String raisonSociale;
     protected String numeroDeRue;
     protected String nomDeRue;
@@ -26,6 +26,9 @@ public abstract class Societe implements Tools {
     protected String adresseMail;
     protected String commentaires;
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    public Societe() {
+    }
 
     /**
      * Définit les propriétés communes à toutes les sociétés
@@ -41,8 +44,8 @@ public abstract class Societe implements Tools {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public Societe(String raisonSociale, String numeroDeRue, String nomDeRue,
-            String codePostal, String ville, String telephone,
-            String adresseMail, String commentaires) throws ExceptionEntity {
+                   String codePostal, String ville, String telephone,
+                   String adresseMail, String commentaires) throws ExceptionEntity {
         this.setRaisonSociale(raisonSociale);
         this.setNumeroDeRue(numeroDeRue);
         this.setNomDeRue(nomDeRue);
@@ -59,7 +62,7 @@ public abstract class Societe implements Tools {
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
 
-    public int getIdentifiant() {
+    public Integer getIdentifiant() {
         return identifiant;
     }
 
@@ -68,7 +71,7 @@ public abstract class Societe implements Tools {
      *
      * @param identifiant Int auto incrémenté
      */
-    public void setIdentifiant(int identifiant) {
+    public void setIdentifiant(Integer identifiant) {
         this.identifiant = identifiant;
     }
 
@@ -198,7 +201,7 @@ public abstract class Societe implements Tools {
      */
     public void setAdresseMail(String adresseMail) throws ExceptionEntity {
         if (Tools.controlStringIsNotEmpty(adresseMail) &&
-                adresseMail.matches(".+@.+")) {
+                adresseMail.matches(Tools.REGEX_MAIL)) {
             this.adresseMail = adresseMail;
         } else {
             throw new ExceptionEntity("L'adresse mail n'est pas valide, elle " +

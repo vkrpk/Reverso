@@ -21,6 +21,8 @@ import java.util.Locale;
  * générer des chaînes de caractères comprenant uniquement des chiffres
  */
 public interface Tools {
+    String REGEX_MAIL = ".+@.+";
+
     /**
      * Vérifie si une chaîne de caractère est composée uniquement de chiffres
      * et si elle est de longueur @param length

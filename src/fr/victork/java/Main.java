@@ -10,6 +10,7 @@ import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Log.FormatterLog;
 import fr.victork.java.View.AccueilFrame;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -26,18 +27,27 @@ public class Main {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public static void main(String[] args) throws ExceptionEntity, IOException {
-        FileHandler fh = new FileHandler("LogReverso.log", true);
-        LOGGER.setUseParentHandlers(false);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new FormatterLog());
+        try {
+            FileHandler fh = new FileHandler("LogReverso.log", true);
+            LOGGER.setUseParentHandlers(false);
+            LOGGER.addHandler(fh);
+            fh.setFormatter(new FormatterLog());
 
-        LOGGER.log(Level.INFO, "Démarrage de l'application");
+            LOGGER.log(Level.INFO, "Démarrage de l'application");
 
-        initDatas();
+            initDatas();
 
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
-        new AccueilFrame(800, 750, -1, -1, false);
+            new AccueilFrame(800, 750, -1, -1, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage(),
+                    "Erreur système", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
     }
 
     /**
@@ -46,7 +56,7 @@ public class Main {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     private static void initDatas() throws ExceptionEntity, IOException {
-        File file = new File("DonnesSocietes.txt");
+        File file = new File("Fixtures.txt");
         WriteFile.litUnFichierEtRempliLesCollections(file);
     }
 }
