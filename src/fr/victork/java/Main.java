@@ -42,7 +42,7 @@ public class Main {
         milieu de l'écran */
             new AccueilFrame(800, 750, -1, -1, false);
             //DatabaseConnection.getInstance();
-            new DatabaseConnection();
+            DatabaseConnection.getInstance();
 
         } catch (Exception e) {
             e.printStackTrace();

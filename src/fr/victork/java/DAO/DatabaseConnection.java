@@ -21,15 +21,15 @@ public class DatabaseConnection {
     private static Connection connection;
 
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    /*public static DatabaseConnection getInstance() {
+    public static DatabaseConnection getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new DatabaseConnection();
         }
         return INSTANCE;
-    }*/
+    }
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public DatabaseConnection() {
+    private DatabaseConnection() {
         try {
             File fichier = new File("database.properties");
             FileInputStream input = new FileInputStream(fichier);
