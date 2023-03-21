@@ -5,6 +5,7 @@
  */
 package fr.victork.java;
 
+import fr.victork.java.DAO.ClientDAO;
 import fr.victork.java.DAO.DatabaseConnection;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
@@ -14,6 +15,7 @@ import fr.victork.java.View.AccueilFrame;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
@@ -42,8 +44,9 @@ public class Main {
         milieu de l'écran */
             new AccueilFrame(800, 750, -1, -1, false);
             //DatabaseConnection.getInstance();
-            DatabaseConnection.getInstance();
+            Connection connection = DatabaseConnection.getConnection();
 
+            Client client1 = ClientDAO.find(1);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());
@@ -60,6 +63,7 @@ public class Main {
      */
     private static void initDatas() throws ExceptionEntity, IOException {
         File file = new File("Fixtures.txt");
-        WriteFile.litUnFichierEtRempliLesCollections(file);
+
+        //WriteFile.litUnFichierEtRempliLesCollections(file);
     }
 }

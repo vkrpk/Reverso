@@ -1,12 +1,10 @@
 package fr.victork.java.DAO;
 
-import com.mysql.jdbc.Connection;
+import fr.victork.java.Exception.ExceptionDAO;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 import static fr.victork.java.Log.LoggerReverso.LOGGER;
@@ -15,35 +13,35 @@ import static fr.victork.java.Log.LoggerReverso.LOGGER;
 public class DatabaseConnection {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static DatabaseConnection INSTANCE = null;
     final Properties dataProperties = new Properties();
-
-    private static Connection connection;
+    public static Connection connection;
 
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    public static DatabaseConnection getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new DatabaseConnection();
+    public static Connection getConnection() throws Exception {
+        if (connection == null) {
+            new DatabaseConnection();
         }
-        return INSTANCE;
+        return connection;
     }
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    private DatabaseConnection() {
+    private DatabaseConnection() throws Exception {
         try {
-            File fichier = new File("database.properties");
-            FileInputStream input = new FileInputStream(fichier);
-            dataProperties.load(input);
-            Connection connection = (Connection) DriverManager.getConnection(
-                    dataProperties.getProperty("url"),
-                    dataProperties.getProperty("login"),
-                    dataProperties.getProperty("password")
-            );
-            System.out.println(connection);
+            FileInputStream fis = new FileInputStream("database.properties");
+            dataProperties.load(fis);
+            // Exécute l'initialiseur de classe dans la classe Driver qui instancie le driver en mémoire
+            Class.forName(dataProperties.getProperty("jdbc.driver.class"));
+
+            String url = dataProperties.getProperty("jdbc.url");
+            String login = dataProperties.getProperty("jdbc.login");
+            String password = dataProperties.getProperty("jdbc.password");
+
+            connection = DriverManager.getConnection(url, login, password);
         } catch (IOException ioException) {
-            System.out.println(ioException.getMessage());
+            ioException.printStackTrace();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            new ExceptionDAO("Une erreur est survenue lors de la connexion à la base de données " +
+                    e.getMessage() + e.getCause(), 1);
         }
     }
 
@@ -63,7 +61,6 @@ public class DatabaseConnection {
         });
     }
     //--------------------- INSTANCE METHODS -----------------------------------
-
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------

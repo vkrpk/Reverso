@@ -7,7 +7,10 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.ClientDAO;
+import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
 import fr.victork.java.Tools.Tools;
@@ -19,6 +22,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -37,6 +41,7 @@ public class AffichageFrame extends MainFrame {
     private JScrollPane scrollPane;
     private Societe societeSelection;
     private JButton btnCreer, btnSupprimer, btnEditer;
+    private ArrayList listeSocieteSelection;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -51,9 +56,18 @@ public class AffichageFrame extends MainFrame {
      */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
                           int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) throws ExceptionDAO {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
+        switch (enumInstanceDeSociete) {
+            case Client:
+                listeSocieteSelection = ClientDAO.findAll();
+                break;
+            case Prospect:
+                listeSocieteSelection = ProspectDAO.findAll();
+                break;
+        }
+
         updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
@@ -107,19 +121,17 @@ public class AffichageFrame extends MainFrame {
                     etatsBoutons(true);
                     switch (enumInstanceDeSociete) {
                         case Client:
-                            for (Client client :
-                                    CollectionClients.getCollection()) {
-                                if (client.getIdentifiant() == id) {
-                                    societeSelection = client;
-                                }
+                            try {
+                                societeSelection = ClientDAO.find(id);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
                             }
                             break;
                         case Prospect:
-                            for (Prospect prospect :
-                                    CollectionProspects.getCollection()) {
-                                if (prospect.getIdentifiant() == id) {
-                                    societeSelection = prospect;
-                                }
+                            try {
+                                societeSelection = ProspectDAO.find(id);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
                             }
                             break;
                     }
@@ -239,7 +251,7 @@ public class AffichageFrame extends MainFrame {
      */
     public void updateEnumInstanceDeSociete(
             EnumInstanceDeSociete enumInstanceDeSociete)
-            throws ExceptionEntity {
+            throws Exception {
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         updateData();
         TableModel model = new DefaultTableModel(this.data, this.columnNames) {
@@ -275,51 +287,51 @@ public class AffichageFrame extends MainFrame {
      * fonction du type de société et de remplir le tableau avec tous les
      * éléments de la collection
      */
-    private void updateData() {
+    private void updateData() throws Exception {
         switch (enumInstanceDeSociete) {
             case Client:
                 this.data =
-                        new Object[CollectionClients.getCollection().size()][9];
+                        new Object[listeSocieteSelection.size()][10];
                 columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Code postal", "Ville",
+                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
                         "Téléphone", "Adresse mail", "Chiffre " + "d'affaires",
                         "Nombre " + "d'employés"};
-                for (int i = 0; i < CollectionClients.getCollection().size();
+                for (int i = 0; i < listeSocieteSelection.size();
                      i++) {
-                    Client client = CollectionClients.getCollection().get(i);
+                    Client client = (Client) listeSocieteSelection.get(i);
                     this.data[i][0] = client.getIdentifiant();
                     this.data[i][1] = client.getRaisonSociale();
                     this.data[i][2] = client.getNumeroDeRue();
-                    this.data[i][3] = client.getCodePostal();
-                    this.data[i][4] = client.getVille();
-                    this.data[i][5] = client.getTelephone();
-                    this.data[i][6] = client.getAdresseMail();
-                    this.data[i][7] = Tools.DECIMAL_FORMAT.format(client.getChiffreAffaires());
-                    this.data[i][8] = client.getNombreEmployes();
+                    this.data[i][3] = client.getNomDeRue();
+                    this.data[i][4] = client.getCodePostal();
+                    this.data[i][5] = client.getVille();
+                    this.data[i][6] = client.getTelephone();
+                    this.data[i][7] = client.getAdresseMail();
+                    this.data[i][8] = Tools.DECIMAL_FORMAT.format(client.getChiffreAffaires());
+                    this.data[i][9] = client.getNombreEmployes();
                 }
                 break;
             case Prospect:
-                this.data = new Object[CollectionProspects.getCollection()
-                        .size()][9];
+                this.data = new Object[listeSocieteSelection.size()][10];
                 columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Code postal", "Ville",
+                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
                         "Téléphone", "Adresse mail", "Date de " + "prospection",
                         "Prospect" + " intéressé"};
-                for (int i = 0; i < CollectionProspects.getCollection().size();
+                for (int i = 0; i < listeSocieteSelection.size();
                      i++) {
-                    Prospect prospect =
-                            CollectionProspects.getCollection().get(i);
+                    Prospect prospect = (Prospect) listeSocieteSelection.get(i);
                     this.data[i][0] = prospect.getIdentifiant();
                     this.data[i][1] = prospect.getRaisonSociale();
                     this.data[i][2] = prospect.getNumeroDeRue();
-                    this.data[i][3] = prospect.getCodePostal();
-                    this.data[i][4] = prospect.getVille();
-                    this.data[i][5] = prospect.getTelephone();
-                    this.data[i][6] = prospect.getAdresseMail();
-                    this.data[i][7] =
+                    this.data[i][3] = prospect.getNomDeRue();
+                    this.data[i][4] = prospect.getCodePostal();
+                    this.data[i][5] = prospect.getVille();
+                    this.data[i][6] = prospect.getTelephone();
+                    this.data[i][7] = prospect.getAdresseMail();
+                    this.data[i][8] =
                             FormatterDate.convertiEtFormatDateEnChaine(
                                     prospect.getDateProsprection());
-                    this.data[i][8] = prospect.getProspectInteresse();
+                    this.data[i][9] = prospect.getProspectInteresse();
                 }
                 break;
         }

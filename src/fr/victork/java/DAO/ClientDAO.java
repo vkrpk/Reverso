@@ -1,45 +1,136 @@
 package fr.victork.java.DAO;
 
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
+import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Societe;
+import fr.victork.java.Exception.ExceptionDAO;
 
+import java.sql.*;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class ClientDAO {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
+    private static final Connection connection = DatabaseConnection.connection;
+
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
-
     //--------------------- STATIC METHODS -------------------------------------
-    //--------------------- INSTANCE METHODS -----------------------------------
-    public static void findAll(Connection con, String dbName)
-            throws SQLException {
-        Statement stmt = null;
-        String query = "select * from client";
-        try {
-            stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                String coffeeName = rs.getString("COF_NAME");
-                int supplierID = rs.getInt("SUP_ID");
-                float price = rs.getFloat("PRICE");
-                int sales = rs.getInt("SALES");
-                int total = rs.getInt("TOTAL");
-                System.out.println(coffeeName + "\t" + supplierID +
-                        "\t" + price + "\t" + sales +
-                        "\t" + total);
+    public static ArrayList<Client> findAll()
+            throws ExceptionDAO {
+        String strSql = "SELECT * FROM client";
+        ArrayList<Client> collectionClients = new ArrayList<>();
+        try (Statement statement = connection.createStatement(); ResultSet resultSet =
+                statement.executeQuery(strSql)) {
+            while (resultSet.next()) {
+                Integer identifiant = resultSet.getInt("client_identifiant");
+                String raisonSociale = resultSet.getString("client_raison_sociale");
+                String numeroDeRue = resultSet.getString("client_numero_de_rue");
+                String nomDeRue = resultSet.getString("client_nom_de_rue");
+                String codePostal = resultSet.getString("client_code_postal");
+                String ville = resultSet.getString("client_ville");
+                String telephone = resultSet.getString("client_telephone");
+                String adresseMail = resultSet.getString("client_adresse_mail");
+                String commentaires = resultSet.getString("client_commentaires");
+                Double chiffreAffaires = resultSet.getDouble("client_chiffre_affaires");
+                Integer nombreEmployes = resultSet.getInt("client_nombre_employes");
+                Client client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
+                        codePostal, ville,
+                        telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
+                collectionClients.add(client);
             }
-        } catch (SQLException e ) {
-            //JDBCTutorialUtilities.printSQLException(e);
-            System.out.println(e.getMessage());
-        } finally {
-            if (stmt != null) { stmt.close(); }
+        } catch (SQLException e) {
+            new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des clients : " +
+                    e.getMessage() + e.getCause(), 1);
         }
+        return collectionClients;
+    }
 
-        //--------------------- ABSTRACT METHODS -----------------------------------
+    public static Client find(Integer id)
+            throws Exception {
+        Client client = new Client();
+        String strSql = "SELECT * FROM client WHERE client_identifiant=?";
+        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Integer identifiant = resultSet.getInt("client_identifiant");
+                    String raisonSociale = resultSet.getString("client_raison_sociale");
+                    String numeroDeRue = resultSet.getString("client_numero_de_rue");
+                    String nomDeRue = resultSet.getString("client_nom_de_rue");
+                    String codePostal = resultSet.getString("client_code_postal");
+                    String ville = resultSet.getString("client_ville");
+                    String telephone = resultSet.getString("client_telephone");
+                    String adresseMail = resultSet.getString("client_adresse_mail");
+                    String commentaires = resultSet.getString("client_commentaires");
+                    Double chiffreAffaires = resultSet.getDouble("client_chiffre_affaires");
+                    Integer nombreEmployes = resultSet.getInt("client_nombre_employes");
+                    client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
+                            codePostal, ville,
+                            telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
+                    return client;
+                }
+            }
+        } catch (SQLException e) {
+            new ExceptionDAO("Une erreur est survenue lors de la recherche d'un client : " + e.getMessage() +
+                    e.getCause(), 1);
+        }
+        return client;
+    }
+
+    public static void delete(Integer id)
+            throws Exception {
+        Client client = new Client();
+        String strSql = "DELETE FROM client WHERE client_identifiant=?";
+        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+            statement.setInt(1, id);
+            statement.execute();
+        } catch (SQLException e) {
+            new ExceptionDAO("Une erreur est survenue lors de la suppression d'un client : " + e.getMessage() +
+                    e.getCause(), 1);
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void create(Client client)
+            throws Exception {
+        String strSql;
+        if (client.getIdentifiant() == null) {
+            strSql = "INSERT INTO client (client_raison_sociale, client_numero_de_rue, client_nom_de_rue, " +
+                    "                      client_code_postal, client_ville,\n" +
+                    "                    client_telephone,\n" +
+                    "                    client_adresse_mail,\n" +
+                    "                    client_commentaires, client_chiffre_affaires, client_nombre_employes)\n" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            strSql = "UPDATE client SET client_raison_sociale = ?, client_numero_de_rue = ?, client_nom_de_rue = ?, " +
+                    "client_code_postal = ?, client_ville = ?, client_telephone = ?, " +
+                    "client_adresse_mail = ?, client_commentaires = ?, client_chiffre_affaires = ?, " +
+                    "client_nombre_employes = ? WHERE client_identifiant = ? ";
+        }
+        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+            statement.setString(1, client.getRaisonSociale());
+            statement.setString(2, client.getNumeroDeRue());
+            statement.setString(3, client.getNomDeRue());
+            statement.setString(4, client.getCodePostal());
+            statement.setString(5, client.getVille());
+            statement.setString(6, client.getTelephone());
+            statement.setString(7, client.getAdresseMail());
+            statement.setString(8, client.getCommentaires());
+            statement.setDouble(9, client.getChiffreAffaires());
+            statement.setInt(10, client.getNombreEmployes());
+            if (client.getIdentifiant() != null) {
+                statement.setInt(11, client.getIdentifiant());
+            }
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            new ExceptionDAO("Une erreur est survenue lors de la création d'un client : " + e.getMessage() + e.getCause(), 1);
+            System.out.println(e.getMessage());
+        }
+    }
+    //--------------------- INSTANCE METHODS -----------------------------------
+    //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
     //--------------------- TO STRING METHOD------------------------------------

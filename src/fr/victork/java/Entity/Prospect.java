@@ -16,7 +16,6 @@ import java.time.LocalDate;
 public class Prospect extends Societe {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static int compteurIdentifiant = 0;
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private LocalDate dateProsprection;
     private String prospectInteresse;
@@ -41,16 +40,14 @@ public class Prospect extends Societe {
      * @param prospectInteresse Intéressement du prospect
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public Prospect(String raisonSociale, String numeroDeRue, String nomDeRue,
+    public Prospect(Integer identifiant, String raisonSociale, String numeroDeRue, String nomDeRue,
                     String codePostal, String ville, String telephone,
                     String adresseMail, String commentaires, LocalDate dateProsprection,
                     String prospectInteresse) throws ExceptionEntity {
-        super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
+        super(identifiant, raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
                 telephone, adresseMail, commentaires);
-        compteurIdentifiant++;
         this.setDateProsprection(dateProsprection);
         this.setProspectInteresse(prospectInteresse);
-        super.setIdentifiant(compteurIdentifiant);
     }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------

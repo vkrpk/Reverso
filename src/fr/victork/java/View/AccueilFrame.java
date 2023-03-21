@@ -6,6 +6,8 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.ClientDAO;
+import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 
@@ -43,7 +45,7 @@ public class AccueilFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     public AccueilFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                        int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         setupPanBtnsCRUDAndSetEnabledToFalse();
         styliserComboBoxSociete();
@@ -56,12 +58,16 @@ public class AccueilFrame extends MainFrame {
             setupLabelBtnsCRUD();
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
-            if (CollectionClients.getCollection().isEmpty()) {
-                btnEditer.setEnabled(false);
-                btnSupprimer.setEnabled(false);
-                btnEditer.setForeground(Color.black);
-                btnSupprimer.setForeground(Color.black);
-                panBtnEditOrDelete.setVisible(false);
+            try {
+                if (ClientDAO.findAll().isEmpty()) {
+                    btnEditer.setEnabled(false);
+                    btnSupprimer.setEnabled(false);
+                    btnEditer.setForeground(Color.black);
+                    btnSupprimer.setForeground(Color.black);
+                    panBtnEditOrDelete.setVisible(false);
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -71,12 +77,16 @@ public class AccueilFrame extends MainFrame {
             setupLabelBtnsCRUD();
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
-            if (CollectionProspects.getCollection().isEmpty()) {
-                btnEditer.setEnabled(false);
-                btnSupprimer.setEnabled(false);
-                btnEditer.setForeground(Color.black);
-                btnSupprimer.setForeground(Color.black);
-                panBtnEditOrDelete.setVisible(false);
+            try {
+                if (ProspectDAO.findAll().isEmpty()) {
+                    btnEditer.setEnabled(false);
+                    btnSupprimer.setEnabled(false);
+                    btnEditer.setForeground(Color.black);
+                    btnSupprimer.setForeground(Color.black);
+                    panBtnEditOrDelete.setVisible(false);
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -91,6 +101,8 @@ public class AccueilFrame extends MainFrame {
                 affichageFrame.updateEnumInstanceDeSociete(
                         enumInstanceDeSociete);
             } catch (ExceptionEntity ex) {
+                throw new RuntimeException(ex);
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -206,25 +218,25 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
-                    if (CollectionClients.getCollection().isEmpty()) {
+                    if (ClientDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Client collectionItem :
-                            CollectionClients.getCollection()) {
+                            ClientDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
-                    if (CollectionProspects.getCollection().isEmpty()) {
+                    if (ProspectDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Prospect collectionItem :
-                            CollectionProspects.getCollection()) {
+                            ProspectDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
@@ -302,7 +314,7 @@ public class AccueilFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) {
         setTitle("Accueil");
         colorGreenCustom = new Color(87, 150, 92);
         super.panCentral.setLayout(

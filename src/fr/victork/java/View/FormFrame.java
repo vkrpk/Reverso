@@ -6,9 +6,12 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.ClientDAO;
+import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
+import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -324,7 +327,7 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void update() throws ExceptionEntity {
+    private void update() throws Exception {
         societeSelection.setRaisonSociale(inputRaisonSociale.getText());
         societeSelection.setNumeroDeRue(inputNumeroDeRue.getText());
         societeSelection.setNomDeRue(inputNomDeRue.getText());
@@ -341,6 +344,7 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()));
                 ((Client) societeSelection).setNombreEmployes(
                         Integer.parseInt(inputNombreEmployes.getText()));
+                ClientDAO.create((Client) societeSelection);
                 break;
             case Prospect:
                 ((Prospect) societeSelection).setDateProsprection(
@@ -348,13 +352,19 @@ public class FormFrame extends MainFrame {
                                 inputDateProspection.getText()));
                 ((Prospect) societeSelection).setProspectInteresse(
                         interestingProspectString);
+                ProspectDAO.create((Prospect) societeSelection);
                 break;
         }
         this.dispose();
-        AffichageFrame affichageFrame =
-                new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
-        affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
+        try {
+            AffichageFrame affichageFrame =
+                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                            super.hauteur, super.x, super.y, super.estEnPleinEcran);
+            affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -363,21 +373,26 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void create() throws ExceptionEntity {
+    private void create() throws Exception {
         switch (enumInstanceDeSociete) {
             case Client:
-                Client nouveauClient = new Client(inputRaisonSociale.getText(),
+                Client nouveauClient = new Client(
+                        null,
+                        inputRaisonSociale.getText(),
                         inputNumeroDeRue.getText(), inputNomDeRue.getText(),
                         inputCodePostal.getText(), inputVille.getText(),
                         inputTelephone.getText(), inputAdresseMail.getText(),
                         inputCommentaire.getText(),
                         Double.parseDouble(inputChiffreAffaires.getText()),
-                        Integer.parseInt(inputNombreEmployes.getText()));
-                CollectionClients.getCollection().add(nouveauClient);
+                        Integer.parseInt(inputNombreEmployes.getText())
+                );
+                ClientDAO.create(nouveauClient);
                 break;
             case Prospect:
                 Prospect nouveauProspect =
-                        new Prospect(inputRaisonSociale.getText(),
+                        new Prospect(
+                                null,
+                                inputRaisonSociale.getText(),
                                 inputNumeroDeRue.getText(),
                                 inputNomDeRue.getText(),
                                 inputCodePostal.getText(), inputVille.getText(),
@@ -387,15 +402,19 @@ public class FormFrame extends MainFrame {
                                 FormatterDate.convertiEtFormatDateEnLocalDate(
                                         inputDateProspection.getText()),
                                 interestingProspectString);
-                CollectionProspects.getCollection().add(nouveauProspect);
+                ProspectDAO.create(nouveauProspect);
                 break;
         }
 
         this.dispose();
-        AffichageFrame affichageFrame =
-                new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
-        affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
+        try {
+            AffichageFrame affichageFrame =
+                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                            super.hauteur, super.x, super.y, super.estEnPleinEcran);
+            affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -404,19 +423,17 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void delete() throws ExceptionEntity {
+    private void delete() throws Exception {
         int choix = JOptionPane.showConfirmDialog(super.panCentral,
                 "Supprimer : " + societeSelection.getRaisonSociale() + " ?",
                 "Confirmation", JOptionPane.YES_NO_OPTION);
         if (choix == JOptionPane.YES_OPTION) {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    CollectionClients.getCollection()
-                            .remove(this.societeSelection);
+                    ClientDAO.delete(societeSelection.getIdentifiant());
                     break;
                 case Prospect:
-                    CollectionProspects.getCollection()
-                            .remove(this.societeSelection);
+                    ProspectDAO.delete(societeSelection.getIdentifiant());
                     break;
             }
             this.dispose();

@@ -13,7 +13,6 @@ import fr.victork.java.Exception.ExceptionEntity;
 public class Client extends Societe {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static int compteurIdentifiant = 0;
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private Double chiffreAffaires;
     private int nombreEmployes;
@@ -38,16 +37,14 @@ public class Client extends Societe {
      * @param nombreEmployes  Nombre d'employés
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public Client(String raisonSociale, String numeroDeRue, String nomDeRue,
+    public Client(Integer identifiant, String raisonSociale, String numeroDeRue, String nomDeRue,
                   String codePostal, String ville, String telephone,
                   String adresseMail, String commentaires, Double chiffreAffaires,
                   int nombreEmployes) throws ExceptionEntity {
-        super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
+        super(identifiant, raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
                 telephone, adresseMail, commentaires);
-        compteurIdentifiant++;
         this.setChiffreAffaires(chiffreAffaires);
         this.setNombreEmployes(nombreEmployes);
-        super.setIdentifiant(compteurIdentifiant);
     }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------

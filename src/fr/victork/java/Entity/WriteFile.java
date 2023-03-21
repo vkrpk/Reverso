@@ -4,7 +4,40 @@
  * La classe WriteFile est responsable de lire et d'écrire des données de
  * Clients et Prospects
  * dans un fichier.
- */
+ * <p>
+ * La classe WriteFile est responsable de lire et d'écrire des données de
+ * Clients et Prospects
+ * dans un fichier.
+ * <p>
+ * Méthode principale pour tester les fonctionnalités de la classe
+ * WriteFile.
+ * @param args Les arguments de la ligne de commande.
+ * @throws ExceptionEntity, IOException Exceptions pouvant être levées
+ * lors de l'exécution.
+ * <p>
+ * Récupère les données des collections de Clients et Prospects et les
+ * insère dans un fichier.
+ * @param file Le fichier dans lequel insérer les données.
+ * @throws IOException Si une erreur d'entrée/sortie se produit.
+ * <p>
+ * Écrit les propriétés d'une société dans un BufferedWriter.
+ * @param bufferedWriter Le BufferedWriter dans lequel écrire les
+ * propriétés.
+ * @param societe        La société dont les propriétés doivent être
+ * écrites.
+ * @throws IOException Si une erreur d'entrée/sortie se produit.
+ * <p>
+ * Lit un fichier et remplit les collections de Clients et Prospects avec
+ * les données lues.
+ * Cette méthode parcourt le fichier ligne par ligne, extrait les
+ * informations de chaque
+ * ligne et crée des objets Client et Prospect en conséquence. Ensuite,
+ * elle ajoute ces
+ * objets aux collections appropriées.
+ * @param file Le fichier à lire contenant les données des Clients et
+ * Prospects.
+ *//*
+
 package fr.victork.java.Entity;
 
 import fr.victork.java.Exception.ExceptionEntity;
@@ -14,11 +47,13 @@ import javax.swing.*;
 import java.io.*;
 import java.time.DateTimeException;
 
+*/
 /**
  * La classe WriteFile est responsable de lire et d'écrire des données de
  * Clients et Prospects
  * dans un fichier.
- */
+ *//*
+
 public class WriteFile {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -27,25 +62,29 @@ public class WriteFile {
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
 
-    /**
-     * Méthode principale pour tester les fonctionnalités de la classe
-     * WriteFile.
-     *
-     * @param args Les arguments de la ligne de commande.
-     * @throws ExceptionEntity, IOException Exceptions pouvant être levées
-     *                          lors de l'exécution.
-     */
+    */
+/**
+ * Méthode principale pour tester les fonctionnalités de la classe
+ * WriteFile.
+ *
+ * @param args Les arguments de la ligne de commande.
+ * @throws ExceptionEntity, IOException Exceptions pouvant être levées
+ *                          lors de l'exécution.
+ *//*
+
     public static void main(String[] args) throws ExceptionEntity, IOException {
        
     }
 
-    /**
-     * Récupère les données des collections de Clients et Prospects et les
-     * insère dans un fichier.
-     *
-     * @param file Le fichier dans lequel insérer les données.
-     * @throws IOException Si une erreur d'entrée/sortie se produit.
-     */
+    */
+/**
+ * Récupère les données des collections de Clients et Prospects et les
+ * insère dans un fichier.
+ *
+ * @param file Le fichier dans lequel insérer les données.
+ * @throws IOException Si une erreur d'entrée/sortie se produit.
+ *//*
+
     public static void recupereCollectionEtLesInsereDansUnFichier(File file)
             throws IOException {
         FileWriter fileWriter = new FileWriter(file);
@@ -76,15 +115,17 @@ public class WriteFile {
         }
     }
 
-    /**
-     * Écrit les propriétés d'une société dans un BufferedWriter.
-     *
-     * @param bufferedWriter Le BufferedWriter dans lequel écrire les
-     *                       propriétés.
-     * @param societe        La société dont les propriétés doivent être
-     *                       écrites.
-     * @throws IOException Si une erreur d'entrée/sortie se produit.
-     */
+    */
+/**
+ * Écrit les propriétés d'une société dans un BufferedWriter.
+ *
+ * @param bufferedWriter Le BufferedWriter dans lequel écrire les
+ *                       propriétés.
+ * @param societe        La société dont les propriétés doivent être
+ *                       écrites.
+ * @throws IOException Si une erreur d'entrée/sortie se produit.
+ *//*
+
     private static void ecritLesProprietesDUneSociete(
             BufferedWriter bufferedWriter, Societe societe) throws IOException {
         bufferedWriter.write(societe.getRaisonSociale() + ";");
@@ -97,18 +138,20 @@ public class WriteFile {
         bufferedWriter.write(societe.getCommentaires() + ";");
     }
 
-    /**
-     * Lit un fichier et remplit les collections de Clients et Prospects avec
-     * les données lues.
-     * Cette méthode parcourt le fichier ligne par ligne, extrait les
-     * informations de chaque
-     * ligne et crée des objets Client et Prospect en conséquence. Ensuite,
-     * elle ajoute ces
-     * objets aux collections appropriées.
-     *
-     * @param file Le fichier à lire contenant les données des Clients et
-     *             Prospects.
-     */
+    */
+/**
+ * Lit un fichier et remplit les collections de Clients et Prospects avec
+ * les données lues.
+ * Cette méthode parcourt le fichier ligne par ligne, extrait les
+ * informations de chaque
+ * ligne et crée des objets Client et Prospect en conséquence. Ensuite,
+ * elle ajoute ces
+ * objets aux collections appropriées.
+ *
+ * @param file Le fichier à lire contenant les données des Clients et
+ *             Prospects.
+ *//*
+
     public static void litUnFichierEtRempliLesCollections(File file) {
         try (BufferedReader bufferedReader = new BufferedReader(
                 new FileReader(file))) {
@@ -158,3 +201,4 @@ public class WriteFile {
     //--------------------- GETTERS - SETTERS ----------------------------------
     //--------------------- TO STRING METHOD------------------------------------
 }
+*/

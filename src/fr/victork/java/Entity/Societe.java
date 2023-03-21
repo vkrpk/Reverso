@@ -43,9 +43,10 @@ public abstract class Societe implements Tools {
      * @param commentaires  Commentaires facultatifs
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public Societe(String raisonSociale, String numeroDeRue, String nomDeRue,
+    public Societe(Integer identifiant, String raisonSociale, String numeroDeRue, String nomDeRue,
                    String codePostal, String ville, String telephone,
                    String adresseMail, String commentaires) throws ExceptionEntity {
+        this.setIdentifiant(identifiant);
         this.setRaisonSociale(raisonSociale);
         this.setNumeroDeRue(numeroDeRue);
         this.setNomDeRue(nomDeRue);
@@ -217,15 +218,9 @@ public abstract class Societe implements Tools {
      * Affecte des commentaires à une société
      *
      * @param commentaires La valeur doit être une chaîne de caractères
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public void setCommentaires(String commentaires) throws ExceptionEntity {
-        if (commentaires != null) {
-            this.commentaires = commentaires;
-        } else {
-            throw new ExceptionEntity("Les commentaires doivent être une " +
-                    "chaîne de caractère non null.");
-        }
+    public void setCommentaires(String commentaires) {
+        this.commentaires = commentaires;
     }
 
     //--------------------- TO STRING METHOD------------------------------------
