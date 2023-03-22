@@ -1,6 +1,7 @@
 package fr.victork.java.DAO;
 
 import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Contrat;
 import fr.victork.java.Entity.Societe;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
@@ -70,6 +71,8 @@ public class ClientDAO {
                     client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
                             codePostal, ville,
                             telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
+                    ArrayList<Contrat> listeContrats = ContratDAO.findByIdClient(client);
+                    client.setListeContrat(listeContrats);
                     return client;
                 }
             }

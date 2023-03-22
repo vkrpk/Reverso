@@ -8,6 +8,7 @@
 package fr.victork.java.View;
 
 import fr.victork.java.DAO.ClientDAO;
+import fr.victork.java.DAO.ContratDAO;
 import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionDAO;
@@ -34,44 +35,35 @@ import static fr.victork.java.Log.LoggerReverso.LOGGER;
  * société sous la forme d'un tableau et de créer, supprimer ou éditer un
  * élément de cette liste
  */
-public class AffichageFrame extends MainFrame {
+public class AffichageContratFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private JTable table;
-    protected EnumInstanceDeSociete enumInstanceDeSociete;
     protected String[] columnNames = {};
     private Object[][] data;
     private JScrollPane scrollPane;
     private Societe societeSelection;
     private JButton btnCreer, btnSupprimer, btnEditer;
-    private ArrayList listeSocieteSelection;
+    private ArrayList<Contrat> listeContratsByClient;
+    private Client client;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
     /**
-     * @param enumInstanceDeSociete Type de société
-     * @param largeurFenetre        int Largeur de la fenêtre
-     * @param hauteurFenetre        int Hauteur de la fenêtre
-     * @param positionX             int Position X sur l'écran
-     * @param positionY             int Position Y sur l'écran
-     * @param pleinEcran            Boolean True si le mode plein écran est
-     *                              activé
+     * @param largeurFenetre int Largeur de la fenêtre
+     * @param hauteurFenetre int Hauteur de la fenêtre
+     * @param positionX      int Position X sur l'écran
+     * @param positionY      int Position Y sur l'écran
+     * @param pleinEcran     Boolean True si le mode plein écran est
+     *                       activé
      */
-    public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-                          int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+    public AffichageContratFrame(Client client,
+                                 int largeurFenetre, int hauteurFenetre, int positionX,
+                                 int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
-        this.enumInstanceDeSociete = enumInstanceDeSociete;
         try {
-            switch (enumInstanceDeSociete) {
-                case Client:
-                    listeSocieteSelection = ClientDAO.findAll();
-                    break;
-                case Prospect:
-                    listeSocieteSelection = ProspectDAO.findAll();
-                    break;
-            }
+            listeContratsByClient = ContratDAO.findByIdClient(client);
         } catch (DateTimeException dte) {
             JOptionPane.showMessageDialog(this,
                     "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -108,7 +100,7 @@ public class AffichageFrame extends MainFrame {
         updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
-        setTitle("Liste des " + enumInstanceDeSociete.name());
+        setTitle("Liste des contrats pour " + client.getRaisonSociale());
         setupPanBtnsCRUDAndSetEnabledToFalse();
 
         /**
@@ -118,7 +110,7 @@ public class AffichageFrame extends MainFrame {
         TableRowSorter<TableModel> sorter =
                 (TableRowSorter<TableModel>) table.getRowSorter();
         sorter.setSortKeys(Collections.singletonList(
-                new RowSorter.SortKey(1, SortOrder.ASCENDING)));
+                new RowSorter.SortKey(2, SortOrder.ASCENDING)));
         table.setRowSorter(sorter);
 
         /**
@@ -156,81 +148,40 @@ public class AffichageFrame extends MainFrame {
                 int id = ((Integer) value).intValue();
                 if (selectedRow != -1) {
                     etatsBoutons(true);
-                    switch (enumInstanceDeSociete) {
-                        case Client:
-                            try {
-                                societeSelection = ClientDAO.find(id);
-                            } catch (DateTimeException dte) {
-                                JOptionPane.showMessageDialog(this,
-                                        "La date doit être dans le format suivant : dd/MM/yyyy",
-                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, dte.getMessage());
-                            } catch (NumberFormatException nft) {
-                                JOptionPane.showMessageDialog(this,
-                                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                    try {
+                        societeSelection = ClientDAO.find(id);
+                    } catch (DateTimeException dte) {
+                        JOptionPane.showMessageDialog(this,
+                                "La date doit être dans le format suivant : dd/MM/yyyy",
+                                "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.WARNING, dte.getMessage());
+                    } catch (NumberFormatException nft) {
+                        JOptionPane.showMessageDialog(this,
+                                "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.WARNING, nft.getMessage());
+                    } catch (ExceptionEntity ee) {
+                        JOptionPane.showMessageDialog(this, ee.getMessage(),
+                                "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.WARNING, ee.getMessage());
+                    } catch (ExceptionDAO exceptionDAO) {
+                        switch (exceptionDAO.getGravite()) {
+                            case 5:
+                                exceptionDAO.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application" +
+                                                " doit fermer", "Erreur dans l'application",
                                         JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, nft.getMessage());
-                            } catch (ExceptionEntity ee) {
-                                JOptionPane.showMessageDialog(this, ee.getMessage(),
-                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, ee.getMessage());
-                            } catch (ExceptionDAO exceptionDAO) {
-                                switch (exceptionDAO.getGravite()) {
-                                    case 5:
-                                        exceptionDAO.printStackTrace();
-                                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application" +
-                                                        " doit fermer", "Erreur dans l'application",
-                                                JOptionPane.ERROR_MESSAGE);
-                                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
-                                        System.exit(1);
-                                        break;
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
-                                                "l'application",
-                                        JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.SEVERE, exception.getMessage());
+                                LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
                                 System.exit(1);
-                            }
-                            break;
-                        case Prospect:
-                            try {
-                                societeSelection = ProspectDAO.find(id);
-                            } catch (DateTimeException dte) {
-                                JOptionPane.showMessageDialog(this,
-                                        "La date doit être dans le format suivant : dd/MM/yyyy",
-                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, dte.getMessage());
-                            } catch (NumberFormatException nft) {
-                                JOptionPane.showMessageDialog(this,
-                                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
-                                        JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, nft.getMessage());
-                            } catch (ExceptionEntity ee) {
-                                JOptionPane.showMessageDialog(this, ee.getMessage(),
-                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.WARNING, ee.getMessage());
-                            } catch (ExceptionDAO exceptionDAO) {
-                                switch (exceptionDAO.getGravite()) {
-                                    case 5:
-                                        exceptionDAO.printStackTrace();
-                                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer",
-                                                "Erreur dans l'application",
-                                                JOptionPane.ERROR_MESSAGE);
-                                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
-                                        System.exit(1);
-                                        break;
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
-                                                "l'application",
-                                        JOptionPane.ERROR_MESSAGE);
-                                LOGGER.log(Level.SEVERE, exception.getMessage());
-                                System.exit(1);
-                            }
-                            break;
+                                break;
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                        "l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exception.getMessage());
+                        System.exit(1);
                     }
                 }
             }
@@ -262,10 +213,9 @@ public class AffichageFrame extends MainFrame {
          */
         btnCreer.addActionListener(e -> {
             this.dispose();
-            new FormFrame(enumInstanceDeSociete, EnumCRUD.CREATE, super.largeur,
+            new FormFrame(EnumInstanceDeSociete.Prospect, EnumCRUD.CREATE, super.largeur,
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
-
         setVisible(true);
     }
 
@@ -292,6 +242,12 @@ public class AffichageFrame extends MainFrame {
         this.table.setRowHeight(30);
         this.table.setIntercellSpacing(new Dimension(0, 1));
         this.table.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        CenterTableCellRenderer renderer = new CenterTableCellRenderer();
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            // Associe le renderer à chaque colonne
+            table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
 
         scrollPane = new JScrollPane(this.table);
         super.panCentral.setLayout(new BorderLayout());
@@ -332,13 +288,13 @@ public class AffichageFrame extends MainFrame {
         btnSupprimer.setEnabled(etat);
     }
 
-    /**
+    /*  *//**
      * Cette méthode a pour but de réinitialisé et de mettre à jour le modèle
      * du tableau
      *
      * @param enumInstanceDeSociete Type de société
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
-     */
+     *//*
     public void updateEnumInstanceDeSociete(
             EnumInstanceDeSociete enumInstanceDeSociete) {
         this.enumInstanceDeSociete = enumInstanceDeSociete;
@@ -351,7 +307,7 @@ public class AffichageFrame extends MainFrame {
         };
         this.table.setModel(model);
         updateColumnWidths();
-    }
+    }*/
 
     /**
      * Cette méthode applique une taille minimale à chaque colonne de 75
@@ -359,7 +315,7 @@ public class AffichageFrame extends MainFrame {
      * la place disponible
      */
     private void updateColumnWidths() {
-        int tableWidth = AffichageFrame.this.panCentral.getWidth();
+        int tableWidth = AffichageContratFrame.this.panCentral.getWidth();
         TableColumnModel columnModel = table.getColumnModel();
         int columnCount = columnModel.getColumnCount();
         int columnWidth = Math.max(tableWidth / columnCount, 75);
@@ -377,52 +333,16 @@ public class AffichageFrame extends MainFrame {
      * éléments de la collection
      */
     private void updateData() {
-        switch (enumInstanceDeSociete) {
-            case Client:
-                this.data =
-                        new Object[listeSocieteSelection.size()][10];
-                columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
-                        "Téléphone", "Adresse mail", "Chiffre " + "d'affaires",
-                        "Nombre " + "d'employés"};
-                for (int i = 0; i < listeSocieteSelection.size();
-                     i++) {
-                    Client client = (Client) listeSocieteSelection.get(i);
-                    this.data[i][0] = client.getIdentifiant();
-                    this.data[i][1] = client.getRaisonSociale();
-                    this.data[i][2] = client.getNumeroDeRue();
-                    this.data[i][3] = client.getNomDeRue();
-                    this.data[i][4] = client.getCodePostal();
-                    this.data[i][5] = client.getVille();
-                    this.data[i][6] = client.getTelephone();
-                    this.data[i][7] = client.getAdresseMail();
-                    this.data[i][8] = Tools.DECIMAL_FORMAT.format(client.getChiffreAffaires());
-                    this.data[i][9] = client.getNombreEmployes();
-                }
-                break;
-            case Prospect:
-                this.data = new Object[listeSocieteSelection.size()][10];
-                columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
-                        "Téléphone", "Adresse mail", "Date de " + "prospection",
-                        "Prospect" + " intéressé"};
-                for (int i = 0; i < listeSocieteSelection.size();
-                     i++) {
-                    Prospect prospect = (Prospect) listeSocieteSelection.get(i);
-                    this.data[i][0] = prospect.getIdentifiant();
-                    this.data[i][1] = prospect.getRaisonSociale();
-                    this.data[i][2] = prospect.getNumeroDeRue();
-                    this.data[i][3] = prospect.getNomDeRue();
-                    this.data[i][4] = prospect.getCodePostal();
-                    this.data[i][5] = prospect.getVille();
-                    this.data[i][6] = prospect.getTelephone();
-                    this.data[i][7] = prospect.getAdresseMail();
-                    this.data[i][8] =
-                            FormatterDate.convertiEtFormatDateEnChaine(
-                                    prospect.getDateProsprection());
-                    this.data[i][9] = prospect.getProspectInteresse();
-                }
-                break;
+        this.data =
+                new Object[listeContratsByClient.size()][4];
+        columnNames = new String[]{"Identifiant Contrat", "Identifiant client", "Libellé", "Montant"};
+        for (int i = 0; i < listeContratsByClient.size();
+             i++) {
+            Contrat contrat = listeContratsByClient.get(i);
+            this.data[i][0] = contrat.getIdentifiantContrat();
+            this.data[i][1] = contrat.getIdentifiantClient();
+            this.data[i][2] = contrat.getLibelle();
+            this.data[i][3] = Tools.DECIMAL_FORMAT.format(contrat.getMontant());
         }
     }
     //--------------------- ABSTRACT METHODS -----------------------------------

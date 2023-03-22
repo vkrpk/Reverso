@@ -20,7 +20,18 @@ create table client
     constraint client_raison_sociale
         unique (client_raison_sociale)
 )
-    charset = utf8;
+    charset = utf8mb3;
+
+create table contrat
+(
+    identifiant_contrat int auto_increment
+        primary key,
+    identifiant_client  int          not null,
+    libelle             varchar(255) not null,
+    montant             double       not null,
+    constraint fk_client_contrat
+        foreign key (identifiant_client) references client (client_identifiant)
+);
 
 create table prospect
 (
@@ -39,7 +50,9 @@ create table prospect
     constraint prospect_raison_sociale
         unique (prospect_raison_sociale)
 )
-    charset = utf8;
+    charset = utf8mb3;
+
+
 
 INSERT INTO client (client_raison_sociale, client_numero_de_rue, client_nom_de_rue, client_code_postal, client_ville,
                     client_telephone,
@@ -59,3 +72,7 @@ VALUES ('Acme Inc', '789 5th Ave', 'Suite 200', '06000', 'Nice', '04 12 34 56 78
         '2023-03-01', 'Non'),
        ('Globex Corp', '10 Downing St', 'Floor 4', '33000', 'Bordeaux', '05 67 89 01 23', 'contact@globexcorp.com',
         'Intéressé par notre nouveau produit', '2023-03-15', 'Oui');
+
+INSERT INTO contrat (identifiant_client, libelle, montant)
+VALUES (1, 'Contrat n°1 avec le client 1', '444.44'),
+       (1, 'Contrat n°1 avec le client 2', '999.99');

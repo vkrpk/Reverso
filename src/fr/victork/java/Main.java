@@ -6,6 +6,7 @@
 package fr.victork.java;
 
 import fr.victork.java.DAO.ClientDAO;
+import fr.victork.java.DAO.ContratDAO;
 import fr.victork.java.DAO.DatabaseConnection;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
@@ -16,6 +17,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
@@ -42,11 +44,16 @@ public class Main {
 
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
-            new AccueilFrame(800, 750, -1, -1, false);
+            new AccueilFrame(1100, 750, -1, -1, false);
             //DatabaseConnection.getInstance();
             Connection connection = DatabaseConnection.getConnection();
 
-            Client client1 = ClientDAO.find(1);
+            Client client = ClientDAO.find(1);
+            ArrayList<Contrat> contratsByClient = ContratDAO.findByIdClient(client);
+            for (Contrat contrat : contratsByClient
+            ) {
+                System.out.println(contrat.getLibelle());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());

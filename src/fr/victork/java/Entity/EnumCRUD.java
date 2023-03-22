@@ -12,5 +12,5 @@ package fr.victork.java.Entity;
  * des données
  */
 public enum EnumCRUD {
-    CREATE, UPDATE, DELETE, READ
+    CREATE, UPDATE, DELETE, READ, READ_CONTRAT
 }

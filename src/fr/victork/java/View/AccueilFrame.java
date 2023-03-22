@@ -29,7 +29,7 @@ public class AccueilFrame extends MainFrame {
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private JButton btnCreer, btnAfficher, btnSupprimer, btnEditer,
-            btnGererClient, btnGererProspect, btnValiderSupprimerOuEditer;
+            btnGererClient, btnGererProspect, btnValiderSupprimerOuEditer, btnAfficherContratByClient;
     private JComboBox comboBoxSociete;
     private EnumInstanceDeSociete enumInstanceDeSociete;
     private EnumCRUD enumCRUD;
@@ -59,8 +59,12 @@ public class AccueilFrame extends MainFrame {
 
         // Mémorise le type de société à gérer et adapte l'affichage
         btnGererClient.addActionListener(e -> {
+            panBtnEditOrDelete.setVisible(false);
+            btnAfficherContratByClient.setVisible(true);
+            this.enumCRUD = null;
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
             setupLabelBtnsCRUD();
+            btnAfficherContratByClient.setEnabled(true);
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
@@ -107,8 +111,12 @@ public class AccueilFrame extends MainFrame {
 
         // Mémorise le type de société à gérer et adapte l'affichage
         btnGererProspect.addActionListener(e -> {
+            panBtnEditOrDelete.setVisible(false);
+            btnAfficherContratByClient.setVisible(false);
+            this.enumCRUD = null;
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
             setupLabelBtnsCRUD();
+            btnAfficherContratByClient.setEnabled(false);
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
@@ -176,9 +184,15 @@ public class AccueilFrame extends MainFrame {
         fonction de l'action choisi pour l'instance de Société sélectionnée */
         btnValiderSupprimerOuEditer.addActionListener(e -> {
             this.dispose();
-            new FormFrame(this.societeSelection, this.enumCRUD,
-                    super.largeur, super.hauteur, super.x, super.y,
-                    super.estEnPleinEcran);
+            if (this.enumCRUD == EnumCRUD.READ_CONTRAT) {
+                new AffichageContratFrame((Client) societeSelection,
+                        super.largeur, super.hauteur, super.x, super.y,
+                        super.estEnPleinEcran);
+            } else {
+                new FormFrame(this.societeSelection, this.enumCRUD,
+                        super.largeur, super.hauteur, super.x, super.y,
+                        super.estEnPleinEcran);
+            }
         });
 
         // Mémorise l'action "supprimer" et affiche la liste déroulante
@@ -190,6 +204,11 @@ public class AccueilFrame extends MainFrame {
         // Mémorise l'action "supprimer" et affiche la liste déroulante
         btnEditer.addActionListener(e -> {
             this.enumCRUD = EnumCRUD.UPDATE;
+            afficheComboBoxSociete();
+        });
+
+        btnAfficherContratByClient.addActionListener(e -> {
+            this.enumCRUD = EnumCRUD.READ_CONTRAT;
             afficheComboBoxSociete();
         });
 
@@ -209,6 +228,9 @@ public class AccueilFrame extends MainFrame {
                     case UPDATE:
                         this.btnValiderSupprimerOuEditer.setText("Modifier : " +
                                 societeSelection.getRaisonSociale());
+                        break;
+                    case READ_CONTRAT:
+                        this.btnAfficherContratByClient.setText("Afficher les contrats");
                         break;
                 }
             }
@@ -242,6 +264,7 @@ public class AccueilFrame extends MainFrame {
         btnAfficher = createButton("Afficher");
         btnSupprimer = createButton("Supprimer");
         btnEditer = createButton("Editer");
+        btnAfficherContratByClient = createButton("Afficher les contrats");
 
         this.listBtnsCRUD = new ArrayList<>();
 
@@ -249,6 +272,7 @@ public class AccueilFrame extends MainFrame {
         this.listBtnsCRUD.add(btnCreer);
         this.listBtnsCRUD.add(btnEditer);
         this.listBtnsCRUD.add(btnSupprimer);
+        this.listBtnsCRUD.add(btnAfficherContratByClient);
 
         for (JButton button : listBtnsCRUD) {
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -256,6 +280,7 @@ public class AccueilFrame extends MainFrame {
             panBtnsCRUD.add(buttonPanel);
         }
         enabledBtnsCRUD(false);
+        btnAfficherContratByClient.setEnabled(false);
     }
 
     /**
@@ -339,6 +364,7 @@ public class AccueilFrame extends MainFrame {
         btnCreer.setEnabled(isEnabled);
         btnEditer.setEnabled(isEnabled);
         btnSupprimer.setEnabled(isEnabled);
+        //btnAfficherContratByClient.setEnabled(isEnabled);
     }
 
     /**
@@ -351,6 +377,8 @@ public class AccueilFrame extends MainFrame {
         btnAfficher.setText("Afficher les " + nomDuGroupe + "s");
         btnSupprimer.setText("Supprimer un " + nomDuGroupe);
         btnEditer.setText("Modifier un " + nomDuGroupe);
+        btnEditer.setText("Modifier un " + nomDuGroupe);
+        //btnAfficherContratByClient.setText("Afficher les contrats");
         enabledBtnsCRUD(true);
     }
 
@@ -366,20 +394,34 @@ public class AccueilFrame extends MainFrame {
         panBtnEditOrDelete.setVisible(true);
         switch (enumCRUD) {
             case DELETE:
-                this.btnValiderSupprimerOuEditer.setText(
+                btnValiderSupprimerOuEditer.setText(
                         "Supprimer : " + societeSelection.getRaisonSociale());
                 btnSupprimer.setBackground(colorGreenCustom);
+                btnSupprimer.setForeground(Color.WHITE);
                 btnEditer.setBackground(null);
                 btnEditer.setForeground(Color.BLACK);
-                btnSupprimer.setForeground(Color.WHITE);
+                btnAfficherContratByClient.setBackground(null);
+                btnAfficherContratByClient.setForeground(Color.BLACK);
                 break;
             case UPDATE:
-                this.btnValiderSupprimerOuEditer.setText(
+                btnValiderSupprimerOuEditer.setText(
                         "Modifer : " + societeSelection.getRaisonSociale());
-                btnSupprimer.setBackground(null);
                 btnEditer.setBackground(colorGreenCustom);
                 btnEditer.setForeground(Color.WHITE);
+                btnSupprimer.setBackground(null);
                 btnSupprimer.setForeground(Color.BLACK);
+                btnAfficherContratByClient.setBackground(null);
+                btnAfficherContratByClient.setForeground(Color.BLACK);
+                break;
+            case READ_CONTRAT:
+                btnValiderSupprimerOuEditer.setText(
+                        "Afficher les contrats du client : " + societeSelection.getRaisonSociale());
+                btnAfficherContratByClient.setBackground(colorGreenCustom);
+                btnAfficherContratByClient.setForeground(Color.WHITE);
+                btnSupprimer.setBackground(null);
+                btnSupprimer.setForeground(Color.BLACK);
+                btnEditer.setBackground(null);
+                btnEditer.setForeground(Color.BLACK);
                 break;
         }
     }

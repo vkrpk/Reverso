@@ -7,6 +7,8 @@ package fr.victork.java.Entity;
 
 import fr.victork.java.Exception.ExceptionEntity;
 
+import java.util.ArrayList;
+
 /**
  * Cette classe représente un client héritant de Société
  */
@@ -16,6 +18,7 @@ public class Client extends Societe {
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private Double chiffreAffaires;
     private int nombreEmployes;
+    private ArrayList<Contrat> listeContrat;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -89,6 +92,14 @@ public class Client extends Societe {
             throw new ExceptionEntity(
                     "Le nombre d'employés doit" + " être supérieur à 0.");
         }
+    }
+
+    public ArrayList<Contrat> getListeContrat() {
+        return listeContrat;
+    }
+
+    public void setListeContrat(ArrayList<Contrat> listeContrat) {
+        this.listeContrat = listeContrat;
     }
 
     //--------------------- TO STRING METHOD------------------------------------
