@@ -14,6 +14,9 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.logging.Level;
+
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
 /**
  * Cette classe représente le squelette de toutes les fenêtres de l'application
@@ -39,7 +42,7 @@ public class MainFrame extends JFrame implements Tools {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                     int positionY, boolean pleinEcran) {
         setupGUIAllFrames(pleinEcran);
 
         // Ferme la fenêtre actuelle et ouvre la page d'accueil
@@ -144,7 +147,9 @@ public class MainFrame extends JFrame implements Tools {
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            System.exit(1);
         }
         contentPane = (JPanel) getContentPane();
         panCentral = new JPanel();

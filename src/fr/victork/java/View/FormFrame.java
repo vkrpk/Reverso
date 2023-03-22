@@ -9,6 +9,7 @@ package fr.victork.java.View;
 import fr.victork.java.DAO.ClientDAO;
 import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
 import fr.victork.java.Tools.Tools;
@@ -93,7 +94,7 @@ public class FormFrame extends MainFrame {
      */
     public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre,
                      int hauteurFenetre, int positionX, int positionY,
-                     boolean pleinEcran) throws ExceptionEntity {
+                     boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
@@ -182,18 +183,38 @@ public class FormFrame extends MainFrame {
                 LOGGER.log(Level.WARNING, dte.getMessage());
             } catch (NumberFormatException nft) {
                 JOptionPane.showMessageDialog(this,
-                        "La valeur saisie doit être uniquement composé de " +
-                                "chiffres", "Erreur de saisie",
+                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
                         JOptionPane.ERROR_MESSAGE);
                 LOGGER.log(Level.WARNING, nft.getMessage());
             } catch (ExceptionEntity ee) {
                 JOptionPane.showMessageDialog(this, ee.getMessage(),
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
                 LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 1:
+                        JOptionPane.showMessageDialog(this,
+                                "La raison sociale de cette société existe déjà.",
+                                "Erreur de saisie",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.INFO, exceptionDAO.getMessage());
+                        break;
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer",
+                                "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
             } catch (Exception exception) {
                 exception.printStackTrace();
-                System.exit(1);
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
                 LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
             }
         });
     }
@@ -327,7 +348,7 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void update() throws Exception {
+    private void update() throws ExceptionEntity, ExceptionDAO {
         societeSelection.setRaisonSociale(inputRaisonSociale.getText());
         societeSelection.setNumeroDeRue(inputNumeroDeRue.getText());
         societeSelection.setNomDeRue(inputNomDeRue.getText());
@@ -345,6 +366,11 @@ public class FormFrame extends MainFrame {
                 ((Client) societeSelection).setNombreEmployes(
                         Integer.parseInt(inputNombreEmployes.getText()));
                 ClientDAO.create((Client) societeSelection);
+                this.dispose();
+                AffichageFrame affichageFrameClient =
+                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                affichageFrameClient.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
             case Prospect:
                 ((Prospect) societeSelection).setDateProsprection(
@@ -353,18 +379,14 @@ public class FormFrame extends MainFrame {
                 ((Prospect) societeSelection).setProspectInteresse(
                         interestingProspectString);
                 ProspectDAO.create((Prospect) societeSelection);
+                this.dispose();
+                AffichageFrame affichageFrameProspect =
+                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                affichageFrameProspect.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
         }
-        this.dispose();
-        try {
-            AffichageFrame affichageFrame =
-                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                            super.hauteur, super.x, super.y, super.estEnPleinEcran);
-            affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -373,7 +395,7 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void create() throws Exception {
+    private void create() throws ExceptionEntity, ExceptionDAO {
         switch (enumInstanceDeSociete) {
             case Client:
                 Client nouveauClient = new Client(
@@ -387,6 +409,11 @@ public class FormFrame extends MainFrame {
                         Integer.parseInt(inputNombreEmployes.getText())
                 );
                 ClientDAO.create(nouveauClient);
+                this.dispose();
+                AffichageFrame affichageFrameClient =
+                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                affichageFrameClient.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
             case Prospect:
                 Prospect nouveauProspect =
@@ -403,18 +430,15 @@ public class FormFrame extends MainFrame {
                                         inputDateProspection.getText()),
                                 interestingProspectString);
                 ProspectDAO.create(nouveauProspect);
+                this.dispose();
+                AffichageFrame affichageFrameProspect =
+                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                affichageFrameProspect.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
         }
 
-        this.dispose();
-        try {
-            AffichageFrame affichageFrame =
-                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                            super.hauteur, super.x, super.y, super.estEnPleinEcran);
-            affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -423,7 +447,7 @@ public class FormFrame extends MainFrame {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private void delete() throws Exception {
+    private void delete() throws ExceptionDAO {
         int choix = JOptionPane.showConfirmDialog(super.panCentral,
                 "Supprimer : " + societeSelection.getRaisonSociale() + " ?",
                 "Confirmation", JOptionPane.YES_NO_OPTION);

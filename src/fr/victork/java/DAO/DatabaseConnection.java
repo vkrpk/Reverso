@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
@@ -17,7 +18,7 @@ public class DatabaseConnection {
     public static Connection connection;
 
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    public static Connection getConnection() throws Exception {
+    public static Connection getConnection() {
         if (connection == null) {
             new DatabaseConnection();
         }
@@ -25,7 +26,7 @@ public class DatabaseConnection {
     }
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    private DatabaseConnection() throws Exception {
+    private DatabaseConnection() {
         try {
             FileInputStream fis = new FileInputStream("database.properties");
             dataProperties.load(fis);
@@ -41,7 +42,11 @@ public class DatabaseConnection {
             ioException.printStackTrace();
         } catch (SQLException e) {
             new ExceptionDAO("Une erreur est survenue lors de la connexion à la base de données " +
-                    e.getMessage() + e.getCause(), 1);
+                    e.getMessage(), 1);
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+            System.exit(1);
+            LOGGER.log(Level.SEVERE, classNotFoundException.getMessage());
         }
     }
 

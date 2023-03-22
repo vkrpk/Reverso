@@ -3,7 +3,9 @@ package fr.victork.java.DAO;
 import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Exception.ExceptionDAO;
+import fr.victork.java.Exception.ExceptionEntity;
 
+import javax.swing.*;
 import java.sql.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -18,7 +20,7 @@ public class ProspectDAO {
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     public static ArrayList<Prospect> findAll()
-            throws Exception {
+            throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM prospect";
         ArrayList<Prospect> collectionProspects = new ArrayList<>();
         try (Statement statement = connection.createStatement(); ResultSet resultSet =
@@ -40,15 +42,15 @@ public class ProspectDAO {
                         telephone, adresseMail, commentaires, dateProsprection.toLocalDate(), prospectInteresse);
                 collectionProspects.add(prospect);
             }
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des prospects : " +
-                    e.getMessage() + e.getCause(), 1);
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des prospects : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
         return collectionProspects;
     }
 
     public static Prospect find(Integer id)
-            throws Exception {
+            throws ExceptionEntity, ExceptionDAO {
         Prospect prospect = new Prospect();
         String strSql = "SELECT * FROM prospect WHERE prospect_identifiant=?";
         try (PreparedStatement statement = connection.prepareStatement(strSql)) {
@@ -72,29 +74,28 @@ public class ProspectDAO {
                     return prospect;
                 }
             }
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la recherche d'un prospect : " + e.getMessage() +
-                    e.getCause(), 1);
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la recherche d'un prospect : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
         return prospect;
     }
 
     public static void delete(Integer id)
-            throws Exception {
+            throws ExceptionDAO {
         Prospect prospect = new Prospect();
         String strSql = "DELETE FROM prospect WHERE prospect_identifiant=?";
         try (PreparedStatement statement = connection.prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la suppression d'un prospect : " + e.getMessage() +
-                    e.getCause(), 1);
-            System.out.println(e.getMessage());
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la suppression d'un prospect : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
     }
 
     public static void create(Prospect prospect)
-            throws Exception {
+            throws ExceptionEntity, ExceptionDAO {
         String strSql;
         if (prospect.getIdentifiant() == null) {
             strSql = "INSERT INTO prospect (prospect_raison_sociale, prospect_numero_de_rue, prospect_nom_de_rue, " +
@@ -124,9 +125,14 @@ public class ProspectDAO {
                 statement.setInt(11, prospect.getIdentifiant());
             }
             statement.executeUpdate();
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la création d'un prospect : " + e.getMessage() + e.getCause(), 1);
-            System.out.println(e.getMessage());
+        } catch (SQLException sqlException) {
+            if (sqlException.getErrorCode() == 1062) {
+                throw new ExceptionDAO("Une erreur est survenue lors de la création d'un prospect : " +
+                        sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 1);
+            } else {
+                throw new ExceptionDAO("Une erreur est survenue lors de la création d'un prospect : " +
+                        sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
+            }
         }
     }
     //--------------------- INSTANCE METHODS -----------------------------------

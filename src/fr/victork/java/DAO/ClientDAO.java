@@ -3,6 +3,7 @@ package fr.victork.java.DAO;
 import fr.victork.java.Entity.Client;
 import fr.victork.java.Entity.Societe;
 import fr.victork.java.Exception.ExceptionDAO;
+import fr.victork.java.Exception.ExceptionEntity;
 
 import java.sql.*;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ public class ClientDAO {
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     public static ArrayList<Client> findAll()
-            throws ExceptionDAO {
+            throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM client";
         ArrayList<Client> collectionClients = new ArrayList<>();
         try (Statement statement = connection.createStatement(); ResultSet resultSet =
@@ -40,15 +41,15 @@ public class ClientDAO {
                         telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
                 collectionClients.add(client);
             }
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des clients : " +
-                    e.getMessage() + e.getCause(), 1);
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des clients : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
         return collectionClients;
     }
 
     public static Client find(Integer id)
-            throws Exception {
+            throws ExceptionEntity, ExceptionDAO {
         Client client = new Client();
         String strSql = "SELECT * FROM client WHERE client_identifiant=?";
         try (PreparedStatement statement = connection.prepareStatement(strSql)) {
@@ -72,29 +73,28 @@ public class ClientDAO {
                     return client;
                 }
             }
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la recherche d'un client : " + e.getMessage() +
-                    e.getCause(), 1);
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la recherche d'un client : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
         return client;
     }
 
     public static void delete(Integer id)
-            throws Exception {
+            throws ExceptionDAO {
         Client client = new Client();
         String strSql = "DELETE FROM client WHERE client_identifiant=?";
         try (PreparedStatement statement = connection.prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la suppression d'un client : " + e.getMessage() +
-                    e.getCause(), 1);
-            System.out.println(e.getMessage());
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la suppression d'un client : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
         }
     }
 
     public static void create(Client client)
-            throws Exception {
+            throws ExceptionEntity, ExceptionDAO {
         String strSql;
         if (client.getIdentifiant() == null) {
             strSql = "INSERT INTO client (client_raison_sociale, client_numero_de_rue, client_nom_de_rue, " +
@@ -124,9 +124,14 @@ public class ClientDAO {
                 statement.setInt(11, client.getIdentifiant());
             }
             statement.executeUpdate();
-        } catch (SQLException e) {
-            new ExceptionDAO("Une erreur est survenue lors de la création d'un client : " + e.getMessage() + e.getCause(), 1);
-            System.out.println(e.getMessage());
+        } catch (SQLException sqlException) {
+            if (sqlException.getErrorCode() == 1062) {
+                throw new ExceptionDAO("Une erreur est survenue lors de la création d'un client : " +
+                        sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 1);
+            } else {
+                throw new ExceptionDAO("Une erreur est survenue lors de la création d'un client : " +
+                        sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
+            }
         }
     }
     //--------------------- INSTANCE METHODS -----------------------------------

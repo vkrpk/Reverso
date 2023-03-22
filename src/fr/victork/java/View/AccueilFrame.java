@@ -9,11 +9,16 @@ package fr.victork.java.View;
 import fr.victork.java.DAO.ClientDAO;
 import fr.victork.java.DAO.ProspectDAO;
 import fr.victork.java.Entity.*;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.DateTimeException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
 /**
  * Cette classe a pour but sélectionner un type de société pour ensuite
@@ -66,8 +71,37 @@ public class AccueilFrame extends MainFrame {
                     btnSupprimer.setForeground(Color.black);
                     panBtnEditOrDelete.setVisible(false);
                 }
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (DateTimeException dte) {
+                JOptionPane.showMessageDialog(this,
+                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, dte.getMessage());
+            } catch (NumberFormatException nft) {
+                JOptionPane.showMessageDialog(this,
+                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, nft.getMessage());
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
             }
         });
 
@@ -85,26 +119,49 @@ public class AccueilFrame extends MainFrame {
                     btnSupprimer.setForeground(Color.black);
                     panBtnEditOrDelete.setVisible(false);
                 }
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            } catch (DateTimeException dte) {
+                JOptionPane.showMessageDialog(this,
+                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, dte.getMessage());
+            } catch (NumberFormatException nft) {
+                JOptionPane.showMessageDialog(this,
+                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, nft.getMessage());
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
             }
         });
 
         // Affiche liste des sociétés du type sélectionné
         btnAfficher.addActionListener(e -> {
-            try {
-                this.dispose();
-                AffichageFrame affichageFrame =
-                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y,
-                                super.estEnPleinEcran);
-                affichageFrame.updateEnumInstanceDeSociete(
-                        enumInstanceDeSociete);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+            this.dispose();
+            AffichageFrame affichageFrame =
+                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                            super.hauteur, super.x, super.y,
+                            super.estEnPleinEcran);
+            affichageFrame.updateEnumInstanceDeSociete(
+                    enumInstanceDeSociete);
         });
 
         // Affiche le formulaire de création pour le type de société sélectionné
@@ -118,14 +175,10 @@ public class AccueilFrame extends MainFrame {
         /* Affiche le formulaire de modification ou de suppression en
         fonction de l'action choisi pour l'instance de Société sélectionnée */
         btnValiderSupprimerOuEditer.addActionListener(e -> {
-            try {
-                this.dispose();
-                new FormFrame(this.societeSelection, this.enumCRUD,
-                        super.largeur, super.hauteur, super.x, super.y,
-                        super.estEnPleinEcran);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
-            }
+            this.dispose();
+            new FormFrame(this.societeSelection, this.enumCRUD,
+                    super.largeur, super.hauteur, super.x, super.y,
+                    super.estEnPleinEcran);
         });
 
         // Mémorise l'action "supprimer" et affiche la liste déroulante
@@ -242,9 +295,37 @@ public class AccueilFrame extends MainFrame {
                     comboBoxSociete.setSelectedIndex(0);
                     break;
             }
-        } catch (Exception e) {
-            System.out.println("messages : " + e.getMessage());
-            e.printStackTrace();
+        } catch (DateTimeException dte) {
+            JOptionPane.showMessageDialog(this,
+                    "La date doit être dans le format suivant : dd/MM/yyyy",
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, dte.getMessage());
+        } catch (NumberFormatException nft) {
+            JOptionPane.showMessageDialog(this,
+                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, nft.getMessage());
+        } catch (ExceptionEntity ee) {
+            JOptionPane.showMessageDialog(this, ee.getMessage(),
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, ee.getMessage());
+        } catch (ExceptionDAO exceptionDAO) {
+            switch (exceptionDAO.getGravite()) {
+                case 5:
+                    exceptionDAO.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                            JOptionPane.ERROR_MESSAGE);
+                    LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                    System.exit(1);
+                    break;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                            "l'application",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.SEVERE, exception.getMessage());
+            System.exit(1);
         }
     }
 
