@@ -1,20 +1,19 @@
-package fr.victork.java.DAO;
+package fr.victork.java.DAO.mysql;
 
 import fr.victork.java.Entity.Client;
 import fr.victork.java.Entity.Contrat;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ContratDAO {
+public class MySQLContratDAO {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static final Connection connection = DatabaseConnection.connection;
+    //private static final Connection connection = MySQLDatabaseConnection.getConnection();
 
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
@@ -23,7 +22,7 @@ public class ContratDAO {
     public static ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM contrat WHERE identifiant_client=?";
         ArrayList<Contrat> contratsByClient = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setInt(1, client.getIdentifiant());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {

@@ -6,8 +6,8 @@
  */
 package fr.victork.java.View;
 
-import fr.victork.java.DAO.ClientDAO;
-import fr.victork.java.DAO.ProspectDAO;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
@@ -68,7 +68,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (ClientDAO.findAll().isEmpty()) {
+                if (new MySQLClientDAO().findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -120,7 +120,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (ProspectDAO.findAll().isEmpty()) {
+                if (new MySQLProspectDAO().findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -296,25 +296,25 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
-                    if (ClientDAO.findAll().isEmpty()) {
+                    if (new MySQLClientDAO().findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Client collectionItem :
-                            ClientDAO.findAll()) {
+                            new MySQLClientDAO().findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
-                    if (ProspectDAO.findAll().isEmpty()) {
+                    if (new MySQLProspectDAO().findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Prospect collectionItem :
-                            ProspectDAO.findAll()) {
+                            new MySQLProspectDAO().findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);

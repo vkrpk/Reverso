@@ -1,30 +1,27 @@
-package fr.victork.java.DAO;
+package fr.victork.java.DAO.mysql;
 
-import fr.victork.java.Entity.Prospect;
+import fr.victork.java.DAO.DAO;
 import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
-import javax.swing.*;
 import java.sql.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ProspectDAO {
+public class MySQLProspectDAO implements DAO<Prospect> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static final Connection connection = DatabaseConnection.connection;
-
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
-    public static ArrayList<Prospect> findAll()
+    public ArrayList<Prospect> findAll()
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM prospect";
         ArrayList<Prospect> collectionProspects = new ArrayList<>();
-        try (Statement statement = connection.createStatement(); ResultSet resultSet =
-                statement.executeQuery(strSql)) {
+        try (Statement statement = MySQLDatabaseConnection.getInstance().getConnection().createStatement();
+             ResultSet resultSet = statement.executeQuery(strSql)) {
             while (resultSet.next()) {
                 Integer identifiant = resultSet.getInt("prospect_identifiant");
                 String raisonSociale = resultSet.getString("prospect_raison_sociale");
@@ -49,11 +46,11 @@ public class ProspectDAO {
         return collectionProspects;
     }
 
-    public static Prospect find(Integer id)
+    public Prospect find(Integer id)
             throws ExceptionEntity, ExceptionDAO {
         Prospect prospect = new Prospect();
         String strSql = "SELECT * FROM prospect WHERE prospect_identifiant=?";
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -81,11 +78,11 @@ public class ProspectDAO {
         return prospect;
     }
 
-    public static void delete(Integer id)
+    public void delete(Integer id)
             throws ExceptionDAO {
         Prospect prospect = new Prospect();
         String strSql = "DELETE FROM prospect WHERE prospect_identifiant=?";
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException sqlException) {
@@ -94,7 +91,7 @@ public class ProspectDAO {
         }
     }
 
-    public static void create(Prospect prospect)
+    public void save(Prospect prospect)
             throws ExceptionEntity, ExceptionDAO {
         String strSql;
         if (prospect.getIdentifiant() == null) {
@@ -110,7 +107,7 @@ public class ProspectDAO {
                     "prospect_adresse_mail = ?, prospect_commentaires = ?, prospect_date_prosprection = ?, " +
                     "prospect_interesse = ? WHERE prospect_identifiant = ? ";
         }
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setString(1, prospect.getRaisonSociale());
             statement.setString(2, prospect.getNumeroDeRue());
             statement.setString(3, prospect.getNomDeRue());

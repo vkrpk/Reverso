@@ -1,8 +1,8 @@
-package fr.victork.java.DAO;
+package fr.victork.java.DAO.mysql;
 
+import fr.victork.java.DAO.DAO;
 import fr.victork.java.Entity.Client;
 import fr.victork.java.Entity.Contrat;
-import fr.victork.java.Entity.Societe;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
@@ -11,19 +11,18 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ClientDAO {
+public class MySQLClientDAO implements DAO<Client> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static final Connection connection = DatabaseConnection.connection;
-
+    //private static final Connection connection = MySQLDatabaseConnection.getConnection();
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
-    public static ArrayList<Client> findAll()
+    public ArrayList<Client> findAll()
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM client";
         ArrayList<Client> collectionClients = new ArrayList<>();
-        try (Statement statement = connection.createStatement(); ResultSet resultSet =
+        try (Statement statement = MySQLDatabaseConnection.getInstance().getConnection().createStatement(); ResultSet resultSet =
                 statement.executeQuery(strSql)) {
             while (resultSet.next()) {
                 Integer identifiant = resultSet.getInt("client_identifiant");
@@ -49,11 +48,11 @@ public class ClientDAO {
         return collectionClients;
     }
 
-    public static Client find(Integer id)
+    public Client find(Integer id)
             throws ExceptionEntity, ExceptionDAO {
         Client client = new Client();
         String strSql = "SELECT * FROM client WHERE client_identifiant=?";
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -71,7 +70,7 @@ public class ClientDAO {
                     client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
                             codePostal, ville,
                             telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
-                    ArrayList<Contrat> listeContrats = ContratDAO.findByIdClient(client);
+                    ArrayList<Contrat> listeContrats = MySQLContratDAO.findByIdClient(client);
                     client.setListeContrat(listeContrats);
                     return client;
                 }
@@ -83,11 +82,11 @@ public class ClientDAO {
         return client;
     }
 
-    public static void delete(Integer id)
+    public void delete(Integer id)
             throws ExceptionDAO {
         Client client = new Client();
         String strSql = "DELETE FROM client WHERE client_identifiant=?";
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException sqlException) {
@@ -96,7 +95,7 @@ public class ClientDAO {
         }
     }
 
-    public static void create(Client client)
+    public void save(Client client)
             throws ExceptionEntity, ExceptionDAO {
         String strSql;
         if (client.getIdentifiant() == null) {
@@ -112,7 +111,7 @@ public class ClientDAO {
                     "client_adresse_mail = ?, client_commentaires = ?, client_chiffre_affaires = ?, " +
                     "client_nombre_employes = ? WHERE client_identifiant = ? ";
         }
-        try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
             statement.setString(1, client.getRaisonSociale());
             statement.setString(2, client.getNumeroDeRue());
             statement.setString(3, client.getNomDeRue());

@@ -1,4 +1,4 @@
-package fr.victork.java.DAO;
+package fr.victork.java.DAO.mysql;
 
 import fr.victork.java.Exception.ExceptionDAO;
 
@@ -11,22 +11,26 @@ import java.util.logging.Level;
 import static fr.victork.java.Log.LoggerReverso.LOGGER;
 
 
-public class DatabaseConnection {
+public class MySQLDatabaseConnection {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     final Properties dataProperties = new Properties();
-    public static Connection connection;
-
+    private static MySQLDatabaseConnection instance;
+    private Connection connection;
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    public static Connection getConnection() {
+ /*   public static Connection getConnection() {
         if (connection == null) {
-            new DatabaseConnection();
+            new MySQLDatabaseConnection();
         }
+        return connection;
+    }*/
+
+    public Connection getConnection() {
         return connection;
     }
 
     //--------------------- CONSTRUCTORS ---------------------------------------
-    private DatabaseConnection() {
+    private MySQLDatabaseConnection() {
         try {
             FileInputStream fis = new FileInputStream("database.properties");
             dataProperties.load(fis);
@@ -50,8 +54,18 @@ public class DatabaseConnection {
         }
     }
 
+    public static MySQLDatabaseConnection getInstance() throws SQLException {
+        if (instance == null) {
+            instance = new MySQLDatabaseConnection();
+        } else if (instance.getConnection().isClosed()) {
+            instance = new MySQLDatabaseConnection();
+        }
+
+        return instance;
+    }
+
     //--------------------- STATIC METHODS -------------------------------------
-    static {
+ /*   static {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 if (connection != null) {
@@ -64,7 +78,7 @@ public class DatabaseConnection {
                 }
             }
         });
-    }
+    }*/
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------

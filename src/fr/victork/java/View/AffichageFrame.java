@@ -7,8 +7,8 @@
  */
 package fr.victork.java.View;
 
-import fr.victork.java.DAO.ClientDAO;
-import fr.victork.java.DAO.ProspectDAO;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
@@ -66,10 +66,10 @@ public class AffichageFrame extends MainFrame {
         try {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    listeSocieteSelection = ClientDAO.findAll();
+                    listeSocieteSelection = new MySQLClientDAO().findAll();
                     break;
                 case Prospect:
-                    listeSocieteSelection = ProspectDAO.findAll();
+                    listeSocieteSelection = new MySQLProspectDAO().findAll();
                     break;
             }
         } catch (DateTimeException dte) {
@@ -159,7 +159,7 @@ public class AffichageFrame extends MainFrame {
                     switch (enumInstanceDeSociete) {
                         case Client:
                             try {
-                                societeSelection = ClientDAO.find(id);
+                                societeSelection = new MySQLClientDAO().find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -196,7 +196,7 @@ public class AffichageFrame extends MainFrame {
                             break;
                         case Prospect:
                             try {
-                                societeSelection = ProspectDAO.find(id);
+                                societeSelection = new MySQLProspectDAO().find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",

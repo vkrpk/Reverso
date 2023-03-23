@@ -6,13 +6,12 @@
  */
 package fr.victork.java.View;
 
-import fr.victork.java.DAO.ClientDAO;
-import fr.victork.java.DAO.ProspectDAO;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
-import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -365,7 +364,7 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()));
                 ((Client) societeSelection).setNombreEmployes(
                         Integer.parseInt(inputNombreEmployes.getText()));
-                ClientDAO.create((Client) societeSelection);
+                new MySQLClientDAO().save((Client) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -378,7 +377,7 @@ public class FormFrame extends MainFrame {
                                 inputDateProspection.getText()));
                 ((Prospect) societeSelection).setProspectInteresse(
                         interestingProspectString);
-                ProspectDAO.create((Prospect) societeSelection);
+                new MySQLProspectDAO().save((Prospect) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -408,7 +407,7 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()),
                         Integer.parseInt(inputNombreEmployes.getText())
                 );
-                ClientDAO.create(nouveauClient);
+                new MySQLClientDAO().save(nouveauClient);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -429,7 +428,7 @@ public class FormFrame extends MainFrame {
                                 FormatterDate.convertiEtFormatDateEnLocalDate(
                                         inputDateProspection.getText()),
                                 interestingProspectString);
-                ProspectDAO.create(nouveauProspect);
+                new MySQLProspectDAO().save(nouveauProspect);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -454,10 +453,10 @@ public class FormFrame extends MainFrame {
         if (choix == JOptionPane.YES_OPTION) {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    ClientDAO.delete(societeSelection.getIdentifiant());
+                    new MySQLClientDAO().delete(societeSelection.getIdentifiant());
                     break;
                 case Prospect:
-                    ProspectDAO.delete(societeSelection.getIdentifiant());
+                    new MySQLProspectDAO().delete(societeSelection.getIdentifiant());
                     break;
             }
             this.dispose();

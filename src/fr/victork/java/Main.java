@@ -5,9 +5,8 @@
  */
 package fr.victork.java;
 
-import fr.victork.java.DAO.ClientDAO;
-import fr.victork.java.DAO.ContratDAO;
-import fr.victork.java.DAO.DatabaseConnection;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLContratDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Log.FormatterLog;
@@ -16,7 +15,6 @@ import fr.victork.java.View.AccueilFrame;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -45,11 +43,11 @@ public class Main {
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
             new AccueilFrame(1100, 750, -1, -1, false);
-            //DatabaseConnection.getInstance();
-            Connection connection = DatabaseConnection.getConnection();
+            //MySQLDatabaseConnection.getInstance();
+            //Connection connection = MySQLDatabaseConnection.getConnection();
 
-            Client client = ClientDAO.find(1);
-            ArrayList<Contrat> contratsByClient = ContratDAO.findByIdClient(client);
+            Client client = new MySQLClientDAO().find(1);
+            ArrayList<Contrat> contratsByClient = MySQLContratDAO.findByIdClient(client);
             for (Contrat contrat : contratsByClient
             ) {
                 System.out.println(contrat.getLibelle());
