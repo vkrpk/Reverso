@@ -5,6 +5,8 @@
  */
 package fr.victork.java.Entity;
 
+import fr.victork.java.DAO.mysql.MySQLContratDAO;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
 import java.util.ArrayList;
@@ -94,8 +96,8 @@ public class Client extends Societe {
         }
     }
 
-    public ArrayList<Contrat> getListeContrat() {
-        return listeContrat;
+    public ArrayList<Contrat> getListeContrat() throws ExceptionEntity, ExceptionDAO {
+        return MySQLContratDAO.findByIdClient(this);
     }
 
     public void setListeContrat(ArrayList<Contrat> listeContrat) {

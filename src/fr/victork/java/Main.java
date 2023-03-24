@@ -5,6 +5,12 @@
  */
 package fr.victork.java;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.mongoDB.MongoDBClientDAO;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
+import fr.victork.java.DAO.mongoDB.MongoDBDatabaseConnection;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
 import fr.victork.java.DAO.mysql.MySQLContratDAO;
 import fr.victork.java.Entity.*;
@@ -42,16 +48,19 @@ public class Main {
 
         /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
         milieu de l'écran */
-            new AccueilFrame(1100, 750, -1, -1, false);
-            //MySQLDatabaseConnection.getInstance();
-            //Connection connection = MySQLDatabaseConnection.getConnection();
+            //new AccueilFrame(1100, 750, -1, -1, false);
+            AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
 
-            Client client = new MySQLClientDAO().find(1);
-            ArrayList<Contrat> contratsByClient = MySQLContratDAO.findByIdClient(client);
-            for (Contrat contrat : contratsByClient
+            Client client = new MySQLClientDAO().find(2);
+            new MongoDBClientDAO().save(client);
+            for (Client clientt : new MongoDBClientDAO().findAll()
             ) {
-                System.out.println(contrat.getLibelle());
+                System.out.println(clientt.getIdentifiant());
             }
+
+            //Client clientMongo = new MongoDBClientDAO().find(1);
+            //System.out.println(clientMongo.getRaisonSociale());
+            //System.out.println(new MongoDBClientDAO().getLastId());
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());
@@ -71,4 +80,6 @@ public class Main {
 
         //WriteFile.litUnFichierEtRempliLesCollections(file);
     }
+
+
 }

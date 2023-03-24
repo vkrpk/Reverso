@@ -17,18 +17,8 @@ public class MySQLDatabaseConnection {
     final Properties dataProperties = new Properties();
     private static MySQLDatabaseConnection instance;
     private Connection connection;
+
     //--------------------- INSTANCE VARIABLES ---------------------------------
- /*   public static Connection getConnection() {
-        if (connection == null) {
-            new MySQLDatabaseConnection();
-        }
-        return connection;
-    }*/
-
-    public Connection getConnection() {
-        return connection;
-    }
-
     //--------------------- CONSTRUCTORS ---------------------------------------
     private MySQLDatabaseConnection() {
         try {
@@ -82,6 +72,9 @@ public class MySQLDatabaseConnection {
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
+    public Connection getConnection() {
+        return connection;
+    }
     //--------------------- GETTERS - SETTERS ----------------------------------
     //--------------------- TO STRING METHOD------------------------------------
 }

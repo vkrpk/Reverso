@@ -1,22 +1,24 @@
 package fr.victork.java.DAO.mongoDB;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.DAO;
+import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Prospect;
 
-public class mongoDBDatabaseConnection {
+public class MongoDBDAOFactory extends AbstractDAOFactory {
+    @Override
+    public DAO<Client> getClientDAO() {
+        return new MongoDBClientDAO();
+    }
+
+    @Override
+    public DAO<Prospect> getProspectDAO() {
+        return null;
+    }
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
-    public static void main(String[] args) {
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("reverso");
-        System.out.println(mongoDatabase);
-        MongoCollection<Document> collection = mongoDatabase.getCollection("client");
-    }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------

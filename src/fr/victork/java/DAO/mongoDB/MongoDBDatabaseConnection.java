@@ -1,30 +1,35 @@
-package fr.victork.java.DAO;
+package fr.victork.java.DAO.mongoDB;
 
-import fr.victork.java.DAO.mysql.MySQLClientDAO;
-import fr.victork.java.Entity.Client;
-import fr.victork.java.Entity.Prospect;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
-public abstract class AbstractDAOFactory {
+public class MongoDBDatabaseConnection {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
+    private static MongoDBDatabaseConnection instance;
     //--------------------- INSTANCE VARIABLES ---------------------------------
+    private MongoDatabase mongoDatabase;
+
     //--------------------- CONSTRUCTORS ---------------------------------------
+    private MongoDBDatabaseConnection() {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        mongoDatabase = mongoClient.getDatabase("reverso");
+    }
+
     //--------------------- STATIC METHODS -------------------------------------
-    public static String getFactory(Class<? extends AbstractDAOFactory> abstractDAOFactory) {
-        if (abstractDAOFactory.toString().equals("MySQLDAOFactory")) {
-            return "MySQLDAOFactory";
-        } else if (abstractDAOFactory.toString().equals("MongoDBDAOFactory")) {
-            return "MongoDBDAOFactory";
+    public static MongoDBDatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new MongoDBDatabaseConnection();
         }
-        return null;
+        return instance;
     }
 
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
-    protected abstract DAO<Client> getClientDAO();
-
-    protected abstract DAO<Prospect> getProspectDAO();
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
+    public MongoDatabase getConnection() {
+        return mongoDatabase;
+    }
     //--------------------- TO STRING METHOD------------------------------------
 }

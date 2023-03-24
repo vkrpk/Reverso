@@ -61,7 +61,7 @@ public class AffichageContratFrame extends MainFrame {
                                  int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         try {
-            listeContratsByClient = MySQLContratDAO.findByIdClient(client);
+            listeContratsByClient = client.getListeContrat();
         } catch (DateTimeException dte) {
             JOptionPane.showMessageDialog(this,
                     "La date doit être dans le format suivant : dd/MM/yyyy",
