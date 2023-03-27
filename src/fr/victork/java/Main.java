@@ -8,19 +8,24 @@ package fr.victork.java;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.DAO;
 import fr.victork.java.DAO.mongoDB.MongoDBClientDAO;
 import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
 import fr.victork.java.DAO.mongoDB.MongoDBDatabaseConnection;
+import fr.victork.java.DAO.mongoDB.MongoDBProspectDAO;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
 import fr.victork.java.DAO.mysql.MySQLContratDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Log.FormatterLog;
 import fr.victork.java.View.AccueilFrame;
+import fr.victork.java.View.MainFrame;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -46,21 +51,12 @@ public class Main {
 
             initDatas();
 
-        /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
-        milieu de l'écran */
-            //new AccueilFrame(1100, 750, -1, -1, false);
-            AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            MainFrame mainFrame = new MainFrame();
+            /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
+            new AccueilFrame(1100, 750, -1, -1, false);
 
-            Client client = new MySQLClientDAO().find(2);
-            new MongoDBClientDAO().save(client);
-            for (Client clientt : new MongoDBClientDAO().findAll()
-            ) {
-                System.out.println(clientt.getIdentifiant());
-            }
-
-            //Client clientMongo = new MongoDBClientDAO().find(1);
-            //System.out.println(clientMongo.getRaisonSociale());
-            //System.out.println(new MongoDBClientDAO().getLastId());
+            AbstractDAOFactory abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            DAO<Client> clientDAO = abstractDAOFactory.getClientDAO();
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());

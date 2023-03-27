@@ -364,7 +364,7 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()));
                 ((Client) societeSelection).setNombreEmployes(
                         Integer.parseInt(inputNombreEmployes.getText()));
-                new MySQLClientDAO().save((Client) societeSelection);
+                clientDAO.save((Client) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -377,7 +377,7 @@ public class FormFrame extends MainFrame {
                                 inputDateProspection.getText()));
                 ((Prospect) societeSelection).setProspectInteresse(
                         interestingProspectString);
-                new MySQLProspectDAO().save((Prospect) societeSelection);
+                prospectDAO.save((Prospect) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -407,7 +407,7 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()),
                         Integer.parseInt(inputNombreEmployes.getText())
                 );
-                new MySQLClientDAO().save(nouveauClient);
+                clientDAO.save(nouveauClient);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -428,7 +428,7 @@ public class FormFrame extends MainFrame {
                                 FormatterDate.convertiEtFormatDateEnLocalDate(
                                         inputDateProspection.getText()),
                                 interestingProspectString);
-                new MySQLProspectDAO().save(nouveauProspect);
+                prospectDAO.save(nouveauProspect);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
@@ -453,10 +453,10 @@ public class FormFrame extends MainFrame {
         if (choix == JOptionPane.YES_OPTION) {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    new MySQLClientDAO().delete(societeSelection.getIdentifiant());
+                    clientDAO.delete(societeSelection.getIdentifiant());
                     break;
                 case Prospect:
-                    new MySQLProspectDAO().delete(societeSelection.getIdentifiant());
+                    prospectDAO.delete(societeSelection.getIdentifiant());
                     break;
             }
             this.dispose();

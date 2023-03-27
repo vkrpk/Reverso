@@ -6,7 +6,10 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLDAOFactory;
 import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionDAO;
@@ -28,14 +31,14 @@ public class AccueilFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    private JButton btnCreer, btnAfficher, btnSupprimer, btnEditer,
-            btnGererClient, btnGererProspect, btnValiderSupprimerOuEditer, btnAfficherContratByClient;
+    private JButton btnCreer, btnAfficher, btnSupprimer, btnEditer, btnGererClient,
+            btnGererProspect, btnValiderSupprimerOuEditer, btnAfficherContratByClient, btnSelectMySQL, btnSelectMongoDB;
     private JComboBox comboBoxSociete;
     private EnumInstanceDeSociete enumInstanceDeSociete;
     private EnumCRUD enumCRUD;
     private Societe societeSelection;
     private JPanel panBtnEditOrDelete, panBtnsCRUD, panChoisirTypeSociete,
-            panLabelTypeSociete;
+            panLabelTypeSociete, panChoisirBDD;
     private ArrayList<JButton> listBtnsCRUD;
     private JLabel labelTypeSociete;
     private Color colorGreenCustom;
@@ -68,7 +71,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (new MySQLClientDAO().findAll().isEmpty()) {
+                if (clientDAO.findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -120,7 +123,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (new MySQLProspectDAO().findAll().isEmpty()) {
+                if (prospectDAO.findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -235,6 +238,20 @@ public class AccueilFrame extends MainFrame {
                 }
             }
         });
+
+        btnSelectMySQL.addActionListener(e -> {
+            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MySQLDAOFactory.class);
+            clientDAO = abstractDAOFactory.getClientDAO();
+            prospectDAO = abstractDAOFactory.getProspectDAO();
+            panChoisirBDD.setVisible(false);
+        });
+
+        btnSelectMongoDB.addActionListener(e -> {
+            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            clientDAO = abstractDAOFactory.getClientDAO();
+            prospectDAO = abstractDAOFactory.getProspectDAO();
+            panChoisirBDD.setVisible(false);
+        });
     }
 
     //--------------------- STATIC METHODS -------------------------------------
@@ -296,25 +313,26 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
-                    if (new MySQLClientDAO().findAll().isEmpty()) {
+                    if (clientDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Client collectionItem :
-                            new MySQLClientDAO().findAll()) {
+                        //new MySQLClientDAO().findAll()) {
+                            clientDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
-                    if (new MySQLProspectDAO().findAll().isEmpty()) {
+                    if (prospectDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Prospect collectionItem :
-                            new MySQLProspectDAO().findAll()) {
+                            prospectDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
@@ -448,13 +466,23 @@ public class AccueilFrame extends MainFrame {
         panBtnEditOrDelete.add(comboBoxSociete);
         panBtnEditOrDelete.add(btnValiderSupprimerOuEditer);
 
+        panChoisirBDD = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnSelectMySQL = createButton("Base de données MySQL");
+        btnSelectMongoDB = createButton("Base de données MongoDB");
+
         panChoisirTypeSociete = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnGererClient = createButton("Gérer les clients");
         btnGererProspect = createButton("Gérer les prospects");
 
         panChoisirTypeSociete.add(btnGererClient);
         panChoisirTypeSociete.add(btnGererProspect);
+
+        panChoisirBDD.add(btnSelectMySQL);
+        panChoisirBDD.add(btnSelectMongoDB);
+        super.panCentral.add(panChoisirBDD);
+
         super.panCentral.add(panChoisirTypeSociete);
+
         labelTypeSociete = createLabel("");
         labelTypeSociete.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 24));
         panLabelTypeSociete = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -467,7 +495,6 @@ public class AccueilFrame extends MainFrame {
 
         super.panCentral.add(panBtnEditOrDelete);
 
-
         setSize(largeurFenetre, hauteurFenetre);
         if (positionX == -1 && positionY == -1) {
             setLocationRelativeTo(null);
@@ -477,6 +504,9 @@ public class AccueilFrame extends MainFrame {
         super.estEnPleinEcran = pleinEcran;
         if (super.estEnPleinEcran) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
+        if (abstractDAOFactory != null) {
+            panChoisirBDD.setVisible(false);
         }
         setVisible(true);
     }

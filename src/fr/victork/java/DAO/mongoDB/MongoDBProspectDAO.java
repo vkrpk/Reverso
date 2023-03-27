@@ -31,23 +31,37 @@ public class MongoDBProspectDAO implements DAO<Prospect> {
     //--------------------- INSTANCE METHODS -----------------------------------
     @Override
     public void save(Prospect prospect) throws ExceptionEntity, ExceptionDAO {
-        Document document = new Document();
-        if (prospect.getIdentifiant() == null) {
-            document.append("prospect_identifiant", getLastId() + 1);
+        Document query = new Document("prospect_identifiant", prospect.getIdentifiant());
+        Document document = collectionProspect.find(query).first();
+        if (document != null) {
+            document.append("prospect_raison_sociale", prospect.getRaisonSociale());
+            document.append("prospect_numero_de_rue", prospect.getNumeroDeRue());
+            document.append("prospect_nom_de_rue", prospect.getNomDeRue());
+            document.append("prospect_code_postal", prospect.getCodePostal());
+            document.append("prospect_ville", prospect.getVille());
+            document.append("prospect_telephone", prospect.getTelephone());
+            document.append("prospect_adresse_mail", prospect.getAdresseMail());
+            document.append("prospect_commentaires", prospect.getCommentaires());
+            document.append("prospect_date_prospection", prospect.getDateProsprection());
+            document.append("prospect_interesse", prospect.getProspectInteresse());
+
+            collectionProspect.updateOne(query, new Document("$set", document));
         } else {
-            document.append("prospect_identifiant", prospect.getIdentifiant());
+            document = new Document();
+            document.append("prospect_identifiant", getLastId() + 1);
+            document.append("prospect_raison_sociale", prospect.getRaisonSociale());
+            document.append("prospect_numero_de_rue", prospect.getNumeroDeRue());
+            document.append("prospect_nom_de_rue", prospect.getNomDeRue());
+            document.append("prospect_code_postal", prospect.getCodePostal());
+            document.append("prospect_ville", prospect.getVille());
+            document.append("prospect_telephone", prospect.getTelephone());
+            document.append("prospect_adresse_mail", prospect.getAdresseMail());
+            document.append("prospect_commentaires", prospect.getCommentaires());
+            document.append("prospect_date_prospection", prospect.getDateProsprection());
+            document.append("prospect_interesse", prospect.getProspectInteresse());
+
+            collectionProspect.insertOne(document);
         }
-        document.append("prospect_raison_sociale", prospect.getRaisonSociale());
-        document.append("prospect_numero_de_rue", prospect.getNumeroDeRue());
-        document.append("prospect_nom_de_rue", prospect.getNomDeRue());
-        document.append("prospect_code_postal", prospect.getCodePostal());
-        document.append("prospect_ville", prospect.getVille());
-        document.append("prospect_telephone", prospect.getTelephone());
-        document.append("prospect_adresse_mail", prospect.getAdresseMail());
-        document.append("prospect_commentaires", prospect.getCommentaires());
-        document.append("prospect_date_prospection", prospect.getChiffreAffaires());
-        document.append("prospect_interesse", prospect.getNombreEmployes());
-        collectionProspect.insertOne(document);
     }
 
 
@@ -85,7 +99,7 @@ public class MongoDBProspectDAO implements DAO<Prospect> {
 
 
     @Override
-    public List<Prospect> findAll() throws ExceptionEntity, ExceptionDAO {
+    public ArrayList<Prospect> findAll() throws ExceptionEntity, ExceptionDAO {
         MongoCursor<Document> cursor = collectionProspect.find().iterator();
         ArrayList<Prospect> collectionClients = new ArrayList<>();
         try {

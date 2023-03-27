@@ -7,6 +7,11 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
+import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
@@ -31,6 +36,9 @@ public class MainFrame extends JFrame implements Tools {
     protected JPanel contentPane, panNorth, panSouth, panCentral;
     protected int largeur, hauteur, x, y;
     protected boolean estEnPleinEcran;
+    protected AbstractDAOFactory abstractDAOFactory;
+    protected DAO<Client> clientDAO;
+    protected DAO<Prospect> prospectDAO;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -44,6 +52,7 @@ public class MainFrame extends JFrame implements Tools {
     public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX,
                      int positionY, boolean pleinEcran) {
         setupGUIAllFrames(pleinEcran);
+        System.out.println("abstractDAOFactory = " + abstractDAOFactory);
 
         // Ferme la fenêtre actuelle et ouvre la page d'accueil
         btnAccueil.addActionListener(e -> {

@@ -26,6 +26,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="mongodb.mongo.java.driver" level="project" />
+    <orderEntry type="library" exported="" name="mongodb.driver" level="project" />
   </component>
 </module>

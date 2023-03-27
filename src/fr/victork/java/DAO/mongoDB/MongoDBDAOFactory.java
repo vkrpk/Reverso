@@ -13,7 +13,7 @@ public class MongoDBDAOFactory extends AbstractDAOFactory {
 
     @Override
     public DAO<Prospect> getProspectDAO() {
-        return null;
+        return new MongoDBProspectDAO();
     }
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

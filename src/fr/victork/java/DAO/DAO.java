@@ -5,6 +5,7 @@ import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface DAO<T> {
@@ -21,7 +22,7 @@ public interface DAO<T> {
 
     void delete(Integer id) throws ExceptionDAO;
 
-    List<T> findAll() throws ExceptionEntity, ExceptionDAO;
+    ArrayList<T> findAll() throws ExceptionEntity, ExceptionDAO;
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
     //--------------------- TO STRING METHOD------------------------------------

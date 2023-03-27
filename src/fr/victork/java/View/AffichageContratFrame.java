@@ -147,7 +147,7 @@ public class AffichageContratFrame extends MainFrame {
                 if (selectedRow != -1) {
                     etatsBoutons(true);
                     try {
-                        societeSelection = new MySQLClientDAO().find(id);
+                        societeSelection = clientDAO.find(id);
                     } catch (DateTimeException dte) {
                         JOptionPane.showMessageDialog(this,
                                 "La date doit être dans le format suivant : dd/MM/yyyy",

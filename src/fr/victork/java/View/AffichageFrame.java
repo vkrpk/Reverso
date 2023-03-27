@@ -66,10 +66,10 @@ public class AffichageFrame extends MainFrame {
         try {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    listeSocieteSelection = new MySQLClientDAO().findAll();
+                    listeSocieteSelection = clientDAO.findAll();
                     break;
                 case Prospect:
-                    listeSocieteSelection = new MySQLProspectDAO().findAll();
+                    listeSocieteSelection = prospectDAO.findAll();
                     break;
             }
         } catch (DateTimeException dte) {
@@ -159,7 +159,7 @@ public class AffichageFrame extends MainFrame {
                     switch (enumInstanceDeSociete) {
                         case Client:
                             try {
-                                societeSelection = new MySQLClientDAO().find(id);
+                                societeSelection = clientDAO.find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -196,7 +196,7 @@ public class AffichageFrame extends MainFrame {
                             break;
                         case Prospect:
                             try {
-                                societeSelection = new MySQLProspectDAO().find(id);
+                                societeSelection = prospectDAO.find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",

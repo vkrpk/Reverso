@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import fr.victork.java.DAO.DAO;
 import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import org.bson.Document;
@@ -27,25 +28,38 @@ public class MongoDBClientDAO implements DAO<Client> {
     //--------------------- INSTANCE METHODS -----------------------------------
     @Override
     public void save(Client client) throws ExceptionEntity, ExceptionDAO {
-        Document document = new Document();
-        if (client.getIdentifiant() == null) {
-            document.append("client_identifiant", getLastId() + 1);
-        } else {
-            document.append("client_identifiant", client.getIdentifiant());
-        }
-        document.append("client_raison_sociale", client.getRaisonSociale());
-        document.append("client_numero_de_rue", client.getNumeroDeRue());
-        document.append("client_nom_de_rue", client.getNomDeRue());
-        document.append("client_code_postal", client.getCodePostal());
-        document.append("client_ville", client.getVille());
-        document.append("client_telephone", client.getTelephone());
-        document.append("client_adresse_mail", client.getAdresseMail());
-        document.append("client_commentaires", client.getCommentaires());
-        document.append("client_chiffre_affaires", client.getChiffreAffaires());
-        document.append("client_nombre_employes", client.getNombreEmployes());
-        collectionClient.insertOne(document);
-    }
+        Document query = new Document("prospect_identifiant", client.getIdentifiant());
+        Document document = collectionClient.find(query).first();
+        if (document != null) {
+            document.append("prospect_raison_sociale", client.getRaisonSociale());
+            document.append("prospect_numero_de_rue", client.getNumeroDeRue());
+            document.append("prospect_nom_de_rue", client.getNomDeRue());
+            document.append("prospect_code_postal", client.getCodePostal());
+            document.append("prospect_ville", client.getVille());
+            document.append("prospect_telephone", client.getTelephone());
+            document.append("prospect_adresse_mail", client.getAdresseMail());
+            document.append("prospect_commentaires", client.getCommentaires());
+            document.append("prospect_date_prospection", client.getChiffreAffaires());
+            document.append("prospect_interesse", client.getNombreEmployes());
 
+            collectionClient.updateOne(query, new Document("$set", document));
+        } else {
+            document = new Document();
+            document.append("prospect_identifiant", getLastId() + 1);
+            document.append("prospect_raison_sociale", client.getRaisonSociale());
+            document.append("prospect_numero_de_rue", client.getNumeroDeRue());
+            document.append("prospect_nom_de_rue", client.getNomDeRue());
+            document.append("prospect_code_postal", client.getCodePostal());
+            document.append("prospect_ville", client.getVille());
+            document.append("prospect_telephone", client.getTelephone());
+            document.append("prospect_adresse_mail", client.getAdresseMail());
+            document.append("prospect_commentaires", client.getCommentaires());
+            document.append("prospect_date_prospection", client.getChiffreAffaires());
+            document.append("prospect_interesse", client.getNombreEmployes());
+
+            collectionClient.insertOne(document);
+        }
+    }
 
     @Override
     public Client find(Integer id) throws ExceptionEntity, ExceptionDAO {
@@ -61,11 +75,12 @@ public class MongoDBClientDAO implements DAO<Client> {
             String telephone = result.getString("client_telephone");
             String adresseMail = result.getString("client_adresse_mail");
             String commentaires = result.getString("client_commentaires");
-            Double chiffreAffaires = result.getDouble("client_chiffre_affaires");
+            Object chiffreAffaires = result.get("client_chiffre_affaires");
+            Double chiffreAffairesDouble = (chiffreAffaires instanceof Number) ? ((Number) chiffreAffaires).doubleValue() : null;
             Integer nombreEmployes = result.getInteger("client_nombre_employes");
             Client client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
                     codePostal, ville,
-                    telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes
+                    telephone, adresseMail, commentaires, chiffreAffairesDouble, nombreEmployes
             );
             return client;
         }
@@ -80,7 +95,7 @@ public class MongoDBClientDAO implements DAO<Client> {
 
 
     @Override
-    public List<Client> findAll() throws ExceptionEntity, ExceptionDAO {
+    public ArrayList<Client> findAll() throws ExceptionEntity, ExceptionDAO {
         MongoCursor<Document> cursor = collectionClient.find().iterator();
         ArrayList<Client> collectionClients = new ArrayList<>();
         try {
@@ -95,11 +110,12 @@ public class MongoDBClientDAO implements DAO<Client> {
                 String telephone = result.getString("client_telephone");
                 String adresseMail = result.getString("client_adresse_mail");
                 String commentaires = result.getString("client_commentaires");
-                Double chiffreAffaires = result.getDouble("client_chiffre_affaires");
+                Object chiffreAffaires = result.get("client_chiffre_affaires");
+                Double chiffreAffairesDouble = (chiffreAffaires instanceof Number) ? ((Number) chiffreAffaires).doubleValue() : null;
                 Integer nombreEmployes = result.getInteger("client_nombre_employes");
                 Client client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
                         codePostal, ville,
-                        telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes
+                        telephone, adresseMail, commentaires, chiffreAffairesDouble, nombreEmployes
                 );
                 collectionClients.add(client);
             }
