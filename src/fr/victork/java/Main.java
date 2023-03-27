@@ -5,23 +5,65 @@
  */
 package fr.victork.java;
 
-import fr.victork.java.Entity.Client;
-import fr.victork.java.Entity.Prospect;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.mongoDB.MongoDBClientDAO;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
+import fr.victork.java.DAO.mongoDB.MongoDBDatabaseConnection;
+import fr.victork.java.DAO.mongoDB.MongoDBProspectDAO;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLContratDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
+import fr.victork.java.Entity.*;
 import fr.victork.java.Exception.ExceptionEntity;
+import fr.victork.java.Log.FormatterLog;
 import fr.victork.java.View.AccueilFrame;
+import fr.victork.java.View.MainFrame;
 
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
+
+/**
+ * Cette classe est le point d'entrée de l'application
+ */
 public class Main {
     /**
-     * @param args
+     * @param args String[]
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public static void main(String[] args) throws ExceptionEntity {
-        initDatas();
-        /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au
-        milieu de l'écran */
-        new AccueilFrame(800, 750, -1, -1, false);
+    public static void main(String[] args) throws ExceptionEntity, IOException {
+        try {
+            FileHandler fh = new FileHandler("LogReverso.log", true);
+            LOGGER.setUseParentHandlers(false);
+            LOGGER.addHandler(fh);
+            fh.setFormatter(new FormatterLog());
+
+            LOGGER.log(Level.INFO, "Démarrage de l'application");
+
+            initDatas();
+
+            MainFrame mainFrame = new MainFrame();
+            /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
+            new AccueilFrame(1100, 750, -1, -1, false);
+
+            AbstractDAOFactory abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            DAO<Client> clientDAO = abstractDAOFactory.getClientDAO();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage(),
+                    "Erreur système", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
     }
 
     /**
@@ -29,30 +71,11 @@ public class Main {
      *
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    private static void initDatas() throws ExceptionEntity {
-        Client client1 =
-                new Client("eric", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client1@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client3 =
-                new Client("Jules", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client3@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client2 =
-                new Client("Charles", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client2@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Client client4 =
-                new Client("Pierre", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "client4@gmail.com", "Ce client ",
-                        1000.00, 15);
-        Prospect prospect1 =
-                new Prospect("Jean", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "prospect1@gmail.com", "Ce client ",
-                        LocalDate.now(), "Non");
-        Prospect prospect2 =
-                new Prospect("Lisa", "3", "Rue de la paix", "75000", "Paris",
-                        "0600000000", "prospect2@gmail.com", "Ce client ",
-                        LocalDate.now(), "Oui");
+    private static void initDatas() throws ExceptionEntity, IOException {
+        File file = new File("Fixtures.txt");
+
+        //WriteFile.litUnFichierEtRempliLesCollections(file);
     }
+
+
 }

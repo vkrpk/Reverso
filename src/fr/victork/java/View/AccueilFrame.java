@@ -6,25 +6,39 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLDAOFactory;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.DateTimeException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
+
+/**
+ * Cette classe a pour but sélectionner un type de société pour ensuite
+ * permettre à l'utilisateur de l'application de gérer les données
+ */
 public class AccueilFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    private JButton btnCreer, btnAfficher, btnSupprimer, btnEditer,
-            btnGererClient, btnGererProspect, btnValiderSupprimerOuEditer;
+    private JButton btnCreer, btnAfficher, btnSupprimer, btnEditer, btnGererClient,
+            btnGererProspect, btnValiderSupprimerOuEditer, btnAfficherContratByClient, btnSelectMySQL, btnSelectMongoDB;
     private JComboBox comboBoxSociete;
     private EnumInstanceDeSociete enumInstanceDeSociete;
     private EnumCRUD enumCRUD;
     private Societe societeSelection;
     private JPanel panBtnEditOrDelete, panBtnsCRUD, panChoisirTypeSociete,
-            panLabelTypeSociete;
+            panLabelTypeSociete, panChoisirBDD;
     private ArrayList<JButton> listBtnsCRUD;
     private JLabel labelTypeSociete;
     private Color colorGreenCustom;
@@ -39,7 +53,7 @@ public class AccueilFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     public AccueilFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                        int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         setupPanBtnsCRUDAndSetEnabledToFalse();
         styliserComboBoxSociete();
@@ -48,33 +62,117 @@ public class AccueilFrame extends MainFrame {
 
         // Mémorise le type de société à gérer et adapte l'affichage
         btnGererClient.addActionListener(e -> {
+            panBtnEditOrDelete.setVisible(false);
+            btnAfficherContratByClient.setVisible(true);
+            this.enumCRUD = null;
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
             setupLabelBtnsCRUD();
+            btnAfficherContratByClient.setEnabled(true);
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
+            try {
+                if (clientDAO.findAll().isEmpty()) {
+                    btnEditer.setEnabled(false);
+                    btnSupprimer.setEnabled(false);
+                    btnEditer.setForeground(Color.black);
+                    btnSupprimer.setForeground(Color.black);
+                    panBtnEditOrDelete.setVisible(false);
+                }
+            } catch (DateTimeException dte) {
+                JOptionPane.showMessageDialog(this,
+                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, dte.getMessage());
+            } catch (NumberFormatException nft) {
+                JOptionPane.showMessageDialog(this,
+                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, nft.getMessage());
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
+            }
         });
 
         // Mémorise le type de société à gérer et adapte l'affichage
         btnGererProspect.addActionListener(e -> {
+            panBtnEditOrDelete.setVisible(false);
+            btnAfficherContratByClient.setVisible(false);
+            this.enumCRUD = null;
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
             setupLabelBtnsCRUD();
+            btnAfficherContratByClient.setEnabled(false);
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
+            try {
+                if (prospectDAO.findAll().isEmpty()) {
+                    btnEditer.setEnabled(false);
+                    btnSupprimer.setEnabled(false);
+                    btnEditer.setForeground(Color.black);
+                    btnSupprimer.setForeground(Color.black);
+                    panBtnEditOrDelete.setVisible(false);
+                }
+            } catch (DateTimeException dte) {
+                JOptionPane.showMessageDialog(this,
+                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, dte.getMessage());
+            } catch (NumberFormatException nft) {
+                JOptionPane.showMessageDialog(this,
+                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, nft.getMessage());
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
+            }
         });
 
         // Affiche liste des sociétés du type sélectionné
         btnAfficher.addActionListener(e -> {
-            try {
-                this.dispose();
-                AffichageFrame affichageFrame =
-                        new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y,
-                                super.estEnPleinEcran);
-                affichageFrame.updateEnumInstanceDeSociete(
-                        enumInstanceDeSociete);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
-            }
+            this.dispose();
+            AffichageFrame affichageFrame =
+                    new AffichageFrame(enumInstanceDeSociete, super.largeur,
+                            super.hauteur, super.x, super.y,
+                            super.estEnPleinEcran);
+            affichageFrame.updateEnumInstanceDeSociete(
+                    enumInstanceDeSociete);
         });
 
         // Affiche le formulaire de création pour le type de société sélectionné
@@ -88,13 +186,15 @@ public class AccueilFrame extends MainFrame {
         /* Affiche le formulaire de modification ou de suppression en
         fonction de l'action choisi pour l'instance de Société sélectionnée */
         btnValiderSupprimerOuEditer.addActionListener(e -> {
-            try {
-                this.dispose();
+            this.dispose();
+            if (this.enumCRUD == EnumCRUD.READ_CONTRAT) {
+                new AffichageContratFrame((Client) societeSelection,
+                        super.largeur, super.hauteur, super.x, super.y,
+                        super.estEnPleinEcran);
+            } else {
                 new FormFrame(this.societeSelection, this.enumCRUD,
                         super.largeur, super.hauteur, super.x, super.y,
                         super.estEnPleinEcran);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
             }
         });
 
@@ -110,13 +210,18 @@ public class AccueilFrame extends MainFrame {
             afficheComboBoxSociete();
         });
 
+        btnAfficherContratByClient.addActionListener(e -> {
+            this.enumCRUD = EnumCRUD.READ_CONTRAT;
+            afficheComboBoxSociete();
+        });
+
         /* Réinitialise la liste déroulante, rempli la liste déroulante,
         mémorise le choix de la société sélectionnée et modifie le texte du
         bouton en fonction de l'action du CRUD sélectionnée */
         comboBoxSociete.addActionListener(e -> {
             resetComboBoxSocieteAndFillTheList();
             societeSelection = (Societe) comboBoxSociete.getSelectedItem();
-            if (enumCRUD != null) {
+            if (enumCRUD != null && societeSelection != null) {
                 switch (enumCRUD) {
                     case DELETE:
                         this.btnValiderSupprimerOuEditer.setText(
@@ -127,8 +232,25 @@ public class AccueilFrame extends MainFrame {
                         this.btnValiderSupprimerOuEditer.setText("Modifier : " +
                                 societeSelection.getRaisonSociale());
                         break;
+                    case READ_CONTRAT:
+                        this.btnAfficherContratByClient.setText("Afficher les contrats");
+                        break;
                 }
             }
+        });
+
+        btnSelectMySQL.addActionListener(e -> {
+            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MySQLDAOFactory.class);
+            clientDAO = abstractDAOFactory.getClientDAO();
+            prospectDAO = abstractDAOFactory.getProspectDAO();
+            panChoisirBDD.setVisible(false);
+        });
+
+        btnSelectMongoDB.addActionListener(e -> {
+            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            clientDAO = abstractDAOFactory.getClientDAO();
+            prospectDAO = abstractDAOFactory.getProspectDAO();
+            panChoisirBDD.setVisible(false);
         });
     }
 
@@ -159,6 +281,7 @@ public class AccueilFrame extends MainFrame {
         btnAfficher = createButton("Afficher");
         btnSupprimer = createButton("Supprimer");
         btnEditer = createButton("Editer");
+        btnAfficherContratByClient = createButton("Afficher les contrats");
 
         this.listBtnsCRUD = new ArrayList<>();
 
@@ -166,6 +289,7 @@ public class AccueilFrame extends MainFrame {
         this.listBtnsCRUD.add(btnCreer);
         this.listBtnsCRUD.add(btnEditer);
         this.listBtnsCRUD.add(btnSupprimer);
+        this.listBtnsCRUD.add(btnAfficherContratByClient);
 
         for (JButton button : listBtnsCRUD) {
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -173,6 +297,7 @@ public class AccueilFrame extends MainFrame {
             panBtnsCRUD.add(buttonPanel);
         }
         enabledBtnsCRUD(false);
+        btnAfficherContratByClient.setEnabled(false);
     }
 
     /**
@@ -188,33 +313,62 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
-                    if (CollectionClients.getCollection().isEmpty()) {
+                    if (clientDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Client collectionItem :
-                            CollectionClients.getCollection()) {
+                        //new MySQLClientDAO().findAll()) {
+                            clientDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
-                    comboBoxSociete.setSelectedIndex(1);
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
-                    if (CollectionProspects.getCollection().isEmpty()) {
+                    if (prospectDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Prospect collectionItem :
-                            CollectionProspects.getCollection()) {
+                            prospectDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
-                    comboBoxSociete.setSelectedIndex(1);
+                    comboBoxSociete.setSelectedIndex(0);
                     break;
             }
-        } catch (Exception e) {
-            System.out.println("messages : " + e.getMessage());
-            e.printStackTrace();
+        } catch (DateTimeException dte) {
+            JOptionPane.showMessageDialog(this,
+                    "La date doit être dans le format suivant : dd/MM/yyyy",
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, dte.getMessage());
+        } catch (NumberFormatException nft) {
+            JOptionPane.showMessageDialog(this,
+                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, nft.getMessage());
+        } catch (ExceptionEntity ee) {
+            JOptionPane.showMessageDialog(this, ee.getMessage(),
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, ee.getMessage());
+        } catch (ExceptionDAO exceptionDAO) {
+            switch (exceptionDAO.getGravite()) {
+                case 5:
+                    exceptionDAO.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                            JOptionPane.ERROR_MESSAGE);
+                    LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                    System.exit(1);
+                    break;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                            "l'application",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.SEVERE, exception.getMessage());
+            System.exit(1);
         }
     }
 
@@ -228,6 +382,7 @@ public class AccueilFrame extends MainFrame {
         btnCreer.setEnabled(isEnabled);
         btnEditer.setEnabled(isEnabled);
         btnSupprimer.setEnabled(isEnabled);
+        //btnAfficherContratByClient.setEnabled(isEnabled);
     }
 
     /**
@@ -240,6 +395,8 @@ public class AccueilFrame extends MainFrame {
         btnAfficher.setText("Afficher les " + nomDuGroupe + "s");
         btnSupprimer.setText("Supprimer un " + nomDuGroupe);
         btnEditer.setText("Modifier un " + nomDuGroupe);
+        btnEditer.setText("Modifier un " + nomDuGroupe);
+        //btnAfficherContratByClient.setText("Afficher les contrats");
         enabledBtnsCRUD(true);
     }
 
@@ -255,20 +412,34 @@ public class AccueilFrame extends MainFrame {
         panBtnEditOrDelete.setVisible(true);
         switch (enumCRUD) {
             case DELETE:
-                this.btnValiderSupprimerOuEditer.setText(
+                btnValiderSupprimerOuEditer.setText(
                         "Supprimer : " + societeSelection.getRaisonSociale());
                 btnSupprimer.setBackground(colorGreenCustom);
+                btnSupprimer.setForeground(Color.WHITE);
                 btnEditer.setBackground(null);
                 btnEditer.setForeground(Color.BLACK);
-                btnSupprimer.setForeground(Color.WHITE);
+                btnAfficherContratByClient.setBackground(null);
+                btnAfficherContratByClient.setForeground(Color.BLACK);
                 break;
             case UPDATE:
-                this.btnValiderSupprimerOuEditer.setText(
+                btnValiderSupprimerOuEditer.setText(
                         "Modifer : " + societeSelection.getRaisonSociale());
-                btnSupprimer.setBackground(null);
                 btnEditer.setBackground(colorGreenCustom);
                 btnEditer.setForeground(Color.WHITE);
+                btnSupprimer.setBackground(null);
                 btnSupprimer.setForeground(Color.BLACK);
+                btnAfficherContratByClient.setBackground(null);
+                btnAfficherContratByClient.setForeground(Color.BLACK);
+                break;
+            case READ_CONTRAT:
+                btnValiderSupprimerOuEditer.setText(
+                        "Afficher les contrats du client : " + societeSelection.getRaisonSociale());
+                btnAfficherContratByClient.setBackground(colorGreenCustom);
+                btnAfficherContratByClient.setForeground(Color.WHITE);
+                btnSupprimer.setBackground(null);
+                btnSupprimer.setForeground(Color.BLACK);
+                btnEditer.setBackground(null);
+                btnEditer.setForeground(Color.BLACK);
                 break;
         }
     }
@@ -284,7 +455,7 @@ public class AccueilFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) {
         setTitle("Accueil");
         colorGreenCustom = new Color(87, 150, 92);
         super.panCentral.setLayout(
@@ -295,13 +466,23 @@ public class AccueilFrame extends MainFrame {
         panBtnEditOrDelete.add(comboBoxSociete);
         panBtnEditOrDelete.add(btnValiderSupprimerOuEditer);
 
+        panChoisirBDD = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnSelectMySQL = createButton("Base de données MySQL");
+        btnSelectMongoDB = createButton("Base de données MongoDB");
+
         panChoisirTypeSociete = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnGererClient = createButton("Gérer les clients");
         btnGererProspect = createButton("Gérer les prospects");
 
         panChoisirTypeSociete.add(btnGererClient);
         panChoisirTypeSociete.add(btnGererProspect);
+
+        panChoisirBDD.add(btnSelectMySQL);
+        panChoisirBDD.add(btnSelectMongoDB);
+        super.panCentral.add(panChoisirBDD);
+
         super.panCentral.add(panChoisirTypeSociete);
+
         labelTypeSociete = createLabel("");
         labelTypeSociete.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 24));
         panLabelTypeSociete = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -314,7 +495,6 @@ public class AccueilFrame extends MainFrame {
 
         super.panCentral.add(panBtnEditOrDelete);
 
-
         setSize(largeurFenetre, hauteurFenetre);
         if (positionX == -1 && positionY == -1) {
             setLocationRelativeTo(null);
@@ -324,6 +504,9 @@ public class AccueilFrame extends MainFrame {
         super.estEnPleinEcran = pleinEcran;
         if (super.estEnPleinEcran) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
+        if (abstractDAOFactory != null) {
+            panChoisirBDD.setVisible(false);
         }
         setVisible(true);
     }

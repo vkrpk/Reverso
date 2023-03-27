@@ -10,7 +10,19 @@ package fr.victork.java.Tools;
 import fr.victork.java.Exception.ExceptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+
+/**
+ * Cette classe comprend une série de méthodes pour contrôler des valeurs
+ * reçues ou
+ * générer des chaînes de caractères comprenant uniquement des chiffres
+ */
 public interface Tools {
+    String REGEX_MAIL = ".+@.+";
+
     /**
      * Vérifie si une chaîne de caractère est composée uniquement de chiffres
      * et si elle est de longueur @param length
@@ -91,4 +103,9 @@ public interface Tools {
             return true;
         }
     }
+
+    DecimalFormat DECIMAL_FORMAT =
+            new DecimalFormat("#.##",
+                    DecimalFormatSymbols.getInstance(
+                            new Locale("fr", "FR")));
 }

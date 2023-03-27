@@ -8,6 +8,9 @@ package fr.victork.java.Tools;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Cette classe est utile pour formatter les dates
+ */
 public abstract class FormatterDate {
 
     //--------------------- CONSTANTS ------------------------------------------

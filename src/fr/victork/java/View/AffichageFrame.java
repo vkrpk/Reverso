@@ -7,9 +7,13 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.mysql.MySQLClientDAO;
+import fr.victork.java.DAO.mysql.MySQLProspectDAO;
 import fr.victork.java.Entity.*;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.FormatterDate;
+import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -18,8 +22,18 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
+import java.time.DateTimeException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
 
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
+
+/**
+ * Cette classe a pour but d'afficher toute la collection d'un type de
+ * société sous la forme d'un tableau et de créer, supprimer ou éditer un
+ * élément de cette liste
+ */
 public class AffichageFrame extends MainFrame {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -31,6 +45,7 @@ public class AffichageFrame extends MainFrame {
     private JScrollPane scrollPane;
     private Societe societeSelection;
     private JButton btnCreer, btnSupprimer, btnEditer;
+    private ArrayList listeSocieteSelection;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -42,17 +57,59 @@ public class AffichageFrame extends MainFrame {
      * @param positionY             int Position Y sur l'écran
      * @param pleinEcran            Boolean True si le mode plein écran est
      *                              activé
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
-            int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) throws ExceptionEntity {
+                          int largeurFenetre, int hauteurFenetre, int positionX,
+                          int positionY, boolean pleinEcran) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
+        this.enumInstanceDeSociete = enumInstanceDeSociete;
+        try {
+            switch (enumInstanceDeSociete) {
+                case Client:
+                    listeSocieteSelection = clientDAO.findAll();
+                    break;
+                case Prospect:
+                    listeSocieteSelection = prospectDAO.findAll();
+                    break;
+            }
+        } catch (DateTimeException dte) {
+            JOptionPane.showMessageDialog(this,
+                    "La date doit être dans le format suivant : dd/MM/yyyy",
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, dte.getMessage());
+        } catch (NumberFormatException nft) {
+            JOptionPane.showMessageDialog(this,
+                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, nft.getMessage());
+        } catch (ExceptionEntity ee) {
+            JOptionPane.showMessageDialog(this, ee.getMessage(),
+                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.WARNING, ee.getMessage());
+        } catch (ExceptionDAO exceptionDAO) {
+            switch (exceptionDAO.getGravite()) {
+                case 5:
+                    exceptionDAO.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                            JOptionPane.ERROR_MESSAGE);
+                    LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                    System.exit(1);
+                    break;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                            "l'application",
+                    JOptionPane.ERROR_MESSAGE);
+            LOGGER.log(Level.SEVERE, exception.getMessage());
+            System.exit(1);
+        }
+
+        updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
         setTitle("Liste des " + enumInstanceDeSociete.name());
-        this.enumInstanceDeSociete = enumInstanceDeSociete;
-        updateData();
+        setupPanBtnsCRUDAndSetEnabledToFalse();
 
         /**
          * Trie le tableau en ordre croissant par raison sociale
@@ -101,19 +158,77 @@ public class AffichageFrame extends MainFrame {
                     etatsBoutons(true);
                     switch (enumInstanceDeSociete) {
                         case Client:
-                            for (Client client :
-                                    CollectionClients.getCollection()) {
-                                if (client.getIdentifiant() == id) {
-                                    societeSelection = client;
+                            try {
+                                societeSelection = clientDAO.find(id);
+                            } catch (DateTimeException dte) {
+                                JOptionPane.showMessageDialog(this,
+                                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, dte.getMessage());
+                            } catch (NumberFormatException nft) {
+                                JOptionPane.showMessageDialog(this,
+                                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                                        JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, nft.getMessage());
+                            } catch (ExceptionEntity ee) {
+                                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, ee.getMessage());
+                            } catch (ExceptionDAO exceptionDAO) {
+                                switch (exceptionDAO.getGravite()) {
+                                    case 5:
+                                        exceptionDAO.printStackTrace();
+                                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application" +
+                                                        " doit fermer", "Erreur dans l'application",
+                                                JOptionPane.ERROR_MESSAGE);
+                                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                                        System.exit(1);
+                                        break;
                                 }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                                "l'application",
+                                        JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.SEVERE, exception.getMessage());
+                                System.exit(1);
                             }
                             break;
                         case Prospect:
-                            for (Prospect prospect :
-                                    CollectionProspects.getCollection()) {
-                                if (prospect.getIdentifiant() == id) {
-                                    societeSelection = prospect;
+                            try {
+                                societeSelection = prospectDAO.find(id);
+                            } catch (DateTimeException dte) {
+                                JOptionPane.showMessageDialog(this,
+                                        "La date doit être dans le format suivant : dd/MM/yyyy",
+                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, dte.getMessage());
+                            } catch (NumberFormatException nft) {
+                                JOptionPane.showMessageDialog(this,
+                                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
+                                        JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, nft.getMessage());
+                            } catch (ExceptionEntity ee) {
+                                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.WARNING, ee.getMessage());
+                            } catch (ExceptionDAO exceptionDAO) {
+                                switch (exceptionDAO.getGravite()) {
+                                    case 5:
+                                        exceptionDAO.printStackTrace();
+                                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer",
+                                                "Erreur dans l'application",
+                                                JOptionPane.ERROR_MESSAGE);
+                                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                                        System.exit(1);
+                                        break;
                                 }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                                "l'application",
+                                        JOptionPane.ERROR_MESSAGE);
+                                LOGGER.log(Level.SEVERE, exception.getMessage());
+                                System.exit(1);
                             }
                             break;
                     }
@@ -126,13 +241,9 @@ public class AffichageFrame extends MainFrame {
          * sélectionnée
          */
         btnEditer.addActionListener(e -> {
-            try {
-                this.dispose();
-                new FormFrame(societeSelection, EnumCRUD.UPDATE, super.largeur,
-                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
-            }
+            this.dispose();
+            new FormFrame(societeSelection, EnumCRUD.UPDATE, super.largeur,
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
 
         /**
@@ -140,13 +251,9 @@ public class AffichageFrame extends MainFrame {
          * ligne sélectionnée
          */
         btnSupprimer.addActionListener(e -> {
-            try {
-                this.dispose();
-                new FormFrame(societeSelection, EnumCRUD.DELETE, super.largeur,
-                        super.hauteur, super.x, super.y, super.estEnPleinEcran);
-            } catch (ExceptionEntity ex) {
-                throw new RuntimeException(ex);
-            }
+            this.dispose();
+            new FormFrame(societeSelection, EnumCRUD.DELETE, super.largeur,
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
 
         /**
@@ -158,8 +265,8 @@ public class AffichageFrame extends MainFrame {
             new FormFrame(enumInstanceDeSociete, EnumCRUD.CREATE, super.largeur,
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
+
         setVisible(true);
-        setupPanBtnsCRUDAndSetEnabledToFalse();
     }
 
     //--------------------- STATIC METHODS -------------------------------------
@@ -175,7 +282,7 @@ public class AffichageFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     private void setupGUI(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran) {
         this.table = new JTable(this.data, this.columnNames);
         this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         this.table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -233,8 +340,7 @@ public class AffichageFrame extends MainFrame {
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
     public void updateEnumInstanceDeSociete(
-            EnumInstanceDeSociete enumInstanceDeSociete)
-            throws ExceptionEntity {
+            EnumInstanceDeSociete enumInstanceDeSociete) {
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         updateData();
         TableModel model = new DefaultTableModel(this.data, this.columnNames) {
@@ -274,47 +380,47 @@ public class AffichageFrame extends MainFrame {
         switch (enumInstanceDeSociete) {
             case Client:
                 this.data =
-                        new Object[CollectionClients.getCollection().size()][9];
+                        new Object[listeSocieteSelection.size()][10];
                 columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Code postal", "Ville",
+                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
                         "Téléphone", "Adresse mail", "Chiffre " + "d'affaires",
                         "Nombre " + "d'employés"};
-                for (int i = 0; i < CollectionClients.getCollection().size();
+                for (int i = 0; i < listeSocieteSelection.size();
                      i++) {
-                    Client client = CollectionClients.getCollection().get(i);
+                    Client client = (Client) listeSocieteSelection.get(i);
                     this.data[i][0] = client.getIdentifiant();
                     this.data[i][1] = client.getRaisonSociale();
                     this.data[i][2] = client.getNumeroDeRue();
-                    this.data[i][3] = client.getCodePostal();
-                    this.data[i][4] = client.getVille();
-                    this.data[i][5] = client.getTelephone();
-                    this.data[i][6] = client.getAdresseMail();
-                    this.data[i][7] = client.getChiffreAffaires();
-                    this.data[i][8] = client.getNombreEmployes();
+                    this.data[i][3] = client.getNomDeRue();
+                    this.data[i][4] = client.getCodePostal();
+                    this.data[i][5] = client.getVille();
+                    this.data[i][6] = client.getTelephone();
+                    this.data[i][7] = client.getAdresseMail();
+                    this.data[i][8] = Tools.DECIMAL_FORMAT.format(client.getChiffreAffaires());
+                    this.data[i][9] = client.getNombreEmployes();
                 }
                 break;
             case Prospect:
-                this.data = new Object[CollectionProspects.getCollection()
-                        .size()][9];
+                this.data = new Object[listeSocieteSelection.size()][10];
                 columnNames = new String[]{"Identifiant", "Raison sociale",
-                        "Numéro" + " de rue", "Code postal", "Ville",
+                        "Numéro" + " de rue", "Nom de rue", "Code postal", "Ville",
                         "Téléphone", "Adresse mail", "Date de " + "prospection",
                         "Prospect" + " intéressé"};
-                for (int i = 0; i < CollectionProspects.getCollection().size();
+                for (int i = 0; i < listeSocieteSelection.size();
                      i++) {
-                    Prospect prospect =
-                            CollectionProspects.getCollection().get(i);
+                    Prospect prospect = (Prospect) listeSocieteSelection.get(i);
                     this.data[i][0] = prospect.getIdentifiant();
                     this.data[i][1] = prospect.getRaisonSociale();
                     this.data[i][2] = prospect.getNumeroDeRue();
-                    this.data[i][3] = prospect.getCodePostal();
-                    this.data[i][4] = prospect.getVille();
-                    this.data[i][5] = prospect.getTelephone();
-                    this.data[i][6] = prospect.getAdresseMail();
-                    this.data[i][7] =
+                    this.data[i][3] = prospect.getNomDeRue();
+                    this.data[i][4] = prospect.getCodePostal();
+                    this.data[i][5] = prospect.getVille();
+                    this.data[i][6] = prospect.getTelephone();
+                    this.data[i][7] = prospect.getAdresseMail();
+                    this.data[i][8] =
                             FormatterDate.convertiEtFormatDateEnChaine(
                                     prospect.getDateProsprection());
-                    this.data[i][8] = prospect.getProspectInteresse();
+                    this.data[i][9] = prospect.getProspectInteresse();
                 }
                 break;
         }

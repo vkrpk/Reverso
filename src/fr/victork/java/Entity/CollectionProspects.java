@@ -7,6 +7,9 @@ package fr.victork.java.Entity;
 
 import java.util.ArrayList;
 
+/**
+ * Cette classe représente la liste de tous les prospects
+ */
 public class CollectionProspects {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

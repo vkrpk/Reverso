@@ -9,11 +9,14 @@ import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Tools.Tools;
 
 
+/**
+ * Cette classe est le modèle pour une société
+ */
 public abstract class Societe implements Tools {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
-    protected int identifiant;
+    protected Integer identifiant;
     protected String raisonSociale;
     protected String numeroDeRue;
     protected String nomDeRue;
@@ -23,6 +26,9 @@ public abstract class Societe implements Tools {
     protected String adresseMail;
     protected String commentaires;
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    public Societe() {
+    }
 
     /**
      * Définit les propriétés communes à toutes les sociétés
@@ -37,9 +43,10 @@ public abstract class Societe implements Tools {
      * @param commentaires  Commentaires facultatifs
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public Societe(String raisonSociale, String numeroDeRue, String nomDeRue,
-            String codePostal, String ville, String telephone,
-            String adresseMail, String commentaires) throws ExceptionEntity {
+    public Societe(Integer identifiant, String raisonSociale, String numeroDeRue, String nomDeRue,
+                   String codePostal, String ville, String telephone,
+                   String adresseMail, String commentaires) throws ExceptionEntity {
+        this.setIdentifiant(identifiant);
         this.setRaisonSociale(raisonSociale);
         this.setNumeroDeRue(numeroDeRue);
         this.setNomDeRue(nomDeRue);
@@ -56,16 +63,16 @@ public abstract class Societe implements Tools {
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
 
-    public int getIdentifiant() {
+    public Integer getIdentifiant() {
         return identifiant;
     }
 
     /**
      * Affecte un identifiant à une société
      *
-     * @param identifiant
+     * @param identifiant Int auto incrémenté
      */
-    public void setIdentifiant(int identifiant) {
+    public void setIdentifiant(Integer identifiant) {
         this.identifiant = identifiant;
     }
 
@@ -195,7 +202,7 @@ public abstract class Societe implements Tools {
      */
     public void setAdresseMail(String adresseMail) throws ExceptionEntity {
         if (Tools.controlStringIsNotEmpty(adresseMail) &&
-                adresseMail.matches(".+@.+")) {
+                adresseMail.matches(Tools.REGEX_MAIL)) {
             this.adresseMail = adresseMail;
         } else {
             throw new ExceptionEntity("L'adresse mail n'est pas valide, elle " +
@@ -211,15 +218,9 @@ public abstract class Societe implements Tools {
      * Affecte des commentaires à une société
      *
      * @param commentaires La valeur doit être une chaîne de caractères
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public void setCommentaires(String commentaires) throws ExceptionEntity {
-        if (commentaires != null) {
-            this.commentaires = commentaires;
-        } else {
-            throw new ExceptionEntity("Les commentaires doivent être une " +
-                    "chaîne de caractère non null.");
-        }
+    public void setCommentaires(String commentaires) {
+        this.commentaires = commentaires;
     }
 
     //--------------------- TO STRING METHOD------------------------------------
@@ -234,7 +235,6 @@ public abstract class Societe implements Tools {
                 ", nomDeRue='" + nomDeRue + '\'' + ", codePostal='" +
                 codePostal + '\'' + ", ville='" + ville + '\'' +
                 ", telephone='" + telephone + '\'' + ", adresseMail='" +
-                adresseMail + '\'' + ", commentaires='" + commentaires + '\'' +
-                '}';
+                adresseMail + '\'' + ", commentaires='" + commentaires + '\'';
     }
 }

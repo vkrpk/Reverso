@@ -2,3 +2,5 @@
 out/
 ressources/
 javadoc/
+LogReverso.log
+database.properties

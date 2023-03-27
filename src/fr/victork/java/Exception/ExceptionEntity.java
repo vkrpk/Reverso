@@ -5,6 +5,9 @@
  */
 package fr.victork.java.Exception;
 
+/**
+ * Cette classe est le modèle pour une exception caractérisé
+ */
 public class ExceptionEntity extends Exception {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------

@@ -7,6 +7,11 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.AbstractDAOFactory;
+import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
+import fr.victork.java.Entity.Client;
+import fr.victork.java.Entity.Prospect;
 import fr.victork.java.Tools.Tools;
 
 import javax.swing.*;
@@ -14,7 +19,15 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.logging.Level;
 
+import static fr.victork.java.Log.LoggerReverso.LOGGER;
+
+/**
+ * Cette classe représente le squelette de toutes les fenêtres de l'application
+ * Cette classe implémente des écouteurs d'évènements nécessaires à toutes
+ * les fenêtres de l'application
+ */
 public class MainFrame extends JFrame implements Tools {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -23,6 +36,9 @@ public class MainFrame extends JFrame implements Tools {
     protected JPanel contentPane, panNorth, panSouth, panCentral;
     protected int largeur, hauteur, x, y;
     protected boolean estEnPleinEcran;
+    protected AbstractDAOFactory abstractDAOFactory;
+    protected DAO<Client> clientDAO;
+    protected DAO<Prospect> prospectDAO;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -34,8 +50,9 @@ public class MainFrame extends JFrame implements Tools {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-            int positionY, boolean pleinEcran) {
+                     int positionY, boolean pleinEcran) {
         setupGUIAllFrames(pleinEcran);
+        System.out.println("abstractDAOFactory = " + abstractDAOFactory);
 
         // Ferme la fenêtre actuelle et ouvre la page d'accueil
         btnAccueil.addActionListener(e -> {
@@ -139,7 +156,9 @@ public class MainFrame extends JFrame implements Tools {
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            System.exit(1);
         }
         contentPane = (JPanel) getContentPane();
         panCentral = new JPanel();

@@ -5,17 +5,27 @@
  */
 package fr.victork.java.Entity;
 
+import fr.victork.java.DAO.mysql.MySQLContratDAO;
+import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 
+import java.util.ArrayList;
+
+/**
+ * Cette classe représente un client héritant de Société
+ */
 public class Client extends Societe {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
-    private static int compteurIdentifiant = 0;
     //--------------------- INSTANCE VARIABLES ---------------------------------
     private Double chiffreAffaires;
     private int nombreEmployes;
+    private ArrayList<Contrat> listeContrat;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+
+    public Client() {
+    }
 
     /**
      * Construit une nouvelle instance de Client
@@ -32,16 +42,14 @@ public class Client extends Societe {
      * @param nombreEmployes  Nombre d'employés
      * @throws ExceptionEntity Remonte une exception en cas d'erreur
      */
-    public Client(String raisonSociale, String numeroDeRue, String nomDeRue,
-            String codePostal, String ville, String telephone,
-            String adresseMail, String commentaires, Double chiffreAffaires,
-            int nombreEmployes) throws ExceptionEntity {
-        super(raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
+    public Client(Integer identifiant, String raisonSociale, String numeroDeRue, String nomDeRue,
+                  String codePostal, String ville, String telephone,
+                  String adresseMail, String commentaires, Double chiffreAffaires,
+                  int nombreEmployes) throws ExceptionEntity {
+        super(identifiant, raisonSociale, numeroDeRue, nomDeRue, codePostal, ville,
                 telephone, adresseMail, commentaires);
-        compteurIdentifiant++;
         this.setChiffreAffaires(chiffreAffaires);
         this.setNombreEmployes(nombreEmployes);
-        super.setIdentifiant(compteurIdentifiant);
     }
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
@@ -88,6 +96,14 @@ public class Client extends Societe {
         }
     }
 
+    public ArrayList<Contrat> getListeContrat() throws ExceptionEntity, ExceptionDAO {
+        return MySQLContratDAO.findByIdClient(this);
+    }
+
+    public void setListeContrat(ArrayList<Contrat> listeContrat) {
+        this.listeContrat = listeContrat;
+    }
+
     //--------------------- TO STRING METHOD------------------------------------
 
     /**
@@ -95,5 +111,16 @@ public class Client extends Societe {
      */
     public String toString() {
         return getRaisonSociale();
+    }
+
+    /**
+     * @return Retourne toutes les propriétés du client
+     */
+    public String affichage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append(", chiffreAffaires='" + chiffreAffaires + '\'' +
+                ", nombreEmployes='" + nombreEmployes + '\'' + '}');
+        return sb.toString();
     }
 }
