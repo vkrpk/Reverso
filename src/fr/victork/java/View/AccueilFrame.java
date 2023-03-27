@@ -42,6 +42,7 @@ public class AccueilFrame extends MainFrame {
     private ArrayList<JButton> listBtnsCRUD;
     private JLabel labelTypeSociete;
     private Color colorGreenCustom;
+    private MainFrame mainFrame;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -53,12 +54,13 @@ public class AccueilFrame extends MainFrame {
      * @param pleinEcran     Boolean True si le mode plein écran est activé
      */
     public AccueilFrame(int largeurFenetre, int hauteurFenetre, int positionX,
-                        int positionY, boolean pleinEcran) {
+                        int positionY, boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         setupPanBtnsCRUDAndSetEnabledToFalse();
         styliserComboBoxSociete();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
+        this.mainFrame = mainFrame;
 
         // Mémorise le type de société à gérer et adapte l'affichage
         btnGererClient.addActionListener(e -> {
@@ -71,7 +73,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (clientDAO.findAll().isEmpty()) {
+                if (mainFrame.clientDAO.findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -123,7 +125,7 @@ public class AccueilFrame extends MainFrame {
             resetComboBoxSocieteAndFillTheList();
             labelTypeSociete.setText(enumInstanceDeSociete.name());
             try {
-                if (prospectDAO.findAll().isEmpty()) {
+                if (mainFrame.prospectDAO.findAll().isEmpty()) {
                     btnEditer.setEnabled(false);
                     btnSupprimer.setEnabled(false);
                     btnEditer.setForeground(Color.black);
@@ -170,7 +172,7 @@ public class AccueilFrame extends MainFrame {
             AffichageFrame affichageFrame =
                     new AffichageFrame(enumInstanceDeSociete, super.largeur,
                             super.hauteur, super.x, super.y,
-                            super.estEnPleinEcran);
+                            super.estEnPleinEcran, this.mainFrame);
             affichageFrame.updateEnumInstanceDeSociete(
                     enumInstanceDeSociete);
         });
@@ -180,7 +182,7 @@ public class AccueilFrame extends MainFrame {
             this.dispose();
             new FormFrame(this.enumInstanceDeSociete, EnumCRUD.CREATE,
                     super.largeur, super.hauteur, super.x, super.y,
-                    super.estEnPleinEcran);
+                    super.estEnPleinEcran, mainFrame);
         });
 
         /* Affiche le formulaire de modification ou de suppression en
@@ -190,11 +192,11 @@ public class AccueilFrame extends MainFrame {
             if (this.enumCRUD == EnumCRUD.READ_CONTRAT) {
                 new AffichageContratFrame((Client) societeSelection,
                         super.largeur, super.hauteur, super.x, super.y,
-                        super.estEnPleinEcran);
+                        super.estEnPleinEcran, mainFrame);
             } else {
                 new FormFrame(this.societeSelection, this.enumCRUD,
                         super.largeur, super.hauteur, super.x, super.y,
-                        super.estEnPleinEcran);
+                        super.estEnPleinEcran, mainFrame);
             }
         });
 
@@ -240,17 +242,21 @@ public class AccueilFrame extends MainFrame {
         });
 
         btnSelectMySQL.addActionListener(e -> {
-            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MySQLDAOFactory.class);
-            clientDAO = abstractDAOFactory.getClientDAO();
-            prospectDAO = abstractDAOFactory.getProspectDAO();
+            mainFrame.abstractDAOFactory = AbstractDAOFactory.getFactory(MySQLDAOFactory.class);
+            mainFrame.clientDAO = mainFrame.abstractDAOFactory.getClientDAO();
+            mainFrame.prospectDAO = mainFrame.abstractDAOFactory.getProspectDAO();
             panChoisirBDD.setVisible(false);
+            panChoisirTypeSociete.setVisible(true);
+            panBtnsCRUD.setVisible(true);
         });
 
         btnSelectMongoDB.addActionListener(e -> {
-            super.abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
-            clientDAO = abstractDAOFactory.getClientDAO();
-            prospectDAO = abstractDAOFactory.getProspectDAO();
+            mainFrame.abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
+            mainFrame.clientDAO = mainFrame.abstractDAOFactory.getClientDAO();
+            mainFrame.prospectDAO = mainFrame.abstractDAOFactory.getProspectDAO();
             panChoisirBDD.setVisible(false);
+            panChoisirTypeSociete.setVisible(true);
+            panBtnsCRUD.setVisible(true);
         });
     }
 
@@ -313,26 +319,26 @@ public class AccueilFrame extends MainFrame {
             comboBoxSociete.removeAllItems();
             switch (enumInstanceDeSociete) {
                 case Client:
-                    if (clientDAO.findAll().isEmpty()) {
+                    if (mainFrame.clientDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Client collectionItem :
                         //new MySQLClientDAO().findAll()) {
-                            clientDAO.findAll()) {
+                            mainFrame.clientDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;
                 case Prospect:
-                    if (prospectDAO.findAll().isEmpty()) {
+                    if (mainFrame.prospectDAO.findAll().isEmpty()) {
                         btnEditer.setEnabled(false);
                         btnSupprimer.setEnabled(false);
                         return;
                     }
                     for (Prospect collectionItem :
-                            prospectDAO.findAll()) {
+                            mainFrame.prospectDAO.findAll()) {
                         comboBoxSociete.addItem(collectionItem);
                     }
                     comboBoxSociete.setSelectedIndex(0);
@@ -482,6 +488,7 @@ public class AccueilFrame extends MainFrame {
         super.panCentral.add(panChoisirBDD);
 
         super.panCentral.add(panChoisirTypeSociete);
+        panChoisirTypeSociete.setVisible(false);
 
         labelTypeSociete = createLabel("");
         labelTypeSociete.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 24));
@@ -490,6 +497,7 @@ public class AccueilFrame extends MainFrame {
         super.panCentral.add(panLabelTypeSociete);
 
         super.panCentral.add(panBtnsCRUD);
+        panBtnsCRUD.setVisible(false);
 
         panBtnEditOrDelete.setVisible(false);
 

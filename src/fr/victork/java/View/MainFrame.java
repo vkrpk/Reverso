@@ -19,6 +19,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 import static fr.victork.java.Log.LoggerReverso.LOGGER;
@@ -40,6 +41,7 @@ public class MainFrame extends JFrame implements Tools {
     protected DAO<Client> clientDAO;
     protected DAO<Prospect> prospectDAO;
 
+
     //--------------------- CONSTRUCTORS ---------------------------------------
 
     /**
@@ -52,14 +54,14 @@ public class MainFrame extends JFrame implements Tools {
     public MainFrame(int largeurFenetre, int hauteurFenetre, int positionX,
                      int positionY, boolean pleinEcran) {
         setupGUIAllFrames(pleinEcran);
-        System.out.println("abstractDAOFactory = " + abstractDAOFactory);
 
         // Ferme la fenêtre actuelle et ouvre la page d'accueil
         btnAccueil.addActionListener(e -> {
+
             this.dispose();
             new AccueilFrame(MainFrame.this.largeur, MainFrame.this.hauteur,
                     MainFrame.this.x, MainFrame.this.y,
-                    MainFrame.this.estEnPleinEcran);
+                    MainFrame.this.estEnPleinEcran, this);
         });
         // Ferme l'application
         btnQuitter.addActionListener(e -> this.dispose());

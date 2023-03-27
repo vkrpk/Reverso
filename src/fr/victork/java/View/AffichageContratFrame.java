@@ -46,6 +46,8 @@ public class AffichageContratFrame extends MainFrame {
     private ArrayList<Contrat> listeContratsByClient;
     private Client client;
 
+    private MainFrame mainFrame;
+
     //--------------------- CONSTRUCTORS ---------------------------------------
 
     /**
@@ -58,7 +60,7 @@ public class AffichageContratFrame extends MainFrame {
      */
     public AffichageContratFrame(Client client,
                                  int largeurFenetre, int hauteurFenetre, int positionX,
-                                 int positionY, boolean pleinEcran) {
+                                 int positionY, boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         try {
             listeContratsByClient = client.getListeContrat();
@@ -94,7 +96,7 @@ public class AffichageContratFrame extends MainFrame {
             LOGGER.log(Level.SEVERE, exception.getMessage());
             System.exit(1);
         }
-
+        this.mainFrame = mainFrame;
         updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
@@ -189,21 +191,21 @@ public class AffichageContratFrame extends MainFrame {
          * Ferme la fenêtre et affiche le formulaire d'édition pour la ligne
          * sélectionnée
          */
-        btnEditer.addActionListener(e -> {
+       /* btnEditer.addActionListener(e -> {
             this.dispose();
             new FormFrame(societeSelection, EnumCRUD.UPDATE, super.largeur,
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
         });
 
-        /**
+        *//**
          * Ferme la fenêtre et affiche le formulaire de suppression pour la
          * ligne sélectionnée
-         */
+         *//*
         btnSupprimer.addActionListener(e -> {
             this.dispose();
             new FormFrame(societeSelection, EnumCRUD.DELETE, super.largeur,
                     super.hauteur, super.x, super.y, super.estEnPleinEcran);
-        });
+        });*/
 
         /**
          * Ferme la fenêtre et affiche le formulaire de création pour le type
@@ -212,7 +214,7 @@ public class AffichageContratFrame extends MainFrame {
         btnCreer.addActionListener(e -> {
             this.dispose();
             new FormFrame(EnumInstanceDeSociete.Prospect, EnumCRUD.CREATE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran, mainFrame);
         });
         setVisible(true);
     }
