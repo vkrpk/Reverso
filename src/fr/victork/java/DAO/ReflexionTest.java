@@ -56,7 +56,7 @@ public class ReflexionTest {
                  ResultSet resultSet = statement.executeQuery(strSql)) {
                 while (resultSet.next()) {
                     //////////   ATTRIBUTS   //////////
-                    System.out.println("test");
+
                     int i = 0;
                     while (true) {
                         Field[] fields = metadata.getDeclaredFields();

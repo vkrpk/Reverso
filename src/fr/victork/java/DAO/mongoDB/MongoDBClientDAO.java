@@ -28,34 +28,34 @@ public class MongoDBClientDAO implements DAO<Client> {
     //--------------------- INSTANCE METHODS -----------------------------------
     @Override
     public void save(Client client) throws ExceptionEntity, ExceptionDAO {
-        Document query = new Document("prospect_identifiant", client.getIdentifiant());
+        Document query = new Document("client_identifiant", client.getIdentifiant());
         Document document = collectionClient.find(query).first();
         if (document != null) {
-            document.append("prospect_raison_sociale", client.getRaisonSociale());
-            document.append("prospect_numero_de_rue", client.getNumeroDeRue());
-            document.append("prospect_nom_de_rue", client.getNomDeRue());
-            document.append("prospect_code_postal", client.getCodePostal());
-            document.append("prospect_ville", client.getVille());
-            document.append("prospect_telephone", client.getTelephone());
-            document.append("prospect_adresse_mail", client.getAdresseMail());
-            document.append("prospect_commentaires", client.getCommentaires());
-            document.append("prospect_date_prospection", client.getChiffreAffaires());
-            document.append("prospect_interesse", client.getNombreEmployes());
+            document.append("client_raison_sociale", client.getRaisonSociale());
+            document.append("client_numero_de_rue", client.getNumeroDeRue());
+            document.append("client_nom_de_rue", client.getNomDeRue());
+            document.append("client_code_postal", client.getCodePostal());
+            document.append("client_ville", client.getVille());
+            document.append("client_telephone", client.getTelephone());
+            document.append("client_adresse_mail", client.getAdresseMail());
+            document.append("client_commentaires", client.getCommentaires());
+            document.append("client_chiffre_affaires", client.getChiffreAffaires());
+            document.append("client_nombre_employes", client.getNombreEmployes());
 
             collectionClient.updateOne(query, new Document("$set", document));
         } else {
             document = new Document();
-            document.append("prospect_identifiant", getLastId() + 1);
-            document.append("prospect_raison_sociale", client.getRaisonSociale());
-            document.append("prospect_numero_de_rue", client.getNumeroDeRue());
-            document.append("prospect_nom_de_rue", client.getNomDeRue());
-            document.append("prospect_code_postal", client.getCodePostal());
-            document.append("prospect_ville", client.getVille());
-            document.append("prospect_telephone", client.getTelephone());
-            document.append("prospect_adresse_mail", client.getAdresseMail());
-            document.append("prospect_commentaires", client.getCommentaires());
-            document.append("prospect_date_prospection", client.getChiffreAffaires());
-            document.append("prospect_interesse", client.getNombreEmployes());
+            document.append("client_identifiant", getLastId() + 1);
+            document.append("client_raison_sociale", client.getRaisonSociale());
+            document.append("client_numero_de_rue", client.getNumeroDeRue());
+            document.append("client_nom_de_rue", client.getNomDeRue());
+            document.append("client_code_postal", client.getCodePostal());
+            document.append("client_ville", client.getVille());
+            document.append("client_telephone", client.getTelephone());
+            document.append("client_adresse_mail", client.getAdresseMail());
+            document.append("client_commentaires", client.getCommentaires());
+            document.append("client_chiffre_affaires", client.getChiffreAffaires());
+            document.append("client_nombre_employes", client.getNombreEmployes());
 
             collectionClient.insertOne(document);
         }

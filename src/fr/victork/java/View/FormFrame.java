@@ -45,6 +45,8 @@ public class FormFrame extends MainFrame {
     private JRadioButton btnInterestingProspectYes, btnInterestingProspectNo;
     private ButtonGroup buttonGroupInterestingProspect;
     private String interestingProspectString;
+    private MainFrame mainFrame;
+
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -63,10 +65,11 @@ public class FormFrame extends MainFrame {
      */
     public FormFrame(EnumInstanceDeSociete enumInstanceDeSociete,
                      EnumCRUD enumCRUD, int largeurFenetre, int hauteurFenetre,
-                     int positionX, int positionY, boolean pleinEcran) {
+                     int positionX, int positionY, boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
         this.enumCRUD = enumCRUD;
+        this.mainFrame = mainFrame;
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
         initLabels();
@@ -93,13 +96,15 @@ public class FormFrame extends MainFrame {
      */
     public FormFrame(Societe societe, EnumCRUD enumCRUD, int largeurFenetre,
                      int hauteurFenetre, int positionX, int positionY,
-                     boolean pleinEcran) {
+                     boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         if (societe instanceof Client) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Client;
         } else if (societe instanceof Prospect) {
             this.enumInstanceDeSociete = EnumInstanceDeSociete.Prospect;
         }
+        this.mainFrame = mainFrame;
+
         this.enumCRUD = enumCRUD;
         this.societeSelection = societe;
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
@@ -364,11 +369,11 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()));
                 ((Client) societeSelection).setNombreEmployes(
                         Integer.parseInt(inputNombreEmployes.getText()));
-                clientDAO.save((Client) societeSelection);
+                mainFrame.clientDAO.save((Client) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran, this.mainFrame);
                 affichageFrameClient.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
             case Prospect:
@@ -377,11 +382,11 @@ public class FormFrame extends MainFrame {
                                 inputDateProspection.getText()));
                 ((Prospect) societeSelection).setProspectInteresse(
                         interestingProspectString);
-                prospectDAO.save((Prospect) societeSelection);
+                mainFrame.prospectDAO.save((Prospect) societeSelection);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran, this.mainFrame);
                 affichageFrameProspect.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
         }
@@ -407,11 +412,11 @@ public class FormFrame extends MainFrame {
                         Double.parseDouble(inputChiffreAffaires.getText()),
                         Integer.parseInt(inputNombreEmployes.getText())
                 );
-                clientDAO.save(nouveauClient);
+                mainFrame.clientDAO.save(nouveauClient);
                 this.dispose();
                 AffichageFrame affichageFrameClient =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran, this.mainFrame);
                 affichageFrameClient.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
             case Prospect:
@@ -428,11 +433,11 @@ public class FormFrame extends MainFrame {
                                 FormatterDate.convertiEtFormatDateEnLocalDate(
                                         inputDateProspection.getText()),
                                 interestingProspectString);
-                prospectDAO.save(nouveauProspect);
+                mainFrame.prospectDAO.save(nouveauProspect);
                 this.dispose();
                 AffichageFrame affichageFrameProspect =
                         new AffichageFrame(enumInstanceDeSociete, super.largeur,
-                                super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                                super.hauteur, super.x, super.y, super.estEnPleinEcran, this.mainFrame);
                 affichageFrameProspect.updateEnumInstanceDeSociete(enumInstanceDeSociete);
                 break;
         }
@@ -453,17 +458,17 @@ public class FormFrame extends MainFrame {
         if (choix == JOptionPane.YES_OPTION) {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    clientDAO.delete(societeSelection.getIdentifiant());
+                    mainFrame.clientDAO.delete(societeSelection.getIdentifiant());
                     break;
                 case Prospect:
-                    prospectDAO.delete(societeSelection.getIdentifiant());
+                    mainFrame.prospectDAO.delete(societeSelection.getIdentifiant());
                     break;
             }
             this.dispose();
             AffichageFrame affichageFrame =
                     new AffichageFrame(enumInstanceDeSociete, super.largeur,
                             super.hauteur, super.x, super.y,
-                            super.estEnPleinEcran);
+                            super.estEnPleinEcran, this.mainFrame);
             affichageFrame.updateEnumInstanceDeSociete(enumInstanceDeSociete);
         } else if (choix == JOptionPane.NO_OPTION) {
             JOptionPane.getRootFrame().dispose();

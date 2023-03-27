@@ -46,6 +46,7 @@ public class AffichageFrame extends MainFrame {
     private Societe societeSelection;
     private JButton btnCreer, btnSupprimer, btnEditer;
     private ArrayList listeSocieteSelection;
+    private MainFrame mainFrame;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
 
@@ -60,16 +61,18 @@ public class AffichageFrame extends MainFrame {
      */
     public AffichageFrame(EnumInstanceDeSociete enumInstanceDeSociete,
                           int largeurFenetre, int hauteurFenetre, int positionX,
-                          int positionY, boolean pleinEcran) {
+                          int positionY, boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         this.enumInstanceDeSociete = enumInstanceDeSociete;
+        this.mainFrame = mainFrame;
+
         try {
             switch (enumInstanceDeSociete) {
                 case Client:
-                    listeSocieteSelection = clientDAO.findAll();
+                    listeSocieteSelection = mainFrame.clientDAO.findAll();
                     break;
                 case Prospect:
-                    listeSocieteSelection = prospectDAO.findAll();
+                    listeSocieteSelection = mainFrame.prospectDAO.findAll();
                     break;
             }
         } catch (DateTimeException dte) {
@@ -159,7 +162,7 @@ public class AffichageFrame extends MainFrame {
                     switch (enumInstanceDeSociete) {
                         case Client:
                             try {
-                                societeSelection = clientDAO.find(id);
+                                societeSelection = mainFrame.clientDAO.find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -196,7 +199,7 @@ public class AffichageFrame extends MainFrame {
                             break;
                         case Prospect:
                             try {
-                                societeSelection = prospectDAO.find(id);
+                                societeSelection = mainFrame.prospectDAO.find(id);
                             } catch (DateTimeException dte) {
                                 JOptionPane.showMessageDialog(this,
                                         "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -243,7 +246,7 @@ public class AffichageFrame extends MainFrame {
         btnEditer.addActionListener(e -> {
             this.dispose();
             new FormFrame(societeSelection, EnumCRUD.UPDATE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran, mainFrame);
         });
 
         /**
@@ -253,7 +256,7 @@ public class AffichageFrame extends MainFrame {
         btnSupprimer.addActionListener(e -> {
             this.dispose();
             new FormFrame(societeSelection, EnumCRUD.DELETE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran, mainFrame);
         });
 
         /**
@@ -263,7 +266,7 @@ public class AffichageFrame extends MainFrame {
         btnCreer.addActionListener(e -> {
             this.dispose();
             new FormFrame(enumInstanceDeSociete, EnumCRUD.CREATE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
+                    super.hauteur, super.x, super.y, super.estEnPleinEcran, mainFrame);
         });
 
         setVisible(true);

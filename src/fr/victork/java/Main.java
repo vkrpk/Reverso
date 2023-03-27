@@ -51,12 +51,9 @@ public class Main {
 
             initDatas();
 
-            MainFrame mainFrame = new MainFrame();
+            MainFrame mainFrame = new MainFrame(1100, 750, -1, -1, false);
             /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
-            new AccueilFrame(1100, 750, -1, -1, false);
-
-            AbstractDAOFactory abstractDAOFactory = AbstractDAOFactory.getFactory(MongoDBDAOFactory.class);
-            DAO<Client> clientDAO = abstractDAOFactory.getClientDAO();
+            new AccueilFrame(1100, 750, -1, -1, false, mainFrame);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());
