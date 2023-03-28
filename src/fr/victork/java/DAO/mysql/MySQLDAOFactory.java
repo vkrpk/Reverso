@@ -2,6 +2,7 @@ package fr.victork.java.DAO.mysql;
 
 import fr.victork.java.DAO.AbstractDAOFactory;
 import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.InterfaceDAOClient;
 import fr.victork.java.Entity.Client;
 import fr.victork.java.Entity.EnumInstanceDeSociete;
 import fr.victork.java.Entity.Prospect;
@@ -14,7 +15,7 @@ public class MySQLDAOFactory extends AbstractDAOFactory {
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
-    public DAO<Client> getClientDAO() {
+    public InterfaceDAOClient<Client> getClientDAO() {
         return new MySQLClientDAO();
     }
 

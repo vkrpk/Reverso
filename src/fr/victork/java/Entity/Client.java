@@ -96,10 +96,6 @@ public class Client extends Societe {
         }
     }
 
-    public ArrayList<Contrat> getListeContrat() throws ExceptionEntity, ExceptionDAO {
-        return MySQLContratDAO.findByIdClient(this);
-    }
-
     public void setListeContrat(ArrayList<Contrat> listeContrat) {
         this.listeContrat = listeContrat;
     }

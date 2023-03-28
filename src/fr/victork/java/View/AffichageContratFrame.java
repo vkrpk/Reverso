@@ -7,6 +7,7 @@
  */
 package fr.victork.java.View;
 
+import fr.victork.java.DAO.InterfaceDAOClient;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
 import fr.victork.java.DAO.mysql.MySQLContratDAO;
 import fr.victork.java.Entity.*;
@@ -63,7 +64,7 @@ public class AffichageContratFrame extends MainFrame {
                                  int positionY, boolean pleinEcran, MainFrame mainFrame) {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
         try {
-            listeContratsByClient = client.getListeContrat();
+            listeContratsByClient = mainFrame.clientDAO.findByIdClient(client);
         } catch (DateTimeException dte) {
             JOptionPane.showMessageDialog(this,
                     "La date doit être dans le format suivant : dd/MM/yyyy",
@@ -149,7 +150,7 @@ public class AffichageContratFrame extends MainFrame {
                 if (selectedRow != -1) {
                     etatsBoutons(true);
                     try {
-                        societeSelection = clientDAO.find(id);
+                        societeSelection = mainFrame.clientDAO.find(id);
                     } catch (DateTimeException dte) {
                         JOptionPane.showMessageDialog(this,
                                 "La date doit être dans le format suivant : dd/MM/yyyy",

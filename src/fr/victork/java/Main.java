@@ -9,10 +9,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import fr.victork.java.DAO.AbstractDAOFactory;
 import fr.victork.java.DAO.DAO;
-import fr.victork.java.DAO.mongoDB.MongoDBClientDAO;
-import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
-import fr.victork.java.DAO.mongoDB.MongoDBDatabaseConnection;
-import fr.victork.java.DAO.mongoDB.MongoDBProspectDAO;
+import fr.victork.java.DAO.mongoDB.*;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
 import fr.victork.java.DAO.mysql.MySQLContratDAO;
 import fr.victork.java.DAO.mysql.MySQLProspectDAO;
@@ -50,6 +47,11 @@ public class Main {
             LOGGER.log(Level.INFO, "Démarrage de l'application");
 
             initDatas();
+
+            Contrat contrat = new Contrat(null, 1, "TEST", 12.00);
+            new MySQLContratDAO().save(contrat);
+
+            //System.out.println(new MySQLContratDAO().find(2).getLibelle());
 
             MainFrame mainFrame = new MainFrame(1100, 750, -1, -1, false);
             /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
