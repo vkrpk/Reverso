@@ -1,3 +1,11 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * La classe implémente l'interface générique DAO<T> et est utilisée pour gérer
+ * la persistance des objets de type Prospect dans une base de données MySQL.
+ * Elle utilise la classe MySQLDatabaseConnection pour établir une connexion à la base de données.
+ * La classe utilise la classe Document de MongoDB pour représenter les objets stockés dans la base de données.
+ */
 package fr.victork.java.DAO.mysql;
 
 import fr.victork.java.DAO.DAO;
@@ -10,12 +18,26 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * La classe implémente l'interface générique DAO<T> et est utilisée pour gérer
+ * la persistance des objets de type Prospect dans une base de données MySQL.
+ * Elle utilise la classe MySQLDatabaseConnection pour établir une connexion à la base de données.
+ * La classe utilise la classe Document de MongoDB pour représenter les objets stockés dans la base de données.
+ */
 public class MySQLProspectDAO implements DAO<Prospect> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
+
+    /**
+     * Cette méthode permet de récupérer tous les objets Prospect présents dans la base de données.
+     *
+     * @return ArrayList<Prospect> Retourne une liste d'objet Prospect présent dans la base de données.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Prospect
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public ArrayList<Prospect> findAll()
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM prospect";
@@ -46,6 +68,14 @@ public class MySQLProspectDAO implements DAO<Prospect> {
         return collectionProspects;
     }
 
+    /**
+     * Cette méthode permet de récupérer un objet Prospect à partir de son identifiant unique dans la base de données.
+     *
+     * @param id Identifiant unique de l'objet à récupérer.
+     * @return Client retourne un objet Prospect trouvé dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Prospect
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public Prospect find(Integer id)
             throws ExceptionEntity, ExceptionDAO {
         Prospect prospect = new Prospect();
@@ -78,6 +108,12 @@ public class MySQLProspectDAO implements DAO<Prospect> {
         return prospect;
     }
 
+    /**
+     * Cette méthode permet de supprimer un objet Prospect de la base de données à partir de son identifiant unique.
+     *
+     * @param id Identifiant unique de l'objet à supprimer de la base de données.
+     * @throws ExceptionDAO si une exception se produit lors de l'interaction avec la base de données
+     */
     public void delete(Integer id)
             throws ExceptionDAO {
         Prospect prospect = new Prospect();
@@ -91,6 +127,15 @@ public class MySQLProspectDAO implements DAO<Prospect> {
         }
     }
 
+    /**
+     * Cette méthode permet de sauvegarder un objet Prospect dans la base de données.
+     * Si le prospect existe déjà dans la base de données, les informations sont mises à jour. Sinon, un nouveau
+     * document est créé.
+     *
+     * @param prospect Prospect dont on souhaite sauvegarder ou modifier dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public void save(Prospect prospect)
             throws ExceptionEntity, ExceptionDAO {
         String strSql;

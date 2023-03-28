@@ -1,3 +1,11 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * La classe implémente l'interface générique InterfaceDAOClient<T> et est utilisée pour gérer
+ * la persistance des objets de type Client dans une base de données MongoDB.
+ * Elle utilise la classe MongoDBDatabaseConnection pour établir une connexion à la base de données.
+ * La classe utilise la classe Document de MongoDB pour représenter les objets stockés dans la base de données.
+ */
 package fr.victork.java.DAO.mongoDB;
 
 import com.mongodb.BasicDBObject;
@@ -16,6 +24,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * La classe implémente l'interface générique InterfaceDAOClient<T> et est utilisée pour gérer
+ * la persistance des objets de type Client dans une base de données MongoDB.
+ * Elle utilise la classe MongoDBDatabaseConnection pour établir une connexion à la base de données.
+ * La classe utilise la classe Document de MongoDB pour représenter les objets stockés dans la base de données.
+ */
 public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
@@ -27,6 +41,16 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+
+    /**
+     * Cette méthode permet de sauvegarder un objet Client dans la base de données.
+     * Si le client existe déjà dans la base de données, les informations sont mises à jour. Sinon, un nouveau
+     * document est créé.
+     *
+     * @param client Client dont on souhaite sauvegarder ou modifier dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     @Override
     public void save(Client client) throws ExceptionEntity, ExceptionDAO {
         Document query = new Document("client_identifiant", client.getIdentifiant());
@@ -62,6 +86,14 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
         }
     }
 
+    /**
+     * Cette méthode permet de récupérer un objet Client à partir de son identifiant unique dans la base de données.
+     *
+     * @param id Identifiant unique de l'objet à récupérer.
+     * @return Client retourne un objet Client trouvé dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     @Override
     public Client find(Integer id) throws ExceptionEntity, ExceptionDAO {
         Document query = new Document("client_identifiant", id);
@@ -91,12 +123,25 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
     }
 
 
+    /**
+     * Cette méthode permet de supprimer un objet Client de la base de données à partir de son identifiant unique.
+     *
+     * @param id Identifiant unique de l'objet à supprimer de la base de données.
+     * @throws ExceptionDAO si une exception se produit lors de l'interaction avec la base de données
+     */
     @Override
     public void delete(Integer id) throws ExceptionDAO {
         collectionClient.deleteOne(Filters.eq("client_identifiant", id));
     }
 
 
+    /**
+     * Cette méthode permet de récupérer tous les objets Client présents dans la base de données.
+     *
+     * @return ArrayList<Client> Retourne une liste d'objet Client présent dans la base de données.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     @Override
     public ArrayList<Client> findAll() throws ExceptionEntity, ExceptionDAO {
         MongoCursor<Document> cursor = collectionClient.find().iterator();
@@ -128,6 +173,14 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
         return collectionClients;
     }
 
+    /**
+     * permet de récupérer tous les contrats associés à un client à partir de son identifiant unique dans la base de données.
+     *
+     * @param client Client dont on souhaite récupérer les contrats.
+     * @return Retourne une liste de Contrat associée au client spécifié.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
         ArrayList<Contrat> collectionContratsByIdClient = new ArrayList<>();
         BasicDBObject filter = new BasicDBObject("identifiant_client", client.getIdentifiant());
@@ -151,6 +204,11 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
         return collectionContratsByIdClient;
     }
 
+    /**
+     * permet d'obtenir le dernier identifiant utilisé pour un client dans la base de données
+     *
+     * @return Retourne l'identifiant le plus élevé dans la base de données
+     */
     private Integer getLastId() {
         List<Document> pipeline = Arrays.asList(
                 new Document("$sort", new Document("client_identifiant", -1)),

@@ -221,8 +221,8 @@ public class AccueilFrame extends MainFrame {
         mémorise le choix de la société sélectionnée et modifie le texte du
         bouton en fonction de l'action du CRUD sélectionnée */
         comboBoxSociete.addActionListener(e -> {
-            resetComboBoxSocieteAndFillTheList();
             societeSelection = (Societe) comboBoxSociete.getSelectedItem();
+
             if (enumCRUD != null && societeSelection != null) {
                 switch (enumCRUD) {
                     case DELETE:
@@ -235,7 +235,8 @@ public class AccueilFrame extends MainFrame {
                                 societeSelection.getRaisonSociale());
                         break;
                     case READ_CONTRAT:
-                        this.btnAfficherContratByClient.setText("Afficher les contrats");
+                        this.btnValiderSupprimerOuEditer.setText("Afficher les contrats du client : " +
+                                societeSelection.getRaisonSociale());
                         break;
                 }
             }
@@ -324,10 +325,9 @@ public class AccueilFrame extends MainFrame {
                         btnSupprimer.setEnabled(false);
                         return;
                     }
-                    for (Client collectionItem :
-                        //new MySQLClientDAO().findAll()) {
+                    for (Client client :
                             mainFrame.clientDAO.findAll()) {
-                        comboBoxSociete.addItem(collectionItem);
+                        comboBoxSociete.addItem(client);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;
@@ -337,9 +337,9 @@ public class AccueilFrame extends MainFrame {
                         btnSupprimer.setEnabled(false);
                         return;
                     }
-                    for (Prospect collectionItem :
+                    for (Prospect prospect :
                             mainFrame.prospectDAO.findAll()) {
-                        comboBoxSociete.addItem(collectionItem);
+                        comboBoxSociete.addItem(prospect);
                     }
                     comboBoxSociete.setSelectedIndex(0);
                     break;

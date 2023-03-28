@@ -43,9 +43,7 @@ public class AffichageContratFrame extends MainFrame {
     private Object[][] data;
     private JScrollPane scrollPane;
     private Societe societeSelection;
-    private JButton btnCreer, btnSupprimer, btnEditer;
     private ArrayList<Contrat> listeContratsByClient;
-    private Client client;
 
     private MainFrame mainFrame;
 
@@ -102,7 +100,6 @@ public class AffichageContratFrame extends MainFrame {
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);
         setTitle("Liste des contrats pour " + client.getRaisonSociale());
-        setupPanBtnsCRUDAndSetEnabledToFalse();
 
         /**
          * Trie le tableau en ordre croissant par raison sociale
@@ -148,7 +145,6 @@ public class AffichageContratFrame extends MainFrame {
                 Object value = table.getValueAt(selectedRow, 0);
                 int id = ((Integer) value).intValue();
                 if (selectedRow != -1) {
-                    etatsBoutons(true);
                     try {
                         societeSelection = mainFrame.clientDAO.find(id);
                     } catch (DateTimeException dte) {
@@ -187,37 +183,7 @@ public class AffichageContratFrame extends MainFrame {
                 }
             }
         });
-
-        /**
-         * Ferme la fenêtre et affiche le formulaire d'édition pour la ligne
-         * sélectionnée
-         */
-       /* btnEditer.addActionListener(e -> {
-            this.dispose();
-            new FormFrame(societeSelection, EnumCRUD.UPDATE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
-        });
-
-        *//**
-         * Ferme la fenêtre et affiche le formulaire de suppression pour la
-         * ligne sélectionnée
-         *//*
-        btnSupprimer.addActionListener(e -> {
-            this.dispose();
-            new FormFrame(societeSelection, EnumCRUD.DELETE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran);
-        });*/
-
-        /**
-         * Ferme la fenêtre et affiche le formulaire de création pour le type
-         * de société actuellement affiché
-         */
-        btnCreer.addActionListener(e -> {
-            this.dispose();
-            new FormFrame(EnumInstanceDeSociete.Prospect, EnumCRUD.CREATE, super.largeur,
-                    super.hauteur, super.x, super.y, super.estEnPleinEcran, mainFrame);
-        });
-        setVisible(true);
+        this.setVisible(true);
     }
 
     //--------------------- STATIC METHODS -------------------------------------
@@ -261,54 +227,6 @@ public class AffichageContratFrame extends MainFrame {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
     }
-
-    /**
-     * Cette méthode a pour but d'instancier les boutons du CRUD, de les
-     * disposer dans un panel et de les désactiver
-     */
-    private void setupPanBtnsCRUDAndSetEnabledToFalse() {
-        btnSupprimer = createButton("Supprimer");
-        btnEditer = createButton("Modifier");
-        btnCreer = createButton("Créer");
-        JPanel panBtnCrud = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panBtnCrud.add(btnSupprimer);
-        panBtnCrud.add(btnEditer);
-        panBtnCrud.add(btnCreer);
-        super.panCentral.add(panBtnCrud, BorderLayout.SOUTH);
-        etatsBoutons(false);
-    }
-
-    /**
-     * Cette méthode a pour but d'activer ou désactiver les boutons "supprimer"
-     * et "éditer"
-     *
-     * @param etat Boolean état des boutons
-     */
-    private void etatsBoutons(boolean etat) {
-        btnEditer.setEnabled(etat);
-        btnSupprimer.setEnabled(etat);
-    }
-
-    /*  *//**
-     * Cette méthode a pour but de réinitialisé et de mettre à jour le modèle
-     * du tableau
-     *
-     * @param enumInstanceDeSociete Type de société
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
-     *//*
-    public void updateEnumInstanceDeSociete(
-            EnumInstanceDeSociete enumInstanceDeSociete) {
-        this.enumInstanceDeSociete = enumInstanceDeSociete;
-        updateData();
-        TableModel model = new DefaultTableModel(this.data, this.columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        this.table.setModel(model);
-        updateColumnWidths();
-    }*/
 
     /**
      * Cette méthode applique une taille minimale à chaque colonne de 75

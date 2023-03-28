@@ -96,6 +96,9 @@ public class Client extends Societe {
         }
     }
 
+    /**
+     * @param listeContrat
+     */
     public void setListeContrat(ArrayList<Contrat> listeContrat) {
         this.listeContrat = listeContrat;
     }

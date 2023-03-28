@@ -5,15 +5,8 @@
  */
 package fr.victork.java;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import fr.victork.java.DAO.AbstractDAOFactory;
-import fr.victork.java.DAO.DAO;
-import fr.victork.java.DAO.mongoDB.*;
 import fr.victork.java.DAO.mysql.MySQLClientDAO;
-import fr.victork.java.DAO.mysql.MySQLContratDAO;
-import fr.victork.java.DAO.mysql.MySQLProspectDAO;
-import fr.victork.java.Entity.*;
+import fr.victork.java.Entity.Client;
 import fr.victork.java.Exception.ExceptionEntity;
 import fr.victork.java.Log.FormatterLog;
 import fr.victork.java.View.AccueilFrame;
@@ -22,8 +15,6 @@ import fr.victork.java.View.MainFrame;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
@@ -48,14 +39,14 @@ public class Main {
 
             initDatas();
 
-            Contrat contrat = new Contrat(null, 1, "TEST", 12.00);
-            new MySQLContratDAO().save(contrat);
-
-            //System.out.println(new MySQLContratDAO().find(2).getLibelle());
-
             MainFrame mainFrame = new MainFrame(1100, 750, -1, -1, false);
             /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
             new AccueilFrame(1100, 750, -1, -1, false, mainFrame);
+
+    /*        for (Client client :
+                    new MySQLClientDAO().findAll()) {
+                System.out.println("client : " + client.getRaisonSociale());
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.log(Level.SEVERE, e.getMessage());

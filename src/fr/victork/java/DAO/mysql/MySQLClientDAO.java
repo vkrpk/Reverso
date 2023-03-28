@@ -1,3 +1,10 @@
+/**
+ * @author Victor K
+ * @version 1.00
+ * La classe implémente l'interface générique InterfaceDAOClient<T> et est utilisée pour gérer
+ * la persistance des objets de type Client dans une base de données MySQL.
+ * Elle utilise la classe MySQLDatabaseConnection pour établir une connexion à la base de données.
+ */
 package fr.victork.java.DAO.mysql;
 
 import fr.victork.java.DAO.InterfaceDAOClient;
@@ -11,12 +18,25 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * La classe implémente l'interface générique InterfaceDAOClient<T> et est utilisée pour gérer
+ * la persistance des objets de type Client dans une base de données MySQL.
+ * Elle utilise la classe MySQLDatabaseConnection pour établir une connexion à la base de données.
+ */
 public class MySQLClientDAO implements InterfaceDAOClient<Client> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
+
+    /**
+     * Cette méthode permet de récupérer tous les objets Client présents dans la base de données.
+     *
+     * @return ArrayList<Client> Retourne une liste d'objet Client présent dans la base de données.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public ArrayList<Client> findAll()
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM client";
@@ -47,6 +67,14 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
         return collectionClients;
     }
 
+    /**
+     * Cette méthode permet de récupérer un objet Client à partir de son identifiant unique dans la base de données.
+     *
+     * @param id Identifiant unique de l'objet à récupérer.
+     * @return Client retourne un objet Client trouvé dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public Client find(Integer id)
             throws ExceptionEntity, ExceptionDAO {
         Client client = new Client();
@@ -81,6 +109,12 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
         return client;
     }
 
+    /**
+     * Cette méthode permet de supprimer un objet Client de la base de données à partir de son identifiant unique.
+     *
+     * @param id Identifiant unique de l'objet à supprimer de la base de données.
+     * @throws ExceptionDAO si une exception se produit lors de l'interaction avec la base de données
+     */
     public void delete(Integer id)
             throws ExceptionDAO {
         String strSql = "DELETE FROM client WHERE client_identifiant=?";
@@ -93,6 +127,15 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
         }
     }
 
+    /**
+     * Cette méthode permet de sauvegarder un objet Client dans la base de données.
+     * Si le client existe déjà dans la base de données, les informations sont mises à jour. Sinon, un nouveau
+     * enregistrement est créé.
+     *
+     * @param client Client dont on souhaite sauvegarder ou modifier dans la base de données
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité Client
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public void save(Client client)
             throws ExceptionEntity, ExceptionDAO {
         String strSql;
@@ -135,6 +178,14 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
         }
     }
 
+    /**
+     * permet de récupérer tous les contrats associés à un client à partir de son identifiant unique dans la base de données.
+     *
+     * @param client Client dont on souhaite récupérer les contrats.
+     * @return Retourne une liste de Contrat associée au client spécifié.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
     public ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM contrat WHERE identifiant_client=?";
         ArrayList<Contrat> contratsByClient = new ArrayList<>();

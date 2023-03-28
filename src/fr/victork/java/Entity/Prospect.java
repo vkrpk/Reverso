@@ -55,6 +55,11 @@ public class Prospect extends Societe {
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     //--------------------- GETTERS - SETTERS ----------------------------------
 
+    /**
+     * Getter pour la date de prospection du prospect
+     *
+     * @return La date de prospection du prospect
+     */
     public LocalDate getDateProsprection() {
         return dateProsprection;
     }
