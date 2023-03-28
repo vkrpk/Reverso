@@ -13,6 +13,9 @@ public class Contrat {
     private Double montant;
 
     //--------------------- CONSTRUCTORS ---------------------------------------
+    public Contrat() {
+    }
+
     public Contrat(Integer identifiantContrat, Integer identifiantClient, String libelle, Double montant)
             throws ExceptionEntity {
         this.setIdentifiantContrat(identifiantContrat);

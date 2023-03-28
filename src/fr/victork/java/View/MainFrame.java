@@ -9,6 +9,7 @@ package fr.victork.java.View;
 
 import fr.victork.java.DAO.AbstractDAOFactory;
 import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.InterfaceDAOClient;
 import fr.victork.java.DAO.mongoDB.MongoDBDAOFactory;
 import fr.victork.java.Entity.Client;
 import fr.victork.java.Entity.Prospect;
@@ -38,7 +39,7 @@ public class MainFrame extends JFrame implements Tools {
     protected int largeur, hauteur, x, y;
     protected boolean estEnPleinEcran;
     protected AbstractDAOFactory abstractDAOFactory;
-    protected DAO<Client> clientDAO;
+    protected InterfaceDAOClient<Client> clientDAO;
     protected DAO<Prospect> prospectDAO;
 
 

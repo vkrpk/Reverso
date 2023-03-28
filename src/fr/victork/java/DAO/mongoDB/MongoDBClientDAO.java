@@ -1,12 +1,13 @@
 package fr.victork.java.DAO.mongoDB;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import fr.victork.java.DAO.DAO;
+import fr.victork.java.DAO.InterfaceDAOClient;
 import fr.victork.java.Entity.Client;
-import fr.victork.java.Entity.Prospect;
+import fr.victork.java.Entity.Contrat;
 import fr.victork.java.Exception.ExceptionDAO;
 import fr.victork.java.Exception.ExceptionEntity;
 import org.bson.Document;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MongoDBClientDAO implements DAO<Client> {
+public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     Integer lastId = 0;
@@ -82,6 +83,8 @@ public class MongoDBClientDAO implements DAO<Client> {
                     codePostal, ville,
                     telephone, adresseMail, commentaires, chiffreAffairesDouble, nombreEmployes
             );
+            ArrayList<Contrat> listeContrats = findByIdClient(client);
+            client.setListeContrat(listeContrats);
             return client;
         }
         return null;
@@ -123,6 +126,29 @@ public class MongoDBClientDAO implements DAO<Client> {
             cursor.close();
         }
         return collectionClients;
+    }
+
+    public ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
+        ArrayList<Contrat> collectionContratsByIdClient = new ArrayList<>();
+        BasicDBObject filter = new BasicDBObject("identifiant_client", client.getIdentifiant());
+        MongoCollection<Document> collectionContrat = mongoDatabase.getCollection("contrat");
+        MongoCursor<Document> cursor = collectionContrat.find(filter).iterator();
+        try {
+            while (cursor.hasNext()) {
+                Document result = cursor.next();
+                Integer identifiantContrat = result.getInteger("identifiant_contrat");
+                Integer identifiantClient = result.getInteger("identifiant_client");
+                String libelle = result.getString("libelle");
+                Object montant = result.get("montant");
+                Double montantDouble = (montant instanceof Number) ? ((Number) montant).doubleValue() :
+                        null;
+                Contrat contrat = new Contrat(identifiantContrat, identifiantClient, libelle, montantDouble);
+                collectionContratsByIdClient.add(contrat);
+            }
+        } finally {
+            cursor.close();
+        }
+        return collectionContratsByIdClient;
     }
 
     private Integer getLastId() {

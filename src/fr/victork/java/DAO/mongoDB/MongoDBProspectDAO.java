@@ -97,11 +97,10 @@ public class MongoDBProspectDAO implements DAO<Prospect> {
         collectionProspect.deleteOne(Filters.eq("prospect_identifiant", id));
     }
 
-
     @Override
     public ArrayList<Prospect> findAll() throws ExceptionEntity, ExceptionDAO {
         MongoCursor<Document> cursor = collectionProspect.find().iterator();
-        ArrayList<Prospect> collectionClients = new ArrayList<>();
+        ArrayList<Prospect> collectionProspects = new ArrayList<>();
         try {
             while (cursor.hasNext()) {
                 Document result = cursor.next();
@@ -121,12 +120,12 @@ public class MongoDBProspectDAO implements DAO<Prospect> {
                         codePostal, ville, telephone, adresseMail, commentaires,
                         instant.atZone(ZoneId.systemDefault()).toLocalDate(), prospectInteresse
                 );
-                collectionClients.add(prospect);
+                collectionProspects.add(prospect);
             }
         } finally {
             cursor.close();
         }
-        return collectionClients;
+        return collectionProspects;
     }
 
     private Integer getLastId() {

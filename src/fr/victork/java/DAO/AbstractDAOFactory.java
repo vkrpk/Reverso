@@ -23,7 +23,7 @@ public abstract class AbstractDAOFactory {
 
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
-    public abstract DAO<Client> getClientDAO();
+    public abstract InterfaceDAOClient<Client> getClientDAO();
 
     public abstract DAO<Prospect> getProspectDAO();
     //--------------------- STATIC - GETTERS - SETTERS -------------------------

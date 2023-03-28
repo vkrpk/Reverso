@@ -77,5 +77,7 @@ VALUES ('MySQL Prospect n°1', '789 5th Ave', 'Suite 200', '06000', 'Nice', '04 
         'Intéressé par notre nouveau produit', '2023-03-15', 'Oui');
 
 INSERT INTO contrat (identifiant_client, libelle, montant)
-VALUES (1, 'MySQL - Contrat n°1 avec le client ,°1', 444.44),
-       (1, 'MySQL - Contrat n°2 avec le client n°1', 999.99);
+VALUES (1, 'MySQL - Contrat n°1 avec le client n°1', 444.44),
+       (1, 'MySQL - Contrat n°2 avec le client n°1', 444.44),
+       (2, 'MySQL - Contrat n°3 avec le client n°2', 444.44),
+       (2, 'MySQL - Contrat n°4 avec le client n°2', 999.99);
