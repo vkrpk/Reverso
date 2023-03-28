@@ -249,6 +249,7 @@ public class AccueilFrame extends MainFrame {
             panChoisirBDD.setVisible(false);
             panChoisirTypeSociete.setVisible(true);
             panBtnsCRUD.setVisible(true);
+            super.panNorth.setVisible(true);
         });
 
         btnSelectMongoDB.addActionListener(e -> {
@@ -258,6 +259,7 @@ public class AccueilFrame extends MainFrame {
             panChoisirBDD.setVisible(false);
             panChoisirTypeSociete.setVisible(true);
             panBtnsCRUD.setVisible(true);
+            super.panNorth.setVisible(true);
         });
     }
 

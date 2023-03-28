@@ -181,6 +181,7 @@ public class MainFrame extends JFrame implements Tools {
         panCentral.repaint();
 
         if (this.getClass().getSimpleName().equals("AccueilFrame")) {
+            btnAccueil.setText("Retour");
             panNorth.setVisible(false);
         }
     }
