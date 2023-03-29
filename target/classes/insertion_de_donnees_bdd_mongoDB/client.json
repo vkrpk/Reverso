@@ -1,0 +1,28 @@
+[
+  {
+    "client_identifiant": 1,
+    "client_raison_sociale": "MongoDB Client n°1",
+    "client_numero_de_rue": "123 Main St",
+    "client_nom_de_rue": "Suite 100",
+    "client_code_postal": "75001",
+    "client_ville": "Paris",
+    "client_telephone": "01 23 45 67 89",
+    "client_adresse_mail": "contact@abccompany.com",
+    "client_commentaires": null,
+    "client_chiffre_affaires": 500000.00,
+    "client_nombre_employes": 20
+  },
+  {
+    "client_identifiant": 2,
+    "client_raison_sociale": "MongoDB Client n°2",
+    "client_numero_de_rue": "456 Broadway",
+    "client_nom_de_rue": "Floor 3",
+    "client_code_postal": "69002",
+    "client_ville": "Lyon",
+    "client_telephone": "04 56 78 90 12",
+    "client_adresse_mail": "contact@xyzcorp.com",
+    "client_commentaires": "Client fidèle depuis 5 ans",
+    "client_chiffre_affaires": 1000000.00,
+    "client_nombre_employes": 50
+  }
+]
