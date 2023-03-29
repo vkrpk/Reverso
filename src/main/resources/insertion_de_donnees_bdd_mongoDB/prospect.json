@@ -1,0 +1,32 @@
+[
+  {
+    "prospect_identifiant": 1,
+    "prospect_raison_sociale": "MongoDB Prospect n°1",
+    "prospect_numero_de_rue": "789 5th Ave",
+    "prospect_nom_de_rue": "Suite 200",
+    "prospect_code_postal": "06000",
+    "prospect_ville": "Nice",
+    "prospect_telephone": "04 12 34 56 78",
+    "prospect_adresse_mail": "adresse@mail",
+    "prospect_commentaires": null,
+    "prospect_date_prospection": {
+      "$date": "2023-03-01T00:00:00.000Z"
+    },
+    "prospect_interesse": "Non"
+  },
+  {
+    "prospect_identifiant": 2,
+    "prospect_raison_sociale": "MongoDB Prospect n°2",
+    "prospect_numero_de_rue": "test",
+    "prospect_nom_de_rue": "test",
+    "prospect_code_postal": "11111",
+    "prospect_ville": "ville",
+    "prospect_telephone": "0000000000",
+    "prospect_adresse_mail": "mail@mail",
+    "prospect_commentaires": null,
+    "prospect_date_prospection": {
+      "$date": "2023-03-27T00:00:00.000Z"
+    },
+    "prospect_interesse": "Non"
+  }
+]
