@@ -1,6 +1,0 @@
-Client;eric;3;Rue de la paix;75000;Paris;0600000000;client1@gmail.com;Ce client ;1000.0;15;
-Client;Charles;3;Rue de la paix;75000;Paris;0600000000;client2@gmail.com;Ce client ;1000.0;15;
-Client;Jules;3;Rue de la paix;75000;Paris;0600000000;client3@gmail.com;Ce client ;1000.0;15;
-Client;Pierre;3;Rue de la paix;75000;Paris;0600000000;client4@gmail.com;Ce client ;10000000000.00;15;
-Prospect;Lisa;3;Rue de la paix;75000;Paris;0600000000;prospect2@gmail.com;Ce client ;15/03/2023;Oui;
-Prospect;Jean;3;Rue de la paix;75000;Paris;0600000000;prospect1@gmail.com;Ce client ;15/03/2023;Non;

@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.victork.Entity.ClientTest" time="0.11" tests="17" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.victork.Entity.ClientTest" time="0.117" tests="17" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
     <property name="java.specification.version" value="11"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.class.path" value="C:\Dev\Java\reverso-maven\target\test-classes;C:\Dev\Java\reverso-maven\target\classes;C:\Users\CDA-02\.m2\repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar;C:\Users\CDA-02\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\CDA-02\.m2\repository\org\mongodb\mongo-java-driver\3.12.12\mongo-java-driver-3.12.12.jar;C:\Users\CDA-02\.m2\repository\org\mongodb\bson\3.8.2\bson-3.8.2.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\CDA-02\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\CDA-02\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\CDA-02\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\CDA-02\.m2\repository\com\mikemybytes\junit5-formatted-source\0.2.0\junit5-formatted-source-0.2.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.0\junit-jupiter-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.0\junit-jupiter-params-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.0\junit-jupiter-engine-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\platform\junit-platform-engine\1.8.0\junit-platform-engine-1.8.0.jar;"/>
+    <property name="java.class.path" value="C:\laragon\www\Tutoriels\Java\reverso\target\test-classes;C:\laragon\www\Tutoriels\Java\reverso\target\classes;C:\Users\kruvi\.m2\repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar;C:\Users\kruvi\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\kruvi\.m2\repository\org\mongodb\mongo-java-driver\3.12.12\mongo-java-driver-3.12.12.jar;C:\Users\kruvi\.m2\repository\org\mongodb\bson\3.8.2\bson-3.8.2.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\kruvi\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\kruvi\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\kruvi\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\kruvi\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\kruvi\.m2\repository\com\mikemybytes\junit5-formatted-source\0.2.0\junit5-formatted-source-0.2.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.0\junit-jupiter-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.0\junit-jupiter-params-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.0\junit-jupiter-engine-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\platform\junit-platform-engine\1.8.0\junit-platform-engine-1.8.0.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://openjdk.java.net/"/>
     <property name="user.timezone" value="Europe/Paris"/>
     <property name="java.vm.specification.version" value="11"/>
-    <property name="os.name" value="Windows 10"/>
+    <property name="os.name" value="Windows 11"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="FR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-11.0.17\bin"/>
-    <property name="sun.java.command" value="C:\Users\CDA-02\AppData\Local\Temp\surefire2886849386781681778\surefirebooter-20230329113020922_3.jar C:\Users\CDA-02\AppData\Local\Temp\surefire2886849386781681778 2023-03-29T11-30-20_744-jvmRun1 surefire-20230329113020922_1tmp surefire_0-20230329113020922_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\kruvi\AppData\Local\Temp\surefire17228407450447748663\surefirebooter-20230329193549360_3.jar C:\Users\kruvi\AppData\Local\Temp\surefire17228407450447748663 2023-03-29T19-35-48_911-jvmRun1 surefire-20230329193549360_1tmp surefire_0-20230329193549360_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Dev\Java\reverso-maven\target\test-classes;C:\Dev\Java\reverso-maven\target\classes;C:\Users\CDA-02\.m2\repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar;C:\Users\CDA-02\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\CDA-02\.m2\repository\org\mongodb\mongo-java-driver\3.12.12\mongo-java-driver-3.12.12.jar;C:\Users\CDA-02\.m2\repository\org\mongodb\bson\3.8.2\bson-3.8.2.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\CDA-02\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\CDA-02\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\CDA-02\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\CDA-02\.m2\repository\com\mikemybytes\junit5-formatted-source\0.2.0\junit5-formatted-source-0.2.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.0\junit-jupiter-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.0\junit-jupiter-params-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.0\junit-jupiter-engine-5.8.0.jar;C:\Users\CDA-02\.m2\repository\org\junit\platform\junit-platform-engine\1.8.0\junit-platform-engine-1.8.0.jar;"/>
+    <property name="surefire.test.class.path" value="C:\laragon\www\Tutoriels\Java\reverso\target\test-classes;C:\laragon\www\Tutoriels\Java\reverso\target\classes;C:\Users\kruvi\.m2\repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar;C:\Users\kruvi\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\kruvi\.m2\repository\org\mongodb\mongo-java-driver\3.12.12\mongo-java-driver-3.12.12.jar;C:\Users\kruvi\.m2\repository\org\mongodb\bson\3.8.2\bson-3.8.2.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\kruvi\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\kruvi\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\kruvi\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\kruvi\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\kruvi\.m2\repository\com\mikemybytes\junit5-formatted-source\0.2.0\junit5-formatted-source-0.2.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.0\junit-jupiter-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.0\junit-jupiter-params-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.0\junit-jupiter-engine-5.8.0.jar;C:\Users\kruvi\.m2\repository\org\junit\platform\junit-platform-engine\1.8.0\junit-platform-engine-1.8.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
-    <property name="user.home" value="C:\Users\CDA-02"/>
+    <property name="user.home" value="C:\Users\kruvi"/>
     <property name="user.language" value="fr"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.version.date" value="2022-10-18"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-11.0.17"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Dev\Java\reverso-maven"/>
+    <property name="basedir" value="C:\laragon\www\Tutoriels\Java\reverso"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\CDA-02\AppData\Local\Temp\surefire2886849386781681778\surefirebooter-20230329113020922_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\kruvi\AppData\Local\Temp\surefire17228407450447748663\surefirebooter-20230329193549360_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.17+10-LTS-269"/>
-    <property name="user.name" value="CDA-02"/>
+    <property name="user.name" value="kruvi"/>
     <property name="path.separator" value=";"/>
     <property name="os.version" value="10.0"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="file.encoding" value="Cp1252"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="java.vendor.version" value="18.9"/>
-    <property name="localRepository" value="C:\Users\CDA-02\.m2\repository"/>
+    <property name="localRepository" value="C:\Users\kruvi\.m2\repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
-    <property name="java.io.tmpdir" value="C:\Users\CDA-02\AppData\Local\Temp\"/>
+    <property name="java.io.tmpdir" value="C:\Users\kruvi\AppData\Local\Temp\"/>
     <property name="java.version" value="11.0.17"/>
-    <property name="user.dir" value="C:\Dev\Java\reverso-maven"/>
+    <property name="user.dir" value="C:\laragon\www\Tutoriels\Java\reverso"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
     <property name="sun.os.patch.level" value=""/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk-11.0.17\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files\cmder\vendor\conemu-maximus5;C:\Program Files\cmder\vendor\conemu-maximus5\ConEmu;C:\Program Files\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\Windows\System32;C:\laragon\bin;C:\laragon\bin\apache\httpd-2.4.54-win64-VS16\bin;C:\laragon\bin\composer;C:\laragon\bin\git\bin;C:\laragon\bin\git\cmd;C:\laragon\bin\git\mingw64\bin;C:\laragon\bin\git\usr\bin;C:\laragon\bin\laragon\utils;C:\laragon\bin\mysql\mysql-8.0.30-winx64\bin;C:\laragon\bin\nginx\nginx-1.22.0;C:\laragon\bin\ngrok;C:\laragon\bin\nodejs\node-v18;C:\laragon\bin\notepad++;C:\laragon\bin\php\php-8.1.10-Win32-vs16-x64;C:\laragon\bin\python\python-3.10;C:\laragon\bin\python\python-3.10\Scripts;C:\laragon\bin\redis\redis-x64-5.0.14.1;C:\laragon\bin\telnet;C:\laragon\usr\bin;C:\Users\CDA-02\AppData\Local\Yarn\config\global\node_modules\.bin;C:\Users\CDA-02\AppData\Roaming\Composer\vendor\bin;C:\Users\CDA-02\AppData\Roaming\npm;C:\Users\CDA-02\AppData\Local\Microsoft\WindowsApps;C:\Users\CDA-02\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\cmder;C:\Windows\System32;C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.2\bin;C:\Program Files\JetBrains\PhpStorm 2022.3.1\bin;C:\Program Files\JetBrains\WebStorm 2022.3.1\bin;C:\Dev\Java\apache-maven-3.9.1\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\cmder\vendor\bin;C:\Program Files\cmder\bin;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-11.0.17\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Developpement\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\ProgramData\ComposerSetup\bin;C:\Program Files\dotnet\;C:\Program Files\Calibre2\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\dotnet\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\Java\jdk1.8.0_202\bin;C:\Program Files\PowerShell\7\;C:\Program Files\Git\cmd;C:\laragon\bin;C:\laragon\bin\apache\httpd-2.4.47-win64-VS16\bin;C:\laragon\bin\composer;C:\laragon\bin\git\bin;C:\laragon\bin\git\cmd;C:\laragon\bin\git\mingw64\bin;C:\laragon\bin\git\usr\bin;C:\laragon\bin\laragon\utils;C:\laragon\bin\mysql\mysql-5.7.33-winx64\bin;C:\laragon\bin\nginx\nginx-1.19.10;C:\laragon\bin\ngrok;C:\laragon\bin\nodejs\node-v16;C:\laragon\bin\notepad++;C:\laragon\bin\php\php-8.1.6-Win32-vs16-x64;C:\laragon\bin\postgresql\postgresql-14.4-1\bin;C:\laragon\bin\redis\redis-x64-3.2.100;C:\laragon\bin\telnet;C:\laragon\usr\bin;C:\Users\kruvi\AppData\Local\Yarn\config\global\node_modules\.bin;C:\Users\kruvi\AppData\Roaming\Composer\vendor\bin;C:\Developpement\cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Developpement\cmder\vendor\conemu-maximus5;C:\Developpement\cmder\vendor\conemu-maximus5\ConEmu;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\ProgramData\ComposerSetup\bin;C:\Program Files\dotnet\;C:\Program Files\Docker\Docker\resources\bin;C:\Users\kruvi\scoop\shims;C:\Developpement\cmder;C:\Users\kruvi\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\kruvi\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Heroku\bin;C:\Developpement\stripe_1.12.3_windows_x86_64;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2022.3.1\bin;C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.2\bin;C:\Users\kruvi\AppData\Local\JetBrains\Toolbox\scripts;C:\Program Files\JetBrains\WebStorm 2022.3.1\bin;C:\Program Files\JetBrains\PhpStorm 2022.3.1\bin;C:\laragon\www\Tutoriels\Java\apache-maven-3.9.1\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Developpement\cmder\vendor\bin;C:\Developpement\cmder\bin;."/>
     <property name="java.vendor" value="Oracle Corporation"/>
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.vm.version" value="11.0.17+10-LTS-269"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="55.0"/>
   </properties>
-  <testcase name="testNombreEmployesValide(int)[1]" classname="fr.victork.Entity.ClientTest" time="0.046"/>
+  <testcase name="testNombreEmployesValide(int)[1]" classname="fr.victork.Entity.ClientTest" time="0.048"/>
   <testcase name="testNombreEmployesValide(int)[2]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testAdresseMailValide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testAdresseMailValide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0"/>
   <testcase name="testAdresseMailInvalide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
-  <testcase name="testAdresseMailInvalide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0"/>
-  <testcase name="testSetRaisonSocialeValide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0"/>
-  <testcase name="testSetRaisonSocialeValide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
+  <testcase name="testAdresseMailInvalide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
+  <testcase name="testSetRaisonSocialeValide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
+  <testcase name="testSetRaisonSocialeValide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0"/>
   <testcase name="testNombreEmployesInvalide(int)[1]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testNombreEmployesInvalide(int)[2]" classname="fr.victork.Entity.ClientTest" time="0"/>
-  <testcase name="testSetRaisonSocialeInvalide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0"/>
+  <testcase name="testSetRaisonSocialeInvalide(String)[1]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testSetRaisonSocialeInvalide(String)[2]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testSetRaisonSocialeInvalide(String)[3]" classname="fr.victork.Entity.ClientTest" time="0"/>
   <testcase name="testSetRaisonSocialeInvalide(String)[4]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
   <testcase name="testSetRaisonSocialeInvalide(String)[5]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
-  <testcase name="testSetRaisonSocialeInvalide(String)[6]" classname="fr.victork.Entity.ClientTest" time="0"/>
-  <testcase name="testSetRaisonSocialeInvalide(String)[7]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
+  <testcase name="testSetRaisonSocialeInvalide(String)[6]" classname="fr.victork.Entity.ClientTest" time="0.001"/>
+  <testcase name="testSetRaisonSocialeInvalide(String)[7]" classname="fr.victork.Entity.ClientTest" time="0"/>
 </testsuite>

@@ -30,7 +30,7 @@ create table contrat
     libelle             varchar(255) not null,
     montant             double       not null,
     constraint fk_client_contrat
-        foreign key (identifiant_client) references client (client_identifiant)
+        foreign key (identifiant_client) references client (client_identifiant) ON DELETE CASCADE
 );
 
 create table prospect
