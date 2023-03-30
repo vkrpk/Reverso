@@ -36,9 +36,7 @@ public class Main {
             fh.setFormatter(new FormatterLog());
 
             LOGGER.log(Level.INFO, "Démarrage de l'application");
-
             initDatas();
-
             MainFrame mainFrame = new MainFrame(1100, 750, -1, -1, false);
             /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
             new AccueilFrame(1100, 750, -1, -1, false, mainFrame);
