@@ -1,4 +1,0 @@
-29/03/2023 19:46:16 Level : INFO / Message : Démarrage de l'application / Classe : fr.victork.Main / Méthode : main
-29/03/2023 19:46:56 Level : SEVERE / Message : Une erreur est survenue lors de la suppression d'un client : Cannot delete or update a parent row: a foreign key constraint fails (`reverso`.`contrat`, CONSTRAINT `fk_client_contrat` FOREIGN KEY (`identifiant_client`) REFERENCES `client` (`client_identifiant`)), cause : 23000 / Classe : fr.victork.View.FormFrame / Méthode : lambda$addListenerToBtnValider$0
-29/03/2023 19:46:56 Level : INFO / Message : Database fermée / Classe : fr.victork.DAO.mysql.MySQLDatabaseConnection$1 / Méthode : run
-29/03/2023 19:48:42 Level : INFO / Message : Démarrage de l'application / Classe : fr.victork.Main / Méthode : main

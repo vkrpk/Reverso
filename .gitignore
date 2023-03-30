@@ -1,5 +1,8 @@
 .idea/
 out/
-javadoc/
+/javadoc/
 LogReverso.log
 database.properties
+/target/
+*.iml
+*.log
