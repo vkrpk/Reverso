@@ -132,16 +132,6 @@ public class AccueilFrame extends MainFrame {
                     btnSupprimer.setForeground(Color.black);
                     panBtnEditOrDelete.setVisible(false);
                 }
-            } catch (DateTimeException dte) {
-                JOptionPane.showMessageDialog(this,
-                        "La date doit être dans le format suivant : dd/MM/yyyy",
-                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-                LOGGER.log(Level.WARNING, dte.getMessage());
-            } catch (NumberFormatException nft) {
-                JOptionPane.showMessageDialog(this,
-                        "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
-                        JOptionPane.ERROR_MESSAGE);
-                LOGGER.log(Level.WARNING, nft.getMessage());
             } catch (ExceptionEntity ee) {
                 JOptionPane.showMessageDialog(this, ee.getMessage(),
                         "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
@@ -189,15 +179,39 @@ public class AccueilFrame extends MainFrame {
         fonction de l'action choisi pour l'instance de Société sélectionnée */
         btnValiderSupprimerOuEditer.addActionListener(e -> {
             this.dispose();
-            if (this.enumCRUD == EnumCRUD.READ_CONTRAT) {
-                new AffichageContratFrame((Client) societeSelection,
-                        super.largeur, super.hauteur, super.x, super.y,
-                        super.estEnPleinEcran, mainFrame);
-            } else {
-                new FormFrame(this.societeSelection, this.enumCRUD,
-                        super.largeur, super.hauteur, super.x, super.y,
-                        super.estEnPleinEcran, mainFrame);
+            try {
+                if (this.enumCRUD == EnumCRUD.READ_CONTRAT) {
+                    new AffichageContratFrame((Client) societeSelection,
+                            super.largeur, super.hauteur, super.x, super.y,
+                            super.estEnPleinEcran, mainFrame);
+                } else {
+                    new FormFrame(this.societeSelection, this.enumCRUD,
+                            super.largeur, super.hauteur, super.x, super.y,
+                            super.estEnPleinEcran, mainFrame);
+                }
+            } catch (ExceptionEntity ee) {
+                JOptionPane.showMessageDialog(this, ee.getMessage(),
+                        "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, ee.getMessage());
+            } catch (ExceptionDAO exceptionDAO) {
+                switch (exceptionDAO.getGravite()) {
+                    case 5:
+                        exceptionDAO.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
+                                JOptionPane.ERROR_MESSAGE);
+                        LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
+                        System.exit(1);
+                        break;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
+                                "l'application",
+                        JOptionPane.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, exception.getMessage());
+                System.exit(1);
             }
+
         });
 
         // Mémorise l'action "supprimer" et affiche la liste déroulante
@@ -346,16 +360,6 @@ public class AccueilFrame extends MainFrame {
                     comboBoxSociete.setSelectedIndex(0);
                     break;
             }
-        } catch (DateTimeException dte) {
-            JOptionPane.showMessageDialog(this,
-                    "La date doit être dans le format suivant : dd/MM/yyyy",
-                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, dte.getMessage());
-        } catch (NumberFormatException nft) {
-            JOptionPane.showMessageDialog(this,
-                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
-                    JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, nft.getMessage());
         } catch (ExceptionEntity ee) {
             JOptionPane.showMessageDialog(this, ee.getMessage(),
                     "Erreur de saisie", JOptionPane.ERROR_MESSAGE);

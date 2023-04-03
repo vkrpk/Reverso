@@ -25,13 +25,13 @@ import java.util.ArrayList;
  */
 public interface InterfaceDAOClient<T> extends DAO<T> {
 
-    /**
+  /*  *//**
      * Cette méthode permet de récupérer tous les contrats d'un client spécifique dans la base de données.
      *
      * @param client Client dont on souhaite récupérer les contrats.
      * @return Retourne une liste de Contrat associée au client spécifié.
      * @throws ExceptionEntity ExceptionEntity si une exception se produit lors de l'interaction avec l'entité <T>
      * @throws ExceptionDAO    ExceptionDAO si une exception se produit lors de l'interaction avec la base de données
-     */
-    ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO;
+     *//*
+    ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO;*/
 }

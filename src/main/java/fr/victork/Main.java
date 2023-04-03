@@ -36,29 +36,14 @@ public class Main {
             fh.setFormatter(new FormatterLog());
 
             LOGGER.log(Level.INFO, "Démarrage de l'application");
-            initDatas();
             MainFrame mainFrame = new MainFrame(1100, 750, -1, -1, false);
             /* Les valeurs -1 indiquent que la fenêtre doit être positionnée au milieu de l'écran */
             new AccueilFrame(1100, 750, -1, -1, false, mainFrame);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            LOGGER.log(Level.SEVERE, e.getMessage());
             JOptionPane.showMessageDialog(null, e.getMessage(),
                     "Erreur système", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
     }
-
-    /**
-     * Initialise de fausses données à des fins de test
-     *
-     * @throws ExceptionEntity Remonte une exception en cas d'erreur
-     */
-    private static void initDatas() throws ExceptionEntity, IOException {
-        File file = new File("Fixtures.txt");
-
-        //WriteFile.litUnFichierEtRempliLesCollections(file);
-    }
-
-
 }

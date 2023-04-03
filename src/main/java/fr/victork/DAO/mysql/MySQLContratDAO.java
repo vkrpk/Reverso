@@ -12,6 +12,7 @@ import fr.victork.DAO.DAO;
 import fr.victork.DAO.InterfaceDAOClient;
 import fr.victork.Entity.Client;
 import fr.victork.Entity.Contrat;
+import fr.victork.Entity.Prospect;
 import fr.victork.Exception.ExceptionDAO;
 import fr.victork.Exception.ExceptionEntity;
 
@@ -34,6 +35,36 @@ public class MySQLContratDAO implements DAO<Contrat> {
     //--------------------- CONSTRUCTORS ---------------------------------------
     //--------------------- STATIC METHODS -------------------------------------
     //--------------------- INSTANCE METHODS -----------------------------------
+    /**
+     * permet de récupérer tous les contrats associés à un client à partir de son identifiant unique dans la base de données.
+     *
+     * @param client Client dont on souhaite récupérer les contrats.
+     * @return Retourne une liste de Contrat associée au client spécifié.
+     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité
+     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
+     */
+    public ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
+        String strSql = "SELECT * FROM contrat WHERE identifiant_client=?";
+        ArrayList<Contrat> contratsByClient = new ArrayList<>();
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
+            statement.setInt(1, client.getIdentifiant());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Integer identifiantContrat = resultSet.getInt("identifiant_contrat");
+                    Integer identifiantClient = resultSet.getInt("identifiant_client");
+                    String libelle = resultSet.getString("libelle");
+                    Double montant = resultSet.getDouble("montant");
+                    Contrat contrat = new Contrat(identifiantContrat, identifiantClient, libelle, montant);
+                    contratsByClient.add(contrat);
+                }
+            }
+        } catch (SQLException sqlException) {
+            throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des contrats appartenant" +
+                    " à un client : " +
+                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
+        }
+        return contratsByClient;
+    }
 
     /**
      * Cette méthode permet de récupérer tous les objets Contrat présents dans la base de données.
@@ -46,15 +77,10 @@ public class MySQLContratDAO implements DAO<Contrat> {
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM contrat";
         ArrayList<Contrat> collectionContrats = new ArrayList<>();
-        try (Statement statement = MySQLDatabaseConnection.getInstance().getConnection().createStatement(); ResultSet resultSet =
+        try (Statement statement = MySQLDatabaseConnection.getConnection().createStatement(); ResultSet resultSet =
                 statement.executeQuery(strSql)) {
             while (resultSet.next()) {
-                Integer identifiantContrat = resultSet.getInt("identifiant_contrat");
-                Integer identifiantClient = resultSet.getInt("identifiant_client");
-                String libelle = resultSet.getString("libelle");
-                Double montant = resultSet.getDouble("montant");
-                Contrat contrat = new Contrat(identifiantContrat, identifiantClient, libelle, montant);
-                collectionContrats.add(contrat);
+                collectionContrats.add(convertResultSetToContrat(resultSet));
             }
         } catch (SQLException sqlException) {
             throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des contrats : " +
@@ -75,15 +101,11 @@ public class MySQLContratDAO implements DAO<Contrat> {
             throws ExceptionEntity, ExceptionDAO {
         Contrat contrat = new Contrat();
         String strSql = "SELECT * FROM contrat WHERE identifiant_contrat=?";
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    Integer identifiantContrat = resultSet.getInt("identifiant_contrat");
-                    Integer identifiantClient = resultSet.getInt("identifiant_client");
-                    String libelle = resultSet.getString("libelle");
-                    Double montant = resultSet.getDouble("montant");
-                    return new Contrat(identifiantContrat, identifiantClient, libelle, montant);
+                    return convertResultSetToContrat(resultSet);
                 }
             }
         } catch (SQLException sqlException) {
@@ -102,7 +124,7 @@ public class MySQLContratDAO implements DAO<Contrat> {
     public void delete(Integer id)
             throws ExceptionDAO {
         String strSql = "DELETE FROM contrat WHERE identifiant_contrat=?";
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException sqlException) {
@@ -130,7 +152,7 @@ public class MySQLContratDAO implements DAO<Contrat> {
             strSql = "UPDATE contrat SET identifiant_client = ?, libelle = ?, " +
                     "montant = ? WHERE identifiant_contrat = ? ";
         }
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setInt(1, contrat.getIdentifiantClient());
             statement.setString(2, contrat.getLibelle());
             statement.setDouble(3, contrat.getMontant());
@@ -147,6 +169,14 @@ public class MySQLContratDAO implements DAO<Contrat> {
                         sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
             }
         }
+    }
+
+    private Contrat convertResultSetToContrat(ResultSet resultSet) throws ExceptionEntity, SQLException {
+        Integer identifiantContrat = resultSet.getInt("identifiant_contrat");
+        Integer identifiantClient = resultSet.getInt("identifiant_client");
+        String libelle = resultSet.getString("libelle");
+        Double montant = resultSet.getDouble("montant");
+        return new Contrat(identifiantContrat, identifiantClient, libelle, montant);
     }
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------

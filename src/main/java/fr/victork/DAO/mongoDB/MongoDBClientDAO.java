@@ -115,8 +115,7 @@ public class MongoDBClientDAO implements InterfaceDAOClient<Client> {
                     codePostal, ville,
                     telephone, adresseMail, commentaires, chiffreAffairesDouble, nombreEmployes
             );
-            ArrayList<Contrat> listeContrats = findByIdClient(client);
-            client.setListeContrat(listeContrats);
+            client.setListeContrat(findByIdClient(client));
             return client;
         }
         return null;

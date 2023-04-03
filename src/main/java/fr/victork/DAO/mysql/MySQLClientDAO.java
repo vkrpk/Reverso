@@ -10,6 +10,7 @@ package fr.victork.DAO.mysql;
 import fr.victork.DAO.InterfaceDAOClient;
 import fr.victork.Entity.Client;
 import fr.victork.Entity.Contrat;
+import fr.victork.Entity.Prospect;
 import fr.victork.Exception.ExceptionDAO;
 import fr.victork.Exception.ExceptionEntity;
 
@@ -41,24 +42,10 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
             throws ExceptionEntity, ExceptionDAO {
         String strSql = "SELECT * FROM client";
         ArrayList<Client> collectionClients = new ArrayList<>();
-        try (Statement statement = MySQLDatabaseConnection.getInstance().getConnection().createStatement(); ResultSet resultSet =
+        try (Statement statement = MySQLDatabaseConnection.getConnection().createStatement(); ResultSet resultSet =
                 statement.executeQuery(strSql)) {
             while (resultSet.next()) {
-                Integer identifiant = resultSet.getInt("client_identifiant");
-                String raisonSociale = resultSet.getString("client_raison_sociale");
-                String numeroDeRue = resultSet.getString("client_numero_de_rue");
-                String nomDeRue = resultSet.getString("client_nom_de_rue");
-                String codePostal = resultSet.getString("client_code_postal");
-                String ville = resultSet.getString("client_ville");
-                String telephone = resultSet.getString("client_telephone");
-                String adresseMail = resultSet.getString("client_adresse_mail");
-                String commentaires = resultSet.getString("client_commentaires");
-                Double chiffreAffaires = resultSet.getDouble("client_chiffre_affaires");
-                Integer nombreEmployes = resultSet.getInt("client_nombre_employes");
-                Client client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
-                        codePostal, ville,
-                        telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
-                collectionClients.add(client);
+                collectionClients.add(convertResultSetToClient(resultSet));
             }
         } catch (SQLException sqlException) {
             throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des clients : " +
@@ -79,26 +66,12 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
             throws ExceptionEntity, ExceptionDAO {
         Client client = new Client();
         String strSql = "SELECT * FROM client WHERE client_identifiant=?";
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    Integer identifiant = resultSet.getInt("client_identifiant");
-                    String raisonSociale = resultSet.getString("client_raison_sociale");
-                    String numeroDeRue = resultSet.getString("client_numero_de_rue");
-                    String nomDeRue = resultSet.getString("client_nom_de_rue");
-                    String codePostal = resultSet.getString("client_code_postal");
-                    String ville = resultSet.getString("client_ville");
-                    String telephone = resultSet.getString("client_telephone");
-                    String adresseMail = resultSet.getString("client_adresse_mail");
-                    String commentaires = resultSet.getString("client_commentaires");
-                    Double chiffreAffaires = resultSet.getDouble("client_chiffre_affaires");
-                    Integer nombreEmployes = resultSet.getInt("client_nombre_employes");
-                    client = new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
-                            codePostal, ville,
-                            telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
-                    ArrayList<Contrat> listeContrats = findByIdClient(client);
-                    client.setListeContrat(listeContrats);
+                    client = convertResultSetToClient(resultSet);
+                    client.setListeContrat(new MySQLContratDAO().findByIdClient(client));
                     return client;
                 }
             }
@@ -118,7 +91,7 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
     public void delete(Integer id)
             throws ExceptionDAO {
         String strSql = "DELETE FROM client WHERE client_identifiant=?";
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException sqlException) {
@@ -152,7 +125,7 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
                     "client_adresse_mail = ?, client_commentaires = ?, client_chiffre_affaires = ?, " +
                     "client_nombre_employes = ? WHERE client_identifiant = ? ";
         }
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
+        try (PreparedStatement statement = MySQLDatabaseConnection.getConnection().prepareStatement(strSql)) {
             statement.setString(1, client.getRaisonSociale());
             statement.setString(2, client.getNumeroDeRue());
             statement.setString(3, client.getNomDeRue());
@@ -178,35 +151,21 @@ public class MySQLClientDAO implements InterfaceDAOClient<Client> {
         }
     }
 
-    /**
-     * permet de récupérer tous les contrats associés à un client à partir de son identifiant unique dans la base de données.
-     *
-     * @param client Client dont on souhaite récupérer les contrats.
-     * @return Retourne une liste de Contrat associée au client spécifié.
-     * @throws ExceptionEntity si une exception se produit lors de l'interaction avec l'entité
-     * @throws ExceptionDAO    si une exception se produit lors de l'interaction avec la base de données
-     */
-    public ArrayList<Contrat> findByIdClient(Client client) throws ExceptionEntity, ExceptionDAO {
-        String strSql = "SELECT * FROM contrat WHERE identifiant_client=?";
-        ArrayList<Contrat> contratsByClient = new ArrayList<>();
-        try (PreparedStatement statement = MySQLDatabaseConnection.getInstance().getConnection().prepareStatement(strSql)) {
-            statement.setInt(1, client.getIdentifiant());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Integer identifiantContrat = resultSet.getInt("identifiant_contrat");
-                    Integer identifiantClient = resultSet.getInt("identifiant_client");
-                    String libelle = resultSet.getString("libelle");
-                    Double montant = resultSet.getDouble("montant");
-                    Contrat contrat = new Contrat(identifiantContrat, identifiantClient, libelle, montant);
-                    contratsByClient.add(contrat);
-                }
-            }
-        } catch (SQLException sqlException) {
-            throw new ExceptionDAO("Une erreur est survenue lors de la recherche de la liste des contrats appartenant" +
-                    " à un client : " +
-                    sqlException.getMessage() + ", cause : " + sqlException.getSQLState(), 5);
-        }
-        return contratsByClient;
+    private Client convertResultSetToClient(ResultSet resultSet) throws ExceptionEntity, SQLException {
+        Integer identifiant = resultSet.getInt("client_identifiant");
+        String raisonSociale = resultSet.getString("client_raison_sociale");
+        String numeroDeRue = resultSet.getString("client_numero_de_rue");
+        String nomDeRue = resultSet.getString("client_nom_de_rue");
+        String codePostal = resultSet.getString("client_code_postal");
+        String ville = resultSet.getString("client_ville");
+        String telephone = resultSet.getString("client_telephone");
+        String adresseMail = resultSet.getString("client_adresse_mail");
+        String commentaires = resultSet.getString("client_commentaires");
+        Double chiffreAffaires = resultSet.getDouble("client_chiffre_affaires");
+        Integer nombreEmployes = resultSet.getInt("client_nombre_employes");
+        return new Client(identifiant, raisonSociale, numeroDeRue, nomDeRue,
+                codePostal, ville,
+                telephone, adresseMail, commentaires, chiffreAffaires, nombreEmployes);
     }
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------

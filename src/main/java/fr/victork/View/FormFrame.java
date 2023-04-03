@@ -201,7 +201,6 @@ public class FormFrame extends MainFrame {
                                 "La raison sociale de cette société existe déjà.",
                                 "Erreur de saisie",
                                 JOptionPane.ERROR_MESSAGE);
-                        LOGGER.log(Level.INFO, exceptionDAO.getMessage());
                         break;
                     case 5:
                         exceptionDAO.printStackTrace();

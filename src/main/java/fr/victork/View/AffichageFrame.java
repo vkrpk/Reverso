@@ -75,16 +75,6 @@ public class AffichageFrame extends MainFrame {
                     listeSocieteSelection = mainFrame.prospectDAO.findAll();
                     break;
             }
-        } catch (DateTimeException dte) {
-            JOptionPane.showMessageDialog(this,
-                    "La date doit être dans le format suivant : dd/MM/yyyy",
-                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, dte.getMessage());
-        } catch (NumberFormatException nft) {
-            JOptionPane.showMessageDialog(this,
-                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
-                    JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, nft.getMessage());
         } catch (ExceptionEntity ee) {
             JOptionPane.showMessageDialog(this, ee.getMessage(),
                     "Erreur de saisie", JOptionPane.ERROR_MESSAGE);

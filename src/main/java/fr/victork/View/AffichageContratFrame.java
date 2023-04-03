@@ -59,43 +59,11 @@ public class AffichageContratFrame extends MainFrame {
      */
     public AffichageContratFrame(Client client,
                                  int largeurFenetre, int hauteurFenetre, int positionX,
-                                 int positionY, boolean pleinEcran, MainFrame mainFrame) {
+                                 int positionY, boolean pleinEcran, MainFrame mainFrame) throws ExceptionEntity, ExceptionDAO {
         super(largeurFenetre, hauteurFenetre, positionX, positionY, pleinEcran);
-        try {
-            listeContratsByClient = mainFrame.clientDAO.findByIdClient(client);
-        } catch (DateTimeException dte) {
-            JOptionPane.showMessageDialog(this,
-                    "La date doit être dans le format suivant : dd/MM/yyyy",
-                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, dte.getMessage());
-        } catch (NumberFormatException nft) {
-            JOptionPane.showMessageDialog(this,
-                    "La valeur saisie doit être uniquement composé de chiffres", "Erreur de saisie",
-                    JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, nft.getMessage());
-        } catch (ExceptionEntity ee) {
-            JOptionPane.showMessageDialog(this, ee.getMessage(),
-                    "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.WARNING, ee.getMessage());
-        } catch (ExceptionDAO exceptionDAO) {
-            switch (exceptionDAO.getGravite()) {
-                case 5:
-                    exceptionDAO.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans l'application",
-                            JOptionPane.ERROR_MESSAGE);
-                    LOGGER.log(Level.SEVERE, exceptionDAO.getMessage());
-                    System.exit(1);
-                    break;
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erreur dans l'application, l'application doit fermer", "Erreur dans " +
-                            "l'application",
-                    JOptionPane.ERROR_MESSAGE);
-            LOGGER.log(Level.SEVERE, exception.getMessage());
-            System.exit(1);
-        }
         this.mainFrame = mainFrame;
+        Client newClient = mainFrame.clientDAO.find(client.getIdentifiant());
+        listeContratsByClient = newClient.getListeContrat();
         updateData();
         setupGUI(largeurFenetre, hauteurFenetre, positionX, positionY,
                 pleinEcran);

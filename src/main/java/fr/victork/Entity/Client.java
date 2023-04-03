@@ -103,6 +103,10 @@ public class Client extends Societe {
         this.listeContrat = listeContrat;
     }
 
+    public ArrayList<Contrat> getListeContrat() {
+        return listeContrat;
+    }
+
     //--------------------- TO STRING METHOD------------------------------------
 
     /**

@@ -26,8 +26,7 @@ public class MySQLDatabaseConnection {
     //--------------------- CONSTANTS ------------------------------------------
     //--------------------- STATIC VARIABLES -----------------------------------
     final Properties dataProperties = new Properties();
-    private static MySQLDatabaseConnection instance;
-    private Connection connection;
+    private static Connection connection = null;
 
     //--------------------- INSTANCE VARIABLES ---------------------------------
     //--------------------- CONSTRUCTORS ---------------------------------------
@@ -52,9 +51,11 @@ public class MySQLDatabaseConnection {
             connection = DriverManager.getConnection(url, login, password);
         } catch (IOException ioException) {
             ioException.printStackTrace();
+            new ExceptionDAO("Une erreur est survenue lors de la connexion à la base de données " +
+                    ioException.getMessage(), 5);
         } catch (SQLException e) {
             new ExceptionDAO("Une erreur est survenue lors de la connexion à la base de données " +
-                    e.getMessage(), 1);
+                    e.getMessage(), 5);
         }
        /* catch (ClassNotFoundException classNotFoundException) {
             classNotFoundException.printStackTrace();
@@ -70,14 +71,11 @@ public class MySQLDatabaseConnection {
      * @return l'instance unique de la classe MySQLDatabaseConnection
      * @throws SQLException si une erreur se produit lors de la connexion à la base de données.
      */
-    public static MySQLDatabaseConnection getInstance() throws SQLException {
-        if (instance == null) {
-            instance = new MySQLDatabaseConnection();
-        } else if (instance.getConnection().isClosed()) {
-            instance = new MySQLDatabaseConnection();
+    public static Connection getConnection() {
+        if (connection == null) {
+            new MySQLDatabaseConnection();
         }
-
-        return instance;
+        return connection;
     }
 
     //--------------------- STATIC METHODS -------------------------------------
@@ -86,41 +84,28 @@ public class MySQLDatabaseConnection {
      * Méthode permettant de fermer la connexion à la base de données lors de l'arrêt de l'application
      * Cette méthode est appelée via le ShutdownHook de l'application.
      */
-    static {
+   static {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                try {
-                    if (MySQLDatabaseConnection.getInstance().getConnection() != null) {
-                        try {
-                            LOGGER.info("Database fermée");
-                            MySQLDatabaseConnection.getInstance().getConnection().close();
-                        } catch (SQLException ex) {
-                            LOGGER.severe(ex.getMessage());
-                        }
+                if (connection != null) {
+                    try {
+                        LOGGER.info("Database fermée");
+                        connection.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        LOGGER.log(Level.SEVERE, ex.getMessage());
+                        JOptionPane.showMessageDialog(null, ex.getMessage(),
+                                "Erreur système", JOptionPane.ERROR_MESSAGE);
+                        System.exit(1);
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    LOGGER.log(Level.SEVERE, e.getMessage());
-                    JOptionPane.showMessageDialog(null, e.getMessage(),
-                            "Erreur système", JOptionPane.ERROR_MESSAGE);
-                    System.exit(1);
                 }
             }
         });
-    }
+   }
 
     //--------------------- INSTANCE METHODS -----------------------------------
     //--------------------- ABSTRACT METHODS -----------------------------------
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
-
-    /**
-     * Getter de la connexion à la base de données MySQL
-     *
-     * @return la connexion à la base
-     */
-    public Connection getConnection() {
-        return connection;
-    }
     //--------------------- GETTERS - SETTERS ----------------------------------
     //--------------------- TO STRING METHOD------------------------------------
 }
